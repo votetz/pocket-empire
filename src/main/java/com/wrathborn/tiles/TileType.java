@@ -8,7 +8,7 @@ public enum TileType {
     SAVANNA (0.8, false, ','),
 
     // types of forests
-    FOREST  (0.5, false, 'f'),
+    FOREST  (0.7, false, 'f'),
     JUNGLE  (0.3, false, 'J'),
     TAIGA   (0.4, false, '▲'),
     TUNDRA  (0.6, false, '*'),
