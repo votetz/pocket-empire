@@ -1,30 +1,28 @@
 package com.wrathborn;
 
+import com.wrathborn.world.Map;
+import com.wrathborn.world.Tile;
 import com.wrathborn.world.World;
+import com.wrathborn.world.MapGenerator;
+import com.wrathborn.tiles.TileType;
+import com.wrathborn.tiles.TileFactory;
+import com.wrathborn.display.ConsoleRender;
+import com.wrathborn.display.StatsDisplay;
+
 
 public class Main{
     public static void main(String[] args) {
-        com.wrathborn.world.Map map = createSampleMap(30, 10);
+        int width = 60;
+        int height = 20;
+
+        Map map = MapGenerator.generateRandomMap(width, height);
         World world = new World(map);
 
-        com.wrathborn.display.ConsoleRender renderer = new com.wrathborn.display.ConsoleRender(world.getMap());
-        com.wrathborn.display.StatsDisplay stats = new com.wrathborn.display.StatsDisplay();
+        ConsoleRender renderer = new ConsoleRender(world.getMap());
+        StatsDisplay stats = new StatsDisplay();
 
         renderer.render();
         stats.displayStats();
-    }
-
-    private static com.wrathborn.world.Map createSampleMap(int width, int height) {
-        com.wrathborn.world.Tile[][] tiles = new com.wrathborn.world.Tile[width][height];
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                com.wrathborn.tiles.TileType type = (x == 0 || x == width - 1 || y == 0 || y == height - 1)
-                    ? com.wrathborn.tiles.TileType.WATER
-                    : com.wrathborn.tiles.TileType.GRASS;
-                tiles[x][y] = com.wrathborn.tiles.TileFactory.create(x, y, type);
-            }
-        }
-        return new com.wrathborn.world.Map(width, height, tiles);
     }
 
 }
