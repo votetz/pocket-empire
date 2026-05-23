@@ -12,7 +12,7 @@ import com.wrathborn.display.StatsDisplay;
 
 public class Main{
     public static void main(String[] args) {
-        int width = 60;
+        int width = 100;
         int height = 20;
 
         Map map = MapGenerator.generateRandomMap(width, height);
