@@ -62,7 +62,7 @@ public class Unit extends Entity{
 
     @Override
     public void update(){
-
+        //todo update unit stats here
     }
 
     public boolean isAlive(){
