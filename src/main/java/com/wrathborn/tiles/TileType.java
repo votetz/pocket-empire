@@ -18,7 +18,7 @@ public enum TileType {
     CAVES   (0.3, false, '#'),
 
     // water
-    WATER   (0.1, true,  '≈'),
+    WATER   (0.05, false,  '≈'),
     OCEAN   (0.0, true,  '='),
     SWAMPS  (0.2, false, '§');
 
