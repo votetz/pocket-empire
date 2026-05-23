@@ -14,11 +14,11 @@ public enum TileType {
     TUNDRA  (0.6, false, '*'),
 
     // mountain
-    MOUNTAIN(0.2, true,  '^'),
+    MOUNTAIN(0.1, true,  '^'),
     CAVES   (0.3, false, '#'),
 
     // water
-    WATER   (0.0, true,  '≈'),
+    WATER   (0.1, true,  '≈'),
     OCEAN   (0.0, true,  '='),
     SWAMPS  (0.2, false, '§');
 
