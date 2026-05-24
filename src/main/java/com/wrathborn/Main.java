@@ -4,6 +4,7 @@ import com.wrathborn.display.ConsoleRender;
 import com.wrathborn.display.StatsDisplay;
 import com.wrathborn.entities.City;
 import com.wrathborn.entities.Faction;
+import com.wrathborn.entities.Unit;
 import com.wrathborn.simulation.TurnManager;
 import com.wrathborn.units.UnitFactory;
 import com.wrathborn.units.UnitType;
@@ -36,6 +37,7 @@ public class Main {
         ironborn.addUnit(UnitFactory.create(UnitType.HEAVY,  "u1", 10, 6, "1"));
         ironborn.addUnit(UnitFactory.create(UnitType.LIGHT,  "u2", 11, 6, "1"));
         ironborn.addUnit(UnitFactory.create(UnitType.ARCHER, "u3", 12, 6, "1"));
+        ironborn.addUnit(UnitFactory.create(UnitType.MAGE,  "u7", 13, 6, "1"));
 
         ashveil.addUnit(UnitFactory.create(UnitType.HEAVY,  "u4", 50, 14, "2"));
         ashveil.addUnit(UnitFactory.create(UnitType.LIGHT,  "u5", 51, 14, "2"));
@@ -46,6 +48,7 @@ public class Main {
         factions.add(ironborn);
         factions.add(ashveil);
         TurnManager turnManager = new TurnManager(factions);
+
 
         // render
         ConsoleRender renderer = new ConsoleRender(world.getMap());
