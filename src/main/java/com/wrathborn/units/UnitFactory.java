@@ -12,6 +12,8 @@ public class UnitFactory {
                 return new ArcherUnit(id, x, y, factionId);
             case HEAVY:
                 return new HeavyUnit(id, x, y, factionId);
+            case MAGE:
+                return new MageUnit(id, x, y, factionId);
             default:
                 return new LightUnit(id, x, y, factionId);
         }
