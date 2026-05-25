@@ -1,6 +1,7 @@
 package com.wrathborn.units;
 
 import com.wrathborn.entities.Unit;
+import com.wrathborn.fsm.UnitState;
 
 public class ArcherUnit extends Unit {
     public ArcherUnit(String id, int x, int y, String factionId) {
@@ -13,7 +14,8 @@ public class ArcherUnit extends Unit {
                 4,
                 100,
                 100,
-                factionId
+                factionId,
+                UnitState.IDLE
                 );
     }
 }
