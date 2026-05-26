@@ -19,8 +19,20 @@ public class Map {
         return height;
     }
 
-    public Tile getTile(int x, int y) {
-        if (x < 0 || x >= width || y < 0 || y >= height) return null;
-        return tiles[x][y];
+    public Tile getTileOffSet(int col, int row) {
+        if (col < 0 || col >= width || row < 0 || row >= height) return null;
+        return tiles[col][row];
+    }
+
+    public Tile getTile(int q , int r) {
+        int col = q + (r - (r & 1)) / 2;
+        int row = r;
+        return getTileOffSet(col, row);
+    }
+
+    public boolean isInBounds(int q, int r) {
+        int col = q + (r - (r & 1)) / 2;
+        int row = r;
+        return col >= 0 && col < width && row >= 0 && row < height;
     }
 }
