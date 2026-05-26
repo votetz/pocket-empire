@@ -37,7 +37,6 @@ public class TurnManager {
         }
 
         for (Unit unit : faction.getUnits()) {
-            unit.restoreStamina(unit.getMaxStamina());
             unit.update();
 
             if (faction.isAI()) {
