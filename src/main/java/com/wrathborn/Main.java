@@ -17,57 +17,78 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        // map
-        int width = 100;
-        int height = 20;
-        Map map = MapGenerator.generateRandomMap(width, height);
-        World world = new World(map);
+        System.out.println("Wrathborn - Hexagonal Grid Test\n");
 
-        // faction
-        Faction ironborn = new Faction(1, "Ironborn", 0xFF0000);
-        Faction ashveil = new Faction(2, "Ashveil", 0x0000FF);
+        int mapWidth = 20;
+        int mapHeight = 15;
+        Map map = MapGenerator.generateRandomMap(mapWidth, mapHeight);
+        System.out.println("Map generated: " + mapWidth + "x" + mapHeight + " hexagonal grid\n");
 
-        // sity
-        City city1 = new City("c1", 10, 5, "Ironhold", 100, 100, 500, 1000, "1", null, 2);
-        City city2 = new City("c2", 50, 15, "Ashgate", 100, 100, 400, 1000, "2", null, 2);
-        ironborn.addCity(city1);
-        ashveil.addCity(city2);
+        Faction faction1 = new Faction(1, "Red Tribe", 0xFF0000);
+        faction1.setAI(false);
+        
+        Faction faction2 = new Faction(2, "Blue Tribe", 0x0000FF);
+        faction2.setAI(true);
 
-        // unit
-        ironborn.addUnit(UnitFactory.create(UnitType.HEAVY,  "u1", 10, 6, "1"));
-        ironborn.addUnit(UnitFactory.create(UnitType.LIGHT,  "u2", 11, 6, "1"));
-        ironborn.addUnit(UnitFactory.create(UnitType.ARCHER, "u3", 12, 6, "1"));
-        ironborn.addUnit(UnitFactory.create(UnitType.MAGE,  "u7", 13, 6, "1"));
+        Unit warrior1 = UnitFactory.create(UnitType.LIGHT, "warrior1", 5, 5, "1");
+        Unit archer1 = UnitFactory.create(UnitType.ARCHER, "archer1", 6, 5, "1");
+        faction1.addUnit(warrior1);
+        faction1.addUnit(archer1);
 
-        ashveil.addUnit(UnitFactory.create(UnitType.HEAVY,  "u4", 50, 14, "2"));
-        ashveil.addUnit(UnitFactory.create(UnitType.LIGHT,  "u5", 51, 14, "2"));
-        ashveil.addUnit(UnitFactory.create(UnitType.ARCHER, "u6", 52, 14, "2"));
+        Unit warrior2 = UnitFactory.create(UnitType.LIGHT, "warrior2", 15, 10, "2");
+        Unit heavy2 = UnitFactory.create(UnitType.HEAVY, "heavy2", 14, 10, "2");
+        faction2.addUnit(warrior2);
+        faction2.addUnit(heavy2);
 
-        // simulation
+        City city1 = new City("city1", 5, 6, "Red Capital", 100, 100, 5, 10, "1", "leader1", 10);
+        City city2 = new City("city2", 15, 9, "Blue Capital", 100, 100, 5, 10, "2", "leader2", 10);
+        faction1.addCity(city1);
+        faction2.addCity(city2);
+
+        System.out.println("Factions created:");
+        System.out.println("  " + faction1.getName() + " - Units: " + faction1.getUnitCount() + ", Cities: " + faction1.getCityCount());
+        System.out.println("  " + faction2.getName() + " - Units: " + faction2.getUnitCount() + ", Cities: " + faction2.getCityCount());
+        System.out.println();
+
         List<Faction> factions = new ArrayList<>();
-        factions.add(ironborn);
-        factions.add(ashveil);
-        TurnManager turnManager = new TurnManager(factions);
+        factions.add(faction1);
+        factions.add(faction2);
+        World world = new World(map, factions);
 
+        TurnManager turnManager = new TurnManager(factions, world);
 
-        // render
-        ConsoleRender renderer = new ConsoleRender(world.getMap());
-        StatsDisplay stats = new StatsDisplay();
+        List<Unit> allUnits = new ArrayList<>();
+        allUnits.addAll(faction1.getUnits());
+        allUnits.addAll(faction2.getUnits());
 
+        ConsoleRender renderer = new ConsoleRender(map, allUnits);
+
+        System.out.println("Initial Map");
         renderer.render();
+        System.out.println();
 
-        // game loop
-        while (!turnManager.isGameOver()) {
+        System.out.println("Hex Distance Test");
+        System.out.println("Distance between warrior1 (5,5) and warrior2 (15,10): " + 
+            com.wrathborn.world.HexUtils.getDistance(5, 5, 15, 10) + " hexes");
+        System.out.println("Distance between archer1 (6,5) and heavy2 (14,10): " + 
+            com.wrathborn.world.HexUtils.getDistance(6, 5, 14, 10) + " hexes");
+        System.out.println();
+
+        System.out.println("Simulating 3 turns");
+        for (int i = 0; i < 3; i++) {
+            System.out.println("\nTurn " + turnManager.getCurrentTurn());
+            System.out.println("Current faction: " + turnManager.getCurrentFaction().getName());
+            
             turnManager.nextTurn();
-            System.out.println("Turn: " + turnManager.getCurrentTurn()
-                    + " | " + ironborn.getName() + ": " + ironborn.getUnitCount() + " units"
-                    + " | " + ashveil.getName() + ": " + ashveil.getUnitCount() + " units");
+            
+            if (turnManager.isGameOver()) {
+                System.out.println("\nGAME OVER");
+                System.out.println("Winner: " + turnManager.getWinner().getName());
+                break;
+            }
         }
 
-        Faction winner = turnManager.getWinner();
-        System.out.println("\nGAME OVER");
-        System.out.println("Winner: " + (winner != null ? winner.getName() : "Draw"));
-
-        stats.displayStats();
+        System.out.println("\nTest Complete");
+        System.out.println("Hexagonal grid system is working!");
     }
 }

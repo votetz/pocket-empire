@@ -6,3 +6,5 @@ public enum MovementType {
     WATER,
     AMPHIBIOUS
 }
+
+// TODO: Don't forget to specify this in the unit fields
