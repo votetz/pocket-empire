@@ -1,7 +1,7 @@
 package com.wrathborn.entities;
 
 public class City extends Entity {
-    private String name;
+    private final String name;
     private int hp;
     private int maxHp;
     private int population;
@@ -10,8 +10,8 @@ public class City extends Entity {
     private String leaderId;
     private int production;
 
-    public City(String id, int x, int y, String name, int hp, int maxHp, int population, int maxPopulation, String factionId, String leaderId, int production) {
-        super(id, x, y);
+    public City(String id, int q, int r, String name, int hp, int maxHp, int population, int maxPopulation, String factionId, String leaderId, int production) {
+        super(id, q, r);
         this.name = name;
         this.hp = hp;
         this.maxHp = maxHp;
@@ -30,12 +30,16 @@ public class City extends Entity {
         return maxHp;
     }
 
+    public void setMaxHp(int maxHp) {
+        this.maxHp = maxHp;
+    }
+
     public String getFactionId() {
         return factionId;
     }
 
-    public String setFactionId() {
-        return factionId;
+    public void setFactionId(String factionId) {
+        this.factionId = factionId;
     }
 
     public int getHp() {
@@ -58,12 +62,20 @@ public class City extends Entity {
         return maxPopulation;
     }
 
+    public void setMaxPopulation(int maxPopulation) {
+        this.maxPopulation = maxPopulation;
+    }
+
     public String getLeaderId() {
         return leaderId;
     }
 
     public int getProduction() {
         return production;
+    }
+
+    public void setProduction(int production) {
+        this.production = production;
     }
 
     @Override
@@ -77,5 +89,9 @@ public class City extends Entity {
 
     public void takeDamage(int damage) {
         hp = Math.max(0, hp - damage);
+    }
+
+    public void restoreHp(int amount) {
+        hp = Math.min(maxHp, hp + amount);
     }
 }

@@ -1,5 +1,6 @@
 package com.wrathborn.entities;
 
+import com.wrathborn.fsm.IdleState;
 import com.wrathborn.fsm.State;
 import com.wrathborn.fsm.UnitState;
 import com.wrathborn.units.MovementType;
@@ -7,19 +8,19 @@ import com.wrathborn.world.World;
 
 public class Unit extends Entity{
     private int hp;
-    private int maxHp;
+    private final int maxHp;
     private int attack;
     private int defense;
     private int speed;
-    private int range;
-    private int cost;
-    private String factionId;
+    private final int range;
+    private final int cost;
+    private final String factionId;
     private UnitState unitState;
     private State currentState;
 
 
-    public Unit(String id, int x, int y, int hp, int maxHp, int attack, int defense, int speed, int range, int cost, String factionId, UnitState unitState) {
-        super(id, x, y);
+    public Unit(String id, int q, int r, int hp, int maxHp, int attack, int defense, int speed, int range, int cost, String factionId, UnitState unitState) {
+        super(id, q, r);
         this.hp = hp;
         this.maxHp = maxHp;
         this.attack = attack;
@@ -29,6 +30,7 @@ public class Unit extends Entity{
         this.cost = cost;
         this.factionId = factionId;
         this.unitState = unitState;
+        this.currentState = new IdleState();
     }
 
     public int getHp() {
@@ -65,6 +67,14 @@ public class Unit extends Entity{
 
     public UnitState getUnitState() {
         return unitState;
+    }
+
+    public void setCurrentState(State state) {
+        this.currentState = state;
+    }
+
+    public State getCurrentState() {
+        return currentState;
     }
 
     public void setUnitState(UnitState unitState) {

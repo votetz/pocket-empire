@@ -1,38 +1,38 @@
 package com.wrathborn.entities;
 
 public abstract class Entity {
-    protected String id;
-    protected int x;
-    protected int y;
+    protected final String id;
+    protected int q;
+    protected int r;
 
-    public Entity(String id, int x, int y) {
+    public Entity(String id, int q, int r) {
         this.id = id;
-        this.x = x;
-        this.y = y;
+        this.q = q;
+        this.r = r;
     }
     public String getId() {
         return id;
     }
 
-    public int getX() {
-        return x;
+    public int getQ() {
+        return q;
     }
 
-    public int getY() {
-        return y;
+    public int getR() {
+        return r;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public void setQ(int q) {
+        this.q = q;
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public void setR(int r) {
+        this.r = r;
     }
 
-    public void move(int dx, int dy) {
-        x += dx;
-        y += dy;
+    public void move(int dq, int dr) {
+        q += dq;
+        r += dr;
     }
 
     public abstract void update();
