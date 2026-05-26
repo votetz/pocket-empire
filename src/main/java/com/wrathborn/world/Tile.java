@@ -3,27 +3,38 @@ package com.wrathborn.world;
 import com.wrathborn.tiles.TileType;
 
 public class Tile {
-    private final int x;
-    private final int y;
-    private final TileType type;
+    private int q;  // axial coordinate q
+    private int r;  // axial coordinate r
+    private TileType type;
 
-    public Tile(int x, int y, TileType type) {
-        this.x = x;
-        this.y = y;
+    public Tile(int q, int r, TileType type) {
+        this.q = q;
+        this.r = r;
         this.type = type;
     }
 
-    public int getX() {
-        return x;
+    public int getQ() {
+        return q;
     }
 
-    public int getY() {
-        return y;
+    public int getR() {
+        return r;
     }
 
     public TileType getType() {
         return type;
     }
+
+    // Cube coordinates для обчислень
+    public int cubeX() {
+        return q;
+    }
+
+    public int cubeY() {
+        return -q - r;
+    }
+
+    public int cubeZ() {
+        return r;
+    }
 }
-
-
