@@ -3,15 +3,19 @@ package com.wrathborn.simulation;
 import com.wrathborn.entities.Faction;
 import com.wrathborn.entities.Unit;
 import com.wrathborn.entities.City;
+import com.wrathborn.world.World;
+
 import java.util.List;
 
 public class TurnManager {
     private int currentTurn;
     private int currentFactionIndex;
     private List<Faction> factions;
+    private World world;
 
-    public TurnManager(List<Faction> factions) {
+    public TurnManager(List<Faction> factions, World world) {
         this.factions = factions;
+        this.world = world;
         this.currentTurn = 1;
         this.currentFactionIndex = 0;
     }
@@ -35,6 +39,10 @@ public class TurnManager {
         for (Unit unit : faction.getUnits()) {
             unit.restoreStamina(unit.getMaxStamina());
             unit.update();
+
+            if (faction.isAI()) {
+                unit.updateAI(world);
+            }
         }
 
         for (City city : faction.getCities()) {
