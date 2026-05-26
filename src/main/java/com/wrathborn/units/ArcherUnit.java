@@ -6,14 +6,12 @@ import com.wrathborn.fsm.UnitState;
 public class ArcherUnit extends Unit {
     public ArcherUnit(String id, int x, int y, String factionId) {
         super(id, x, y,
-                60,
-                60,
-                18,
+                10,
+                10,
                 3,
+                1,
                 2,
-                4,
-                100,
-                100,
+                2,
                 factionId,
                 UnitState.IDLE
                 );

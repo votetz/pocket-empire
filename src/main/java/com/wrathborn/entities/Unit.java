@@ -1,17 +1,23 @@
 package com.wrathborn.entities;
 
+import com.wrathborn.fsm.State;
+import com.wrathborn.fsm.UnitState;
+import com.wrathborn.units.MovementType;
+import com.wrathborn.world.World;
+
 public class Unit extends Entity{
     private int hp;
     private int maxHp;
     private int attack;
     private int defense;
     private int speed;
-    private int range;
-    private int stamina;
-    private int maxStamina;
+    private int range;;
     private String factionId;
+    private UnitState unitState;
+    private State currentState;
 
-    public Unit(String id, int x, int y, int hp, int maxHp, int attack, int defense, int speed, int range, int stamina, int maxStamina, String factionId) {
+
+    public Unit(String id, int x, int y, int hp, int maxHp, int attack, int defense, int speed, int range, String factionId, UnitState unitState) {
         super(id, x, y);
         this.hp = hp;
         this.maxHp = maxHp;
@@ -19,9 +25,8 @@ public class Unit extends Entity{
         this.defense = defense;
         this.speed = speed;
         this.range = range;
-        this.stamina = stamina;
-        this.maxStamina = maxStamina;
         this.factionId = factionId;
+        this.unitState = unitState;
     }
 
     public int getHp() {
@@ -48,21 +53,34 @@ public class Unit extends Entity{
         return range;
     }
 
-    public int getStamina() {
-        return stamina;
-    }
-
-    public int getMaxStamina() {
-        return maxStamina;
-    }
-
     public String getFactionId() {
         return factionId;
     }
 
+    public UnitState getUnitState() {
+        return unitState;
+    }
+
+    public void setUnitState(UnitState unitState) {
+        this.unitState = unitState;
+    }
+
     @Override
-    public void update(){
-        //todo update unit stats here
+    public void update(){}
+
+    public void updateAI(World world) {
+        if (currentState != null) {
+            currentState.update(this, world.getAllUnits());
+        }
+    }
+
+    public void changeState(State newState, UnitState stateEnum) {
+        if (currentState != null) {
+            currentState.exit(this);
+        }
+        this.currentState = newState;
+        this.unitState = stateEnum;
+        newState.enter(this);
     }
 
     public boolean isAlive(){
@@ -71,10 +89,6 @@ public class Unit extends Entity{
 
     public void takeDamage(int damage) {
         hp = Math.max(0, hp - damage);
-    }
-
-    public void restoreStamina(int amount) {
-        stamina = Math.min(maxStamina, stamina + amount);
     }
 
     public void restoreHp(int amount) {
