@@ -9,6 +9,7 @@ public class Faction {
     private ArrayList<Unit> units;
     private ArrayList<City> cities;
     private boolean isAlive;
+    private boolean isAI;
 
     public Faction(int id, String name, int color) {
         this.id = id;
@@ -69,5 +70,13 @@ public class Faction {
 
     public int getCityCount() {
         return cities.size();
+    }
+
+    public boolean isAI() {
+        return isAI;
+    }
+
+    public void setAI(boolean isAI) {
+        this.isAI = isAI;
     }
 }
