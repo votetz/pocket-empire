@@ -1,7 +1,10 @@
 package com.wrathborn.fsm;
 
 import com.wrathborn.entities.Unit;
+
+import java.util.Comparator;
 import java.util.List;
+import com.wrathborn.world.HexUtils;
 
 public class IdleState implements State {
 
@@ -25,8 +28,7 @@ public class IdleState implements State {
         return allUnits.stream()
                 .filter(u -> !u.getFactionId().equals(unit.getFactionId()))
                 .filter(Unit::isAlive)
-                .findFirst()
+                .min(Comparator.comparingInt(u -> HexUtils.getDistance(unit.getQ(), unit.getR(), u.getQ(), u.getR())))
                 .orElse(null);
     }
-
 }
