@@ -19,7 +19,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Wrathborn - Hexagonal Grid Test\n");
 
-        int mapWidth = 20;
+        int mapWidth = 50;
         int mapHeight = 15;
         Map map = MapGenerator.generateRandomMap(mapWidth, mapHeight);
         System.out.println("Map generated: " + mapWidth + "x" + mapHeight + " hexagonal grid\n");
@@ -89,6 +89,6 @@ public class Main {
         }
 
         System.out.println("\nTest Complete");
-        System.out.println("Hexagonal grid system is working!");
+        System.out.println("Hexagonal grid system is working");
     }
 }
