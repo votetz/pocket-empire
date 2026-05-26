@@ -10,10 +10,16 @@ public class MapGenerator {
         Tile[][] tiles = new Tile[width][height];
         Random random = new Random();
 
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                if (x == 0 || x == width - 1 || y == 0 || y == height - 1) {
-                    tiles[x][y] = TileFactory.create(x, y, TileType.OCEAN);
+        // offset
+        for (int col = 0; col < width; col++) {
+            for (int row = 0; row < height; row++) {
+                // offset to axial for tile
+                int q = col - (row - (row & 1)) / 2;
+                int r = row;
+
+                // ocean
+                if (col == 0 || col == width - 1 || row == 0 || row == height - 1) {
+                    tiles[col][row] = TileFactory.create(q, r, TileType.OCEAN);
                     continue;
                 }
 
@@ -31,7 +37,7 @@ public class MapGenerator {
                 else if (roll < 98) type = TileType.SWAMPS;
                 else                type = TileType.CAVES;
 
-                tiles[x][y] = TileFactory.create(x, y, type);
+                tiles[col][row] = TileFactory.create(q, r, type);
             }
         }
         return new Map(width, height, tiles);
