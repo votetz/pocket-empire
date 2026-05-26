@@ -17,23 +17,32 @@ public class ConsoleRender {
     }
 
     public void render() {
-        for (int y = 0; y < map.getHeight(); y++) {
-            for (int x = 0; x < map.getWidth(); x++) {
-                Tile tile = map.getTile(x, y);
-                Unit unit = getUnitAt(x, y);
+        for (int row = 0; row < map.getHeight(); row++) {
+            for (int col = 0; col < map.getWidth(); col++) {
+                // offset to axial
+                int q = col - (row - (row & 1)) / 2;
+                int r = row;
+
+                Tile tile = map.getTile(q, r);  // axial
+                Unit unit = getUnitAt(col, row);  // offset
+
                 if (unit != null) {
                     System.out.print(colorizeUnit(unit));
                 } else {
-                    System.out.print(colorize(tile, x, y));
+                    System.out.print(colorize(tile));
                 }
             }
             System.out.println();
         }
     }
 
-    private Unit getUnitAt(int x, int y) {
+    private Unit getUnitAt(int col, int row) {
+        // offset to axial
+        int q = col - (row - (row & 1)) / 2;
+        int r = row;
+
         return units.stream()
-                .filter(u -> u.getX() == x && u.getY() == y)
+                .filter(u -> u.getQ() == q && u.getR() == r)
                 .findFirst()
                 .orElse(null);
     }
@@ -47,7 +56,7 @@ public class ConsoleRender {
         return color + "U" + AnsiColor.RESET;
     }
 
-    private String colorize(Tile tile, int x, int y) {
+    private String colorize(Tile tile) {
         String color = switch (tile.getType()) {
             case GRASS, PLAINS         -> AnsiColor.GREEN;
             case FOREST, JUNGLE, TAIGA -> AnsiColor.DARK_GREEN;
