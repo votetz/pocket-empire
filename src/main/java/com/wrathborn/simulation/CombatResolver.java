@@ -2,6 +2,7 @@ package com.wrathborn.simulation;
 
 import com.wrathborn.entities.Unit;
 import com.wrathborn.entities.City;
+import com.wrathborn.world.HexUtils;
 
 public class CombatResolver {
     public static void resolveCombat(Unit attacker, Unit defender) {
@@ -25,7 +26,7 @@ public class CombatResolver {
     }
 
     private static int calculateDistance(Unit a, Unit b) {
-        return Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY());
+        return HexUtils.getDistance(a.getQ(), a.getR(), b.getQ(), b.getR());
     }
 
 }
