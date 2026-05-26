@@ -11,13 +11,14 @@ public class Unit extends Entity{
     private int attack;
     private int defense;
     private int speed;
-    private int range;;
+    private int range;
+    private int cost;
     private String factionId;
     private UnitState unitState;
     private State currentState;
 
 
-    public Unit(String id, int x, int y, int hp, int maxHp, int attack, int defense, int speed, int range, String factionId, UnitState unitState) {
+    public Unit(String id, int x, int y, int hp, int maxHp, int attack, int defense, int speed, int range, int cost, String factionId, UnitState unitState) {
         super(id, x, y);
         this.hp = hp;
         this.maxHp = maxHp;
@@ -25,6 +26,7 @@ public class Unit extends Entity{
         this.defense = defense;
         this.speed = speed;
         this.range = range;
+        this.cost = cost;
         this.factionId = factionId;
         this.unitState = unitState;
     }
@@ -51,6 +53,10 @@ public class Unit extends Entity{
 
     public int getRange() {
         return range;
+    }
+
+    public int getCost() {
+        return cost;
     }
 
     public String getFactionId() {

@@ -12,6 +12,7 @@ public class HeavyUnit extends Unit {
                 4,
                 1,
                 1,
+                5,
                 factionId,
                 UnitState.IDLE
         );

@@ -12,6 +12,7 @@ public class LightUnit extends Unit {
                 2,
                 2,
                 1,
+                2,
                 factionId,
                 UnitState.IDLE
         );

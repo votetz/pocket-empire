@@ -12,6 +12,7 @@ public class ArcherUnit extends Unit {
                 1,
                 2,
                 2,
+                3,
                 factionId,
                 UnitState.IDLE
                 );

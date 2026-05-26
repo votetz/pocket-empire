@@ -12,6 +12,7 @@ public class MageUnit extends Unit {
                 1,
                 1,
                 2,
+                5,
                 factionId,
                 UnitState.IDLE
         );
