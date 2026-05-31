@@ -1,11 +1,13 @@
 package com.wrathborn.world;
 
-import lombok.Getter;
-import lombok.AllArgsConstructor;
+import lombok.*;
 import com.wrathborn.tiles.TileType;
 
-@Getter
+@Data
+@Builder
+@NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class Tile {
     private int q;  // axial coordinate q
     private int r;  // axial coordinate r
