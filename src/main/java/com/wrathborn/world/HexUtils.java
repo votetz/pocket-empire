@@ -25,4 +25,14 @@ public class HexUtils {
         int distance = (Math.abs(x1 - x2) + Math.abs(y1 - y2) + Math.abs(z1 - z2)) / 2;
         return distance;
     }
+
+    public static List<int[]> getNeighbors(int q, int r) {
+        List<int[]> neighbors = new ArrayList<>();
+        for (int[] direction : DIRECTIONS) {
+            int neighborQ = q + direction[0];
+            int neighborR = r + direction[1];
+            neighbors.add(new int[]{neighborQ, neighborR});
+        }
+        return neighbors;
+    }
 }
