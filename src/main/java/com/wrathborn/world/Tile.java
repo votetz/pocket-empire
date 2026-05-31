@@ -1,31 +1,17 @@
 package com.wrathborn.world;
 
+import lombok.Getter;
+import lombok.AllArgsConstructor;
 import com.wrathborn.tiles.TileType;
 
+@Getter
+@AllArgsConstructor
 public class Tile {
     private int q;  // axial coordinate q
     private int r;  // axial coordinate r
     private TileType type;
 
-    public Tile(int q, int r, TileType type) {
-        this.q = q;
-        this.r = r;
-        this.type = type;
-    }
-
-    public int getQ() {
-        return q;
-    }
-
-    public int getR() {
-        return r;
-    }
-
-    public TileType getType() {
-        return type;
-    }
-
-    // Cube coordinates для обчислень
+    // Cube coordinates for 3D rendering
     public int cubeX() {
         return q;
     }

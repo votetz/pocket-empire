@@ -1,7 +1,6 @@
 package com.wrathborn.fsm;
 
 import com.wrathborn.entities.Unit;
-
 import java.util.Comparator;
 import java.util.List;
 import com.wrathborn.world.HexUtils;

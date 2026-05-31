@@ -1,11 +1,14 @@
 package com.wrathborn.units;
 
+import lombok.Data;
+
+@Data
 public class UnitStats {
-    public String type;
-    public int hp;
-    public int attack;
-    public int defense;
-    public int speed;
-    public int range;
-    public int cost;
+    private String type;
+    private int hp;
+    private int attack;
+    private int defense;
+    private int speed;
+    private int range;
+    private int cost;
 }

@@ -16,11 +16,11 @@ public class UnitConfigLoader {
     private static void loadConfigs() {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            InputStream is = UnitConfigLoader.class.getResourceAsStream("/Units.json");
+            InputStream is = UnitConfigLoader.class.getResourceAsStream("/units.json");
             UnitStats[] units = mapper.readValue(is, UnitStats[].class);
 
             for (UnitStats unit : units) {
-                configs.put(unit.type, unit);
+                configs.put(unit.getType(), unit);
             }
         } catch (Exception e) {
             e.printStackTrace();

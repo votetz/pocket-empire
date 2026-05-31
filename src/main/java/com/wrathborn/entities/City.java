@@ -1,5 +1,8 @@
 package com.wrathborn.entities;
 
+import lombok.Getter;
+
+@Getter
 public class City extends Entity {
     private final String name;
     private int hp;
@@ -22,56 +25,24 @@ public class City extends Entity {
         this.production = production;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public int getMaxHp() {
-        return maxHp;
-    }
-
     public void setMaxHp(int maxHp) {
         this.maxHp = maxHp;
-    }
-
-    public String getFactionId() {
-        return factionId;
     }
 
     public void setFactionId(String factionId) {
         this.factionId = factionId;
     }
 
-    public int getHp() {
-        return hp;
-    }
-
     public void setHp(int hp) {
         this.hp = hp;
-    }
-
-    public int getPopulation() {
-        return population;
     }
 
     public void setPopulation(int population) {
         this.population = population;
     }
 
-    public int getMaxPopulation() {
-        return maxPopulation;
-    }
-
     public void setMaxPopulation(int maxPopulation) {
         this.maxPopulation = maxPopulation;
-    }
-
-    public String getLeaderId() {
-        return leaderId;
-    }
-
-    public int getProduction() {
-        return production;
     }
 
     public void setProduction(int production) {

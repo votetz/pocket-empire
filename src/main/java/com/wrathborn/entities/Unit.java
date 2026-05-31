@@ -2,9 +2,13 @@ package com.wrathborn.entities;
 
 import com.wrathborn.fsm.IdleState;
 import com.wrathborn.fsm.State;
-import com.wrathborn.fsm.UnitState;import com.wrathborn.units.UnitStats;
+import com.wrathborn.fsm.UnitState;
+import com.wrathborn.units.UnitStats;
 import com.wrathborn.world.World;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class Unit extends Entity {
     private int hp;
     private final int maxHp;
@@ -14,8 +18,8 @@ public class Unit extends Entity {
     private final int range;
     private final int cost;
     private final String factionId;
-    private UnitState unitState;
-    private State currentState;
+    @Setter private UnitState unitState;
+    @Setter private State currentState;
 
     protected Unit(Builder builder) {
         super(builder.id, builder.q, builder.r);
@@ -90,12 +94,12 @@ public static class Builder {
     }
 
     public Builder config(UnitStats stats) {
-        hp(stats.hp);
-        attack(stats.attack);
-        defense(stats.defense);
-        speed(stats.speed);
-        range(stats.range);
-        cost(stats.cost);
+        hp(stats.getHp());
+        attack(stats.getAttack());
+        defense(stats.getDefense());
+        speed(stats.getSpeed());
+        range(stats.getRange());
+        cost(stats.getCost());
         return this;
     }
 
@@ -104,54 +108,6 @@ public static class Builder {
     }
 }
 
-
-    public int getHp() {
-        return hp;
-    }
-
-    public int getMaxHp() {
-        return maxHp;
-    }
-
-    public int getAttack() {
-        return attack;
-    }
-
-    public int getDefense() {
-        return defense;
-    }
-
-    public int getSpeed() {
-        return speed;
-    }
-
-    public int getRange() {
-        return range;
-    }
-
-    public int getCost() {
-        return cost;
-    }
-
-    public String getFactionId() {
-        return factionId;
-    }
-
-    public UnitState getUnitState() {
-        return unitState;
-    }
-
-    public void setCurrentState(State state) {
-        this.currentState = state;
-    }
-
-    public State getCurrentState() {
-        return currentState;
-    }
-
-    public void setUnitState(UnitState unitState) {
-        this.unitState = unitState;
-    }
 
     @Override
     public void update(){}
