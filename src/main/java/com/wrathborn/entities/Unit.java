@@ -2,11 +2,10 @@ package com.wrathborn.entities;
 
 import com.wrathborn.fsm.IdleState;
 import com.wrathborn.fsm.State;
-import com.wrathborn.fsm.UnitState;
-import com.wrathborn.units.MovementType;
+import com.wrathborn.fsm.UnitState;import com.wrathborn.units.UnitStats;
 import com.wrathborn.world.World;
 
-public class Unit extends Entity{
+public class Unit extends Entity {
     private int hp;
     private final int maxHp;
     private int attack;
@@ -18,20 +17,93 @@ public class Unit extends Entity{
     private UnitState unitState;
     private State currentState;
 
-
-    public Unit(String id, int q, int r, int hp, int maxHp, int attack, int defense, int speed, int range, int cost, String factionId, UnitState unitState) {
-        super(id, q, r);
-        this.hp = hp;
-        this.maxHp = maxHp;
-        this.attack = attack;
-        this.defense = defense;
-        this.speed = speed;
-        this.range = range;
-        this.cost = cost;
-        this.factionId = factionId;
-        this.unitState = unitState;
+    protected Unit(Builder builder) {
+        super(builder.id, builder.q, builder.r);
+        this.hp = builder.hp;
+        this.maxHp = builder.maxHp;
+        this.attack = builder.attack;
+        this.defense = builder.defense;
+        this.speed = builder.speed;
+        this.range = builder.range;
+        this.cost = builder.cost;
+        this.factionId = builder.factionId;
+        this.unitState = builder.unitState;
         this.currentState = new IdleState();
     }
+
+public static class Builder {
+    private final String id;
+    private final int q;
+    private final int r;
+    private final String factionId;
+
+    private int hp = 10;
+    private int maxHp = hp;
+    private int attack = 2;
+    private int defense = 1;
+    private int speed = 1;
+    private int range = 1;
+    private int cost = 1;
+    private UnitState unitState = UnitState.IDLE;
+
+    public Builder(String id, int q, int r, String factionId) {
+        this.id = id;
+        this.q = q;
+        this.r = r;
+        this.factionId = factionId;
+}
+
+    public Builder hp(int hp) {
+        this.hp = hp;
+        this.maxHp = hp;
+        return this;
+    }
+
+    public Builder attack(int attack){
+       this.attack = attack;
+       return this;
+    }
+
+    public Builder defense(int defense){
+       this.defense = defense;
+       return this;
+    }
+
+    public Builder speed(int speed){
+       this.speed = speed;
+       return this;
+    }
+
+    public Builder range(int range){
+       this.range = range;
+       return this;
+    }
+
+    public Builder cost(int cost){
+       this.cost = cost;
+       return this;
+    }
+
+    public Builder unitState(UnitState unitState){
+       this.unitState = unitState;
+       return this;
+    }
+
+    public Builder config(UnitStats stats) {
+        hp(stats.hp);
+        attack(stats.attack);
+        defense(stats.defense);
+        speed(stats.speed);
+        range(stats.range);
+        cost(stats.cost);
+        return this;
+    }
+
+    public Unit build(){
+       return new Unit(this);
+    }
+}
+
 
     public int getHp() {
         return hp;
