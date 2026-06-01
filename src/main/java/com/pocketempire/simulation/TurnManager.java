@@ -42,7 +42,7 @@ public class TurnManager {
 
         // find path to target
         List<Node> path = Pathfinder.findPath(
-                world.getMap(),
+                world,
                 unit.getQ(), unit.getR(),
                 target.getQ(), target.getR(),
                 unit
@@ -82,6 +82,7 @@ public class TurnManager {
             }
 
             moveUnitTowardEnemy(unit, faction);
+            unit.getCurrentState().update(unit, world.getAllUnits());
         }
 
         for (City city : faction.getCities()) {

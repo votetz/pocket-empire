@@ -3,7 +3,7 @@ package com.pocketempire.pathfinding;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.world.Tile;
-import com.pocketempire.world.Map;
+import com.pocketempire.world.World;
 
 import java.util.*;
 import lombok.Getter;
@@ -32,7 +32,7 @@ public class Pathfinder {
         }
     }
 
-    public static List<Node> findPath(Map map, int startQ, int startR, int targetQ, int targetR, Unit unit) {
+    public static List<Node> findPath(World world, int startQ, int startR, int targetQ, int targetR, Unit unit) {
         PriorityQueue<Node> openSet = new PriorityQueue<>();
         Set<Point> closedSet = new HashSet<>();
 
@@ -60,11 +60,13 @@ public class Pathfinder {
             for (int[] neighbor : HexUtils.getNeighbors(current.q, current.r)) {
                 int nq = neighbor[0], nr = neighbor[1];
 
-                if (!map.isInBounds(nq, nr)) continue;
+                if (!world.getMap().isInBounds(nq, nr)) continue;
                 if (closedSet.contains(new Point(nq, nr))) continue;
 
-                Tile tile = map.getTile(nq, nr);
+                Tile tile = world.getMap().getTile(nq, nr);
                 if (tile == null || tile.getType().isBlocksMovement()) continue;
+
+                if (isOccupied(world, nq, nr, unit)) continue;
 
                 double stepCost = 1.0 / tile.getType().getMovementSpeed();
                 double newG = current.g + stepCost;
@@ -78,6 +80,15 @@ public class Pathfinder {
             return buildPath(bestNode);
         }
         return Collections.emptyList();
+    }
+
+    private static boolean isOccupied(World world, int q, int r, Unit self) {
+        for (Unit u : world.getAllUnits()) {
+            if (u != self && u.isAlive() && u.getQ() == q && u.getR() == r) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static List<Node> buildPath(Node end) {

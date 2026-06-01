@@ -8,10 +8,21 @@ public class CombatResolver {
     public static void resolveCombat(Unit attacker, Unit defender) {
         int damageToDefender = calculateDamage(attacker.getAttack(), defender.getDefense());
         defender.takeDamage(damageToDefender);
+        System.out.println(attacker.getId() + " deals " + damageToDefender + " damage to " + defender.getId()
+                + " (" + defender.getHp() + "/" + defender.getMaxHp() + " HP)");
 
         if (defender.isAlive() && defender.getRange() >= calculateDistance(attacker, defender)) {
             int damageToAttacker = calculateDamage(defender.getAttack(), attacker.getDefense());
             attacker.takeDamage(damageToAttacker);
+            System.out.println(defender.getId() + " counter-attacks for " + damageToAttacker + " damage to "
+                    + attacker.getId() + " (" + attacker.getHp() + "/" + attacker.getMaxHp() + " HP)");
+        }
+
+        if (!defender.isAlive()) {
+            System.out.println(defender.getId() + " has been destroyed!");
+        }
+        if (!attacker.isAlive()) {
+            System.out.println(attacker.getId() + " has been destroyed!");
         }
     }
 

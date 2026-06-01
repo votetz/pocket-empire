@@ -16,12 +16,14 @@ public class IdleState implements State {
     public void update(Unit unit, List<Unit> allUnits) {
         Unit enemy = findNearestEnemy(unit, allUnits);
         if (enemy != null) {
-            unit.setUnitState(UnitState.ATTACKING);
+            unit.changeState(new AttackState(), UnitState.ATTACKING);
         }
     }
 
     @Override
-    public void exit(Unit unit) {}
+    public void exit(Unit unit) {
+
+    }
 
     private Unit findNearestEnemy(Unit unit, List<Unit> allUnits) {
         return allUnits.stream()
