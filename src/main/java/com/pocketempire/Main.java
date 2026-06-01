@@ -74,13 +74,16 @@ public class Main {
             com.pocketempire.world.HexUtils.getDistance(6, 5, 14, 10) + " hexes");
         System.out.println();
 
-        System.out.println("Simulating 10 turns");
-        for (int i = 0; i < 10; i++) {
+        System.out.println("Simulating 20 turns");
+        for (int i = 0; i < 20; i++) {
             System.out.println("\nTurn " + turnManager.getCurrentTurn());
             System.out.println("Current faction: " + turnManager.getCurrentFaction().getName());
             
             turnManager.nextTurn();
 
+            allUnits.clear();
+            allUnits.addAll(faction1.getUnits());
+            allUnits.addAll(faction2.getUnits());
             renderer.render();
             
             if (turnManager.isGameOver()) {
