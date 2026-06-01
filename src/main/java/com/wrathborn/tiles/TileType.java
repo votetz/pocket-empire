@@ -1,5 +1,8 @@
 package com.wrathborn.tiles;
 
+import lombok.Getter;
+
+@Getter
 public enum TileType {
     // terrestrial biomes
     GRASS   (1.0, false, '.'),
