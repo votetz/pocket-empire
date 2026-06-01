@@ -1,0 +1,20 @@
+package com.pocketempire.units;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class UnitStats {
+    private String type;
+    private int hp;
+    private int attack;
+    private int defense;
+    private int speed;
+    private int range;
+    private int cost;
+}
