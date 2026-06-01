@@ -74,12 +74,14 @@ public class Main {
             com.wrathborn.world.HexUtils.getDistance(6, 5, 14, 10) + " hexes");
         System.out.println();
 
-        System.out.println("Simulating 3 turns");
-        for (int i = 0; i < 3; i++) {
+        System.out.println("Simulating 10 turns");
+        for (int i = 0; i < 10; i++) {
             System.out.println("\nTurn " + turnManager.getCurrentTurn());
             System.out.println("Current faction: " + turnManager.getCurrentFaction().getName());
             
             turnManager.nextTurn();
+
+            renderer.render();
             
             if (turnManager.isGameOver()) {
                 System.out.println("\nGAME OVER");
