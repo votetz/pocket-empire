@@ -4,6 +4,8 @@ import com.wrathborn.entities.Faction;
 import com.wrathborn.entities.Unit;
 import com.wrathborn.entities.City;
 import com.wrathborn.world.World;
+import com.wrathborn.pathfinding.Pathfinder;
+import com.wrathborn.pathfinding.Pathfinder.Node;
 
 import java.util.List;
 
@@ -18,6 +20,42 @@ public class TurnManager {
         this.world = world;
         this.currentTurn = 1;
         this.currentFactionIndex = 0;
+    }
+
+    private void moveUnitTowardEnemy(Unit unit, Faction faction) {
+        Unit target = null;
+        int minDist = Integer.MAX_VALUE;
+
+        for (Faction other : factions) {
+            if (other == faction || !other.isAlive()) continue;
+            for (Unit enemy : other.getUnits()) {
+                int dist = com.wrathborn.world.HexUtils.getDistance(
+                        unit.getQ(), unit.getR(), enemy.getQ(), enemy.getR());
+                if (dist < minDist) {
+                    minDist = dist;
+                    target = enemy;
+                }
+            }
+        }
+
+        if (target == null) return;
+
+        // find path to target
+        List<Node> path = Pathfinder.findPath(
+                world.getMap(),
+                unit.getQ(), unit.getR(),
+                target.getQ(), target.getR(),
+                unit
+        );
+
+        // make unit move to the first node in the path
+        if (path.size() > 1) {
+            Node next = path.get(1);
+            int dq = next.getQ() - unit.getQ();
+            int dr = next.getR() - unit.getR();
+            unit.move(dq, dr);
+            System.out.println(unit.getId() + " moved to (" + unit.getQ() + "," + unit.getR() + ")");
+        }
     }
 
     public void nextTurn() {
@@ -42,6 +80,8 @@ public class TurnManager {
             if (faction.isAI()) {
                 unit.updateAI(world);
             }
+
+            moveUnitTowardEnemy(unit, faction);
         }
 
         for (City city : faction.getCities()) {
