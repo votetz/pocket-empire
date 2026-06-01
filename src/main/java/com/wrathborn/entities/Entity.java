@@ -1,5 +1,8 @@
 package com.wrathborn.entities;
 
+import lombok.Getter;
+
+@Getter
 public abstract class Entity {
     protected final String id;
     protected int q;
@@ -9,17 +12,6 @@ public abstract class Entity {
         this.id = id;
         this.q = q;
         this.r = r;
-    }
-    public String getId() {
-        return id;
-    }
-
-    public int getQ() {
-        return q;
-    }
-
-    public int getR() {
-        return r;
     }
 
     public void setQ(int q) {
