@@ -126,7 +126,7 @@ public static class Builder {
 
     public void updateAI(World world) {
         if (currentState != null) {
-            currentState.update(this, world.getAllUnits());
+            currentState.update(this, world);
         }
     }
 
