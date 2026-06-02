@@ -1,10 +1,10 @@
 package com.pocketempire.fsm;
 
 import com.pocketempire.entities.Unit;
-import java.util.List;
+import com.pocketempire.world.World;
 
 public interface State {
     void enter(Unit unit);
-    void update(Unit unit, List<Unit> allUnits);
+    void update(Unit unit, World world);
     void exit(Unit unit);
 }
