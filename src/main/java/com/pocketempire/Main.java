@@ -25,9 +25,9 @@ public class Main {
         System.out.println("Map generated: " + mapWidth + "x" + mapHeight + " hexagonal grid\n");
 
         Faction faction1 = new Faction(1, "Red Tribe", 0xFF0000);
-        faction1.setAI(false);
+        faction1.setAI(true);
         
-        Faction faction2 = new Faction(2, "Blue Tribe", 0x0000FF);
+        Faction faction2 = new Faction(2, "Purple Tribe", 0x0000FF);
         faction2.setAI(true);
 
         Unit warrior1 = UnitFactory.create(UnitType.LIGHT, "warrior1", 5, 5, "1");
@@ -61,7 +61,11 @@ public class Main {
         allUnits.addAll(faction1.getUnits());
         allUnits.addAll(faction2.getUnits());
 
-        ConsoleRender renderer = new ConsoleRender(map, allUnits);
+        List<City> allCities = new ArrayList<>();
+        allCities.addAll(faction1.getCities());
+        allCities.addAll(faction2.getCities());
+
+        ConsoleRender renderer = new ConsoleRender(map, allUnits, allCities);
 
         System.out.println("Initial Map");
         renderer.render();
@@ -84,6 +88,9 @@ public class Main {
             allUnits.clear();
             allUnits.addAll(faction1.getUnits());
             allUnits.addAll(faction2.getUnits());
+            allCities.clear();
+            allCities.addAll(faction1.getCities());
+            allCities.addAll(faction2.getCities());
             renderer.render();
             
             if (turnManager.isGameOver()) {
