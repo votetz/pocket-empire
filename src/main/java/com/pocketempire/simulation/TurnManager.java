@@ -4,6 +4,7 @@ import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.entities.City;
 import com.pocketempire.world.World;
+import com.pocketempire.world.Tile;
 import com.pocketempire.pathfinding.Pathfinder;
 import com.pocketempire.pathfinding.Pathfinder.Node;
 
@@ -40,21 +41,29 @@ public class TurnManager {
 
         if (target == null) return;
 
-        // find path to target
-        List<Node> path = Pathfinder.findPath(
-                world,
-                unit.getQ(), unit.getR(),
-                target.getQ(), target.getR(),
-                unit
-        );
+        while (unit.getRemainingOD() > 0) {
+            List<Node> path = Pathfinder.findPath(
+                    world,
+                    unit.getQ(), unit.getR(),
+                    target.getQ(), target.getR(),
+                    unit
+            );
 
-        // make unit move to the first node in the path
-        if (path.size() > 1) {
+            if (path.size() <= 1) break;
+
             Node next = path.get(1);
             int dq = next.getQ() - unit.getQ();
             int dr = next.getR() - unit.getR();
+
+            Tile tile = world.getMap().getTile(next.getQ(), next.getR());
+            int cost = tile.getType().getMovementCost();
+
+            if (unit.getRemainingOD() < cost) break;
+
+            unit.spendOD(cost);
             unit.move(dq, dr);
-            System.out.println(unit.getId() + " moved to (" + unit.getQ() + "," + unit.getR() + ")");
+            System.out.println(unit.getId() + " moved to (" + unit.getQ() + "," + unit.getR()
+                    + ") OD left: " + unit.getRemainingOD());
         }
     }
 
@@ -75,6 +84,7 @@ public class TurnManager {
         }
 
         for (Unit unit : faction.getUnits()) {
+            unit.resetOD();
             unit.update();
 
             if (faction.isAI()) {

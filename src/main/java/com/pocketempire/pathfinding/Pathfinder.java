@@ -55,7 +55,7 @@ public class Pathfinder {
                 return buildPath(current);
             }
 
-            if (current.g > unit.getSpeed()) continue;
+            if (current.g > unit.getRemainingOD()) continue;
 
             for (int[] neighbor : HexUtils.getNeighbors(current.q, current.r)) {
                 int nq = neighbor[0], nr = neighbor[1];
@@ -68,7 +68,7 @@ public class Pathfinder {
 
                 if (isOccupied(world, nq, nr, unit)) continue;
 
-                double stepCost = 1.0 / tile.getType().getMovementCost();
+                int stepCost = tile.getType().getMovementCost();
                 double newG = current.g + stepCost;
                 double h = HexUtils.getDistance(nq, nr, targetQ, targetR);
 

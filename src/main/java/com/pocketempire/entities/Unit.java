@@ -20,6 +20,7 @@ public class Unit extends Entity {
     private final String factionId;
     @Setter private UnitState unitState;
     @Setter private State currentState;
+    private int remainingOD;
 
     protected Unit(Builder builder) {
         super(builder.id, builder.q, builder.r);
@@ -32,6 +33,7 @@ public class Unit extends Entity {
         this.cost = builder.cost;
         this.factionId = builder.factionId;
         this.unitState = builder.unitState;
+        this.remainingOD = builder.speed;
         this.currentState = new IdleState();
     }
 
@@ -107,6 +109,16 @@ public static class Builder {
        return new Unit(this);
     }
 }
+
+    public void resetOD() {
+        this.remainingOD = speed;
+    }
+
+    public boolean spendOD(int cost) {
+        if (remainingOD < cost) return false;
+        remainingOD -= cost;
+        return true;
+    }
 
 
     @Override
