@@ -68,7 +68,7 @@ public class Pathfinder {
 
                 if (isOccupied(world, nq, nr, unit)) continue;
 
-                double stepCost = 1.0 / tile.getType().getMovementSpeed();
+                double stepCost = 1.0 / tile.getType().getMovementCost();
                 double newG = current.g + stepCost;
                 double h = HexUtils.getDistance(nq, nr, targetQ, targetR);
 
