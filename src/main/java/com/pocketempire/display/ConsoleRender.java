@@ -2,6 +2,7 @@ package com.pocketempire.display;
 
 import com.pocketempire.display.AnsiColor;
 import com.pocketempire.entities.Unit;
+import com.pocketempire.entities.City;
 import com.pocketempire.world.Map;
 import com.pocketempire.world.Tile;
 
@@ -10,24 +11,28 @@ import java.util.List;
 public class ConsoleRender {
     private final Map map;
     private List<Unit> units;
+    private List<City> cities;
 
-    public ConsoleRender(Map map, List<Unit> units) {
+    public ConsoleRender(Map map, List<Unit> units, List<City> cities) {
         this.map = map;
         this.units = units;
+        this.cities = cities;
     }
 
     public void render() {
         for (int row = 0; row < map.getHeight(); row++) {
             for (int col = 0; col < map.getWidth(); col++) {
-                // offset to axial
                 int q = col - (row - (row & 1)) / 2;
                 int r = row;
 
-                Tile tile = map.getTile(q, r);  // axial
-                Unit unit = getUnitAt(col, row);  // offset
+                Tile tile = map.getTile(q, r);
+                Unit unit = getUnitAt(col, row);
+                City city = getCityAt(col, row);
 
                 if (unit != null) {
                     System.out.print(colorizeUnit(unit));
+                } else if (city != null) {
+                    System.out.print(colorizeCity(city));
                 } else {
                     System.out.print(colorize(tile));
                 }
@@ -36,21 +41,37 @@ public class ConsoleRender {
         }
     }
 
-    private Unit getUnitAt(int col, int row) {
-        // offset to axial
+    private City getCityAt(int col, int row) {
         int q = col - (row - (row & 1)) / 2;
         int r = row;
+        return cities.stream()
+                .filter(c -> c.getQ() == q && c.getR() == r)
+                .findFirst()
+                .orElse(null);
+    }
 
+    private Unit getUnitAt(int col, int row) {
+        int q = col - (row - (row & 1)) / 2;
+        int r = row;
         return units.stream()
                 .filter(u -> u.getQ() == q && u.getR() == r)
                 .findFirst()
                 .orElse(null);
     }
 
+    private String colorizeCity(City city) {
+        String color = switch (city.getFactionId()) {
+            case "1" -> AnsiColor.BRIGHT_RED;
+            case "2" -> AnsiColor.PURPLE;
+            default  -> AnsiColor.WHITE;
+        };
+        return color + "C" + AnsiColor.RESET;
+    }
+
     private String colorizeUnit(Unit unit) {
         String color = switch (unit.getFactionId()) {
             case "1" -> AnsiColor.BRIGHT_RED;
-            case "2" -> AnsiColor.CYAN;
+            case "2" -> AnsiColor.PURPLE;
             default  -> AnsiColor.WHITE;
         };
         return color + "U" + AnsiColor.RESET;
