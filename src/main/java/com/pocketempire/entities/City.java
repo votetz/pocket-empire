@@ -1,17 +1,21 @@
 package com.pocketempire.entities;
 
+import com.pocketempire.units.UnitType;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class City extends Entity {
     private final String name;
-    private int hp;
-    private int maxHp;
-    private int population;
-    private int maxPopulation;
-    private String factionId;
-    private String leaderId;
-    private int production;
+    @Setter private int hp;
+    @Setter private int maxHp;
+    @Setter private int population;
+    @Setter private int maxPopulation;
+    @Setter private String factionId;
+    @Setter private String leaderId;
+    @Setter private int production;
+    @Setter private int accumulatedProduction;
+    @Setter private UnitType currentProductionType;
 
     public City(String id, int q, int r, String name, int hp, int maxHp, int population, int maxPopulation, String factionId, String leaderId, int production) {
         super(id, q, r);
@@ -23,35 +27,15 @@ public class City extends Entity {
         this.factionId = factionId;
         this.leaderId = leaderId;
         this.production = production;
-    }
-
-    public void setMaxHp(int maxHp) {
-        this.maxHp = maxHp;
-    }
-
-    public void setFactionId(String factionId) {
-        this.factionId = factionId;
-    }
-
-    public void setHp(int hp) {
-        this.hp = hp;
-    }
-
-    public void setPopulation(int population) {
-        this.population = population;
-    }
-
-    public void setMaxPopulation(int maxPopulation) {
-        this.maxPopulation = maxPopulation;
-    }
-
-    public void setProduction(int production) {
-        this.production = production;
+        this.accumulatedProduction = 0;
+        this.currentProductionType = null;
     }
 
     @Override
     public void update() {
-        //todo update city stats here
+        if (isAlive() && currentProductionType != null) {
+            accumulatedProduction += production;
+        }
     }
 
     public boolean isAlive(){
