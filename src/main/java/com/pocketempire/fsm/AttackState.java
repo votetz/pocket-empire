@@ -1,12 +1,11 @@
 package com.pocketempire.fsm;
 
-import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.world.HexUtils;
+import com.pocketempire.world.World;
 import com.pocketempire.simulation.CombatResolver;
 
 import java.util.Comparator;
-import java.util.List;
 
 public class AttackState implements State {
     @Override
@@ -15,8 +14,8 @@ public class AttackState implements State {
     }
 
     @Override
-    public void update(Unit unit, List<Unit> allUnits) {
-        Unit enemy = allUnits.stream()
+    public void update(Unit unit, World world) {
+        Unit enemy = world.getAllUnits().stream()
                 .filter(u -> !u.getFactionId().equals(unit.getFactionId()))
                 .filter(Unit::isAlive)
                 .min(Comparator.comparingInt(u -> HexUtils.getDistance(
