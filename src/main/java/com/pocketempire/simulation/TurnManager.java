@@ -3,18 +3,26 @@ package com.pocketempire.simulation;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.entities.City;
+import com.pocketempire.units.UnitFactory;
+import com.pocketempire.units.UnitType;
+import com.pocketempire.units.UnitConfigLoader;
 import com.pocketempire.world.World;
 import com.pocketempire.world.Tile;
+import com.pocketempire.world.HexUtils;
 import com.pocketempire.pathfinding.Pathfinder;
 import com.pocketempire.pathfinding.Pathfinder.Node;
 
+import lombok.Getter;
+
 import java.util.List;
+import java.util.Random;
 
 public class TurnManager {
-    private int currentTurn;
+    @Getter private int currentTurn;
     private int currentFactionIndex;
     private List<Faction> factions;
     private World world;
+    private int unitCounter;
 
     public TurnManager(List<Faction> factions, World world) {
         this.factions = factions;
@@ -96,7 +104,9 @@ public class TurnManager {
         }
 
         for (City city : faction.getCities()) {
+            if (!city.isAlive()) continue;
             city.update();
+            trySpawnUnit(city, faction);
         }
 
         cleanDeadUnits();
@@ -111,16 +121,82 @@ public class TurnManager {
         }
     }
 
+    private void trySpawnUnit(City city, Faction faction) {
+        if (city.getCurrentProductionType() == null) {
+            if (faction.isAI()) {
+                chooseProductionForAI(city, faction);
+            }
+            if (city.getCurrentProductionType() == null) return;
+        }
+
+        int cost = UnitConfigLoader.getConfig(city.getCurrentProductionType().name()).getCost();
+
+        while (city.getAccumulatedProduction() >= cost) {
+            int[] spawn = findSpawnTile(city);
+            if (spawn == null) break;
+
+            String unitId = city.getCurrentProductionType().name().toLowerCase()
+                    + "_" + (++unitCounter);
+            Unit unit = UnitFactory.create(city.getCurrentProductionType(), unitId, spawn[0], spawn[1], city.getFactionId());
+            faction.addUnit(unit);
+            city.setAccumulatedProduction(city.getAccumulatedProduction() - cost);
+            System.out.println(city.getName() + " built " + city.getCurrentProductionType().name()
+                    + " at (" + spawn[0] + "," + spawn[1] + ")");
+        }
+    }
+
+    private void chooseProductionForAI(City city, Faction faction) {
+        Unit nearest = null;
+        int minDist = Integer.MAX_VALUE;
+        for (Faction other : factions) {
+            if (other == faction || !other.isAlive()) continue;
+            for (Unit enemy : other.getUnits()) {
+                if (!enemy.isAlive()) continue;
+                int dist = HexUtils.getDistance(city.getQ(), city.getR(), enemy.getQ(), enemy.getR());
+                if (dist < minDist) { minDist = dist; nearest = enemy; }
+            }
+        }
+
+        if (nearest == null || minDist > 10) {
+            UnitType[] combat = {UnitType.LIGHT, UnitType.ARCHER, UnitType.HEAVY, UnitType.MAGE, UnitType.SIEGE};
+            city.setCurrentProductionType(combat[new Random().nextInt(combat.length)]);
+            return;
+        }
+
+        if (nearest.getDefense() >= 4)      city.setCurrentProductionType(UnitType.MAGE);
+        else if (nearest.getRange() >= 2)   city.setCurrentProductionType(UnitType.LIGHT);
+        else                                city.setCurrentProductionType(UnitType.HEAVY);
+    }
+
+    private int[] findSpawnTile(City city) {
+        for (int[] dir : HexUtils.DIRECTIONS) {
+            int nq = city.getQ() + dir[0];
+            int nr = city.getR() + dir[1];
+            if (!world.getMap().isInBounds(nq, nr)) continue;
+            Tile tile = world.getMap().getTile(nq, nr);
+            if (tile == null || tile.getType().isBlocksMovement()) continue;
+            if (isTileOccupied(nq, nr)) continue;
+            return new int[]{nq, nr};
+        }
+        return null;
+    }
+
+    private boolean isTileOccupied(int q, int r) {
+        for (Faction f : factions) {
+            if (!f.isAlive()) continue;
+            for (Unit u : f.getUnits()) {
+                if (u.isAlive() && u.getQ() == q && u.getR() == r) return true;
+            }
+        }
+        return false;
+    }
+
     private void processGlobalTurnEffects() {
         // Implement global turn effects here
     }
 
     public Faction getCurrentFaction() {
         return factions.get(currentFactionIndex);
-    }
-
-    public int getCurrentTurn() {
-        return currentTurn;
     }
 
     public boolean isGameOver() {
