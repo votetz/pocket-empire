@@ -9,6 +9,7 @@ import com.pocketempire.units.UnitConfigLoader;
 import com.pocketempire.world.World;
 import com.pocketempire.world.Tile;
 import com.pocketempire.world.HexUtils;
+import com.pocketempire.fsm.UnitState;
 import com.pocketempire.pathfinding.Pathfinder;
 import com.pocketempire.pathfinding.Pathfinder.Node;
 
@@ -75,6 +76,47 @@ public class TurnManager {
         }
     }
 
+    private void moveUnitTowardCity(Unit unit, Faction faction) {
+        City target = null;
+        int minDist = Integer.MAX_VALUE;
+
+        for (City city : faction.getCities()) {
+            if (!city.isAlive()) continue;
+            int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), city.getQ(), city.getR());
+            if (dist < minDist) {
+                minDist = dist;
+                target = city;
+            }
+        }
+
+        if (target == null || minDist <= 1) return;
+
+        while (unit.getRemainingOD() > 0) {
+            List<Node> path = Pathfinder.findPath(
+                    world,
+                    unit.getQ(), unit.getR(),
+                    target.getQ(), target.getR(),
+                    unit
+            );
+
+            if (path.size() <= 1) break;
+
+            Node next = path.get(1);
+            int dq = next.getQ() - unit.getQ();
+            int dr = next.getR() - unit.getR();
+
+            Tile tile = world.getMap().getTile(next.getQ(), next.getR());
+            int cost = tile.getType().getMovementCost();
+
+            if (unit.getRemainingOD() < cost) break;
+
+            unit.spendOD(cost);
+            unit.move(dq, dr);
+            System.out.println(unit.getId() + " fled to (" + unit.getQ() + "," + unit.getR()
+                    + ") OD left: " + unit.getRemainingOD());
+        }
+    }
+
     public void nextTurn() {
         currentFactionIndex++;
         if (currentFactionIndex >= factions.size()) {
@@ -99,8 +141,12 @@ public class TurnManager {
                 unit.updateAI(world);
             }
 
-            moveUnitTowardEnemy(unit, faction);
-            unit.getCurrentState().update(unit, world.getAllUnits());
+            if (unit.getUnitState() == UnitState.FLEEING) {
+                moveUnitTowardCity(unit, faction);
+            } else {
+                moveUnitTowardEnemy(unit, faction);
+            }
+            unit.getCurrentState().update(unit, world);
         }
 
         for (City city : faction.getCities()) {
