@@ -1,13 +1,15 @@
 package com.pocketempire.entities;
 
 import java.util.ArrayList;
+import lombok.Getter;
+
 
 public class Faction {
-    private int id;
-    private String name;
-    private int color;
-    private ArrayList<Unit> units;
-    private ArrayList<City> cities;
+    @Getter private int id;
+    @Getter private String name;
+    @Getter private int color;
+    @Getter private ArrayList<Unit> units;
+    @Getter private ArrayList<City> cities;
     private boolean isAlive;
     private boolean isAI;
 
@@ -18,26 +20,6 @@ public class Faction {
         this.units = new ArrayList<>();
         this.cities = new ArrayList<>();
         this.isAlive = true;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public ArrayList<Unit> getUnits() {
-        return units;
-    }
-
-    public ArrayList<City> getCities() {
-        return cities;
     }
 
     public boolean isAlive() {

@@ -1,5 +1,7 @@
 package com.pocketempire.units;
 
+import lombok.Getter;
+
 public enum UnitType {
     // combat units
     LIGHT(2),
@@ -12,13 +14,10 @@ public enum UnitType {
     SETTLER(1),
     WORKER(2);
 
+    @Getter
     private final int cost;
 
     UnitType(int cost) {
         this.cost = cost;
-    }
-
-    public int getCost() {
-        return cost;
     }
 }

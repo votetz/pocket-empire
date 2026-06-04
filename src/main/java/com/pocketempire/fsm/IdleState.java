@@ -1,5 +1,6 @@
 package com.pocketempire.fsm;
 
+import com.pocketempire.entities.City;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
@@ -17,6 +18,10 @@ public class IdleState implements State {
 
     @Override
     public void update(Unit unit, World world) {
+        if (unit.getHp() < unit.getMaxHp()) {
+            healAtBorder(unit, world);
+        }
+
         if (unit.getHp() <= unit.getMaxHp() * FLEE_THRESHOLD) {
             unit.changeState(new FleeState(), UnitState.FLEEING);
             return;
@@ -25,6 +30,22 @@ public class IdleState implements State {
         Unit enemy = findNearestEnemy(unit, world.getAllUnits());
         if (enemy != null) {
             unit.changeState(new AttackState(), UnitState.ATTACKING);
+        }
+    }
+
+    private void healAtBorder(Unit unit, World world) {
+        outer:
+        for (var faction : world.getFactions()) {
+            if (!String.valueOf(faction.getId()).equals(unit.getFactionId())) continue;
+            for (City city : faction.getCities()) {
+                if (!city.isAlive()) continue;
+                int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), city.getQ(), city.getR());
+                if (dist <= city.getBorderRadius()) {
+                    unit.restoreHp(1);
+                    System.out.println(unit.getId() + " healed (+1 HP, " + unit.getHp() + "/" + unit.getMaxHp() + ") at border of " + city.getName());
+                    break outer;
+                }
+            }
         }
     }
 

@@ -16,6 +16,7 @@ public class City extends Entity {
     @Setter private int production;
     @Setter private int accumulatedProduction;
     @Setter private UnitType currentProductionType;
+    @Setter private int borderRadius;
 
     public City(String id, int q, int r, String name, int hp, int maxHp, int population, int maxPopulation, String factionId, String leaderId, int production) {
         super(id, q, r);
@@ -29,6 +30,7 @@ public class City extends Entity {
         this.production = production;
         this.accumulatedProduction = 0;
         this.currentProductionType = null;
+        this.borderRadius = 3;
     }
 
     @Override
