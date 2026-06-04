@@ -1,5 +1,6 @@
 package com.pocketempire.fsm;
 
+import com.pocketempire.entities.City;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
@@ -27,10 +28,41 @@ public class AttackState implements State {
                     unit.getQ(), unit.getR(), enemy.getQ(), enemy.getR());
             if (dist <= unit.getRange()) {
                 CombatResolver.resolveCombat(unit, enemy);
+                unit.changeState(new IdleState(), UnitState.IDLE);
+                return;
+            }
+        }
+
+        City targetCity = findNearestEnemyCity(unit, world);
+        if (targetCity != null) {
+            int dist = HexUtils.getDistance(
+                    unit.getQ(), unit.getR(), targetCity.getQ(), targetCity.getR());
+            if (dist <= unit.getRange()) {
+                CombatResolver.resolveCityAttack(unit, targetCity);
+                if (!targetCity.isAlive()) {
+                    System.out.println(targetCity.getName() + " has been destroyed!");
+                }
             }
         }
 
         unit.changeState(new IdleState(), UnitState.IDLE);
+    }
+
+    private City findNearestEnemyCity(Unit unit, World world) {
+        City nearest = null;
+        int minDist = Integer.MAX_VALUE;
+        for (var faction : world.getFactions()) {
+            if (String.valueOf(faction.getId()).equals(unit.getFactionId())) continue;
+            for (City city : faction.getCities()) {
+                if (!city.isAlive()) continue;
+                int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), city.getQ(), city.getR());
+                if (dist < minDist) {
+                    minDist = dist;
+                    nearest = city;
+                }
+            }
+        }
+        return nearest;
     }
 
     @Override
