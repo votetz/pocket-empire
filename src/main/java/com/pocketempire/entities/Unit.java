@@ -4,6 +4,7 @@ import com.pocketempire.fsm.IdleState;
 import com.pocketempire.fsm.State;
 import com.pocketempire.fsm.UnitState;
 import com.pocketempire.units.UnitStats;
+import com.pocketempire.units.UnitType;
 import com.pocketempire.world.World;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,7 @@ public class Unit extends Entity {
     private final int range;
     private final int cost;
     private final String factionId;
+    private final UnitType unitType;
     @Setter private UnitState unitState;
     @Setter private State currentState;
     private int remainingOD;
@@ -32,6 +34,7 @@ public class Unit extends Entity {
         this.range = builder.range;
         this.cost = builder.cost;
         this.factionId = builder.factionId;
+        this.unitType = builder.unitType;
         this.unitState = builder.unitState;
         this.remainingOD = builder.speed;
         this.currentState = new IdleState();
@@ -50,6 +53,7 @@ public static class Builder {
     private int speed = 1;
     private int range = 1;
     private int cost = 1;
+    private UnitType unitType;
     private UnitState unitState = UnitState.IDLE;
 
     public Builder(String id, int q, int r, String factionId) {
@@ -92,6 +96,11 @@ public static class Builder {
 
     public Builder unitState(UnitState unitState){
        this.unitState = unitState;
+       return this;
+    }
+
+    public Builder unitType(UnitType unitType){
+       this.unitType = unitType;
        return this;
     }
 

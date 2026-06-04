@@ -9,6 +9,7 @@ public class UnitFactory {
 
         return new Unit.Builder(id, q, r, factionId)
                 .config(stats)
+                .unitType(type)
                 .build();
     }
 }

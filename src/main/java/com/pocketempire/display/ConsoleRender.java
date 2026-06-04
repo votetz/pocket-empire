@@ -3,6 +3,7 @@ package com.pocketempire.display;
 import com.pocketempire.display.AnsiColor;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.entities.City;
+import com.pocketempire.units.UnitType;
 import com.pocketempire.world.Map;
 import com.pocketempire.world.Tile;
 
@@ -74,7 +75,16 @@ public class ConsoleRender {
             case "2" -> AnsiColor.PURPLE;
             default  -> AnsiColor.WHITE;
         };
-        return color + "U" + AnsiColor.RESET;
+        String symbol = switch (unit.getUnitType()) {
+            case LIGHT  -> "L";
+            case ARCHER -> "A";
+            case HEAVY  -> "H";
+            case MAGE   -> "M";
+            case SIEGE  -> "S";
+            case SETTLER -> "T";
+            case WORKER -> "W";
+        };
+        return color + symbol + AnsiColor.RESET;
     }
 
     private String colorize(Tile tile) {
