@@ -119,13 +119,13 @@ public class TurnManager {
     }
 
     public void nextTurn() {
+        startFactionTurn(factions.get(currentFactionIndex));
         currentFactionIndex++;
-        if (currentFactionIndex >= factions.size()) {
+        if(currentFactionIndex >= factions.size()) {
             currentFactionIndex = 0;
             currentTurn++;
             processGlobalTurnEffects();
         }
-        startFactionTurn(factions.get(currentFactionIndex));
     }
 
     private void startFactionTurn(Faction faction) {
