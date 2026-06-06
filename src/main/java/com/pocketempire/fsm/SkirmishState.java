@@ -56,11 +56,14 @@ public class SkirmishState implements State {
                     Pathfinder.Node next = path.get(i);
                     int distAfterStep = HexUtils.getDistance(
                             next.getQ(), next.getR(), target.getQ(), target.getR());
+
                     if (distAfterStep < range) break;
 
-                    // Respect tile movement cost, not a flat 1
                     Tile tile = world.getMap().getTile(next.getQ(), next.getR());
                     if (tile == null || tile.getType().isBlocksMovement()) break;
+
+                    if (isTileOccupied(next.getQ(), next.getR(), unit, world)) break;
+
                     int cost = tile.getType().getMovementCost();
                     if (unit.getRemainingOD() < cost) break;
 
@@ -105,10 +108,12 @@ public class SkirmishState implements State {
             Tile tile = world.getMap().getTile(nq, nr);
             if (tile == null || tile.getType().isBlocksMovement()) continue;
 
+            // do not repeat
+            if (isTileOccupied(nq, nr, unit, world)) continue;
+
             int cost    = tile.getType().getMovementCost();
             int newDist = HexUtils.getDistance(nq, nr, target.getQ(), target.getR());
 
-            // Prefer the hex that puts the most distance between us and the enemy
             if (newDist > bestDist || (newDist == bestDist && cost < bestCost)) {
                 bestDist = newDist;
                 bestCost = cost;
@@ -117,7 +122,6 @@ public class SkirmishState implements State {
             }
         }
 
-        // Only move if we actually found a better hex and can afford it
         if ((bestQ != unit.getQ() || bestR != unit.getR())
                 && unit.getRemainingOD() >= bestCost) {
             unit.spendOD(bestCost);
@@ -126,6 +130,15 @@ public class SkirmishState implements State {
             System.out.println(unit.getId() + " skirmish retreat to ("
                     + unit.getQ() + "," + unit.getR() + ")");
         }
+    }
+
+    private boolean isTileOccupied(int q, int r, Unit self, World world) {
+        for (Unit u : world.getAllUnits()) {
+            if (u != self && u.isAlive() && u.getQ() == q && u.getR() == r) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
