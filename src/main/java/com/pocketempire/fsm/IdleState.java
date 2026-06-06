@@ -1,11 +1,13 @@
 package com.pocketempire.fsm;
 
 import com.pocketempire.entities.City;
+import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
 
 import java.util.Comparator;
+import java.util.Optional;
 
 public class IdleState implements State {
 
@@ -35,25 +37,26 @@ public class IdleState implements State {
     }
 
     private void healAtBorder(Unit unit, World world) {
-        outer:
-        for (var faction : world.getFactions()) {
-            if (!String.valueOf(faction.getId()).equals(unit.getFactionId())) continue;
-            for (City city : faction.getCities()) {
-                if (!city.isAlive()) continue;
-                int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), city.getQ(), city.getR());
-                if (dist <= city.getBorderRadius()) {
-                    unit.restoreHp(1);
-                    System.out.println(unit.getId() + " healed (+1 HP, " + unit.getHp() + "/" + unit.getMaxHp() + ") at border of " + city.getName());
-                    break outer;
+        Optional<Faction> unitFaction = world.getFactions().stream()
+                .filter(f -> String.valueOf(f.getId()).equals(unit.getFactionId()))
+                .findFirst();
+
+        if (unitFaction.isPresent()) {
+            for (City city : unitFaction.get().getCities()) {
+                if (city.isAlive()) {
+                    int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), city.getQ(), city.getR());
+                    if (dist <= city.getBorderRadius()) {
+                        unit.restoreHp(1);
+                        System.out.println(unit.getId() + " healed (+1 HP, " + unit.getHp() + "/" + unit.getMaxHp() + ") at border of " + city.getName());
+                        return; // Exit after healing once
+                    }
                 }
             }
         }
     }
 
     @Override
-    public void exit(Unit unit) {
-
-    }
+    public void exit(Unit unit) {}
 
     private Unit findNearestEnemy(Unit unit, java.util.List<Unit> allUnits) {
         return allUnits.stream()
