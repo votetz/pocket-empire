@@ -33,13 +33,13 @@ public class Main {
         Faction faction2 = new Faction(2, "Purple Tribe", 0x0000FF);
         faction2.setAI(true);
 
-        Unit light1 = UnitFactory.create(UnitType.LIGHT, UnitNamesLoader.getRandomName(), 5, 5, "1");
-        Unit archer1 = UnitFactory.create(UnitType.ARCHER, UnitNamesLoader.getRandomName(), 5, 5, "1");
+        Unit light1 = UnitFactory.create(UnitType.LIGHT, "light_1", UnitNamesLoader.getRandomName(), 5, 5, "1");
+        Unit archer1 = UnitFactory.create(UnitType.ARCHER, "archer_1", UnitNamesLoader.getRandomName(), 5, 5, "1");
         faction1.addUnit(light1);
         faction1.addUnit(archer1);
 
-        Unit light2 = UnitFactory.create(UnitType.LIGHT, UnitNamesLoader.getRandomName(), 5, 5, "2");
-        Unit archer2 = UnitFactory.create(UnitType.ARCHER, UnitNamesLoader.getRandomName(), 5, 5, "2");
+        Unit light2 = UnitFactory.create(UnitType.LIGHT, "light_2", UnitNamesLoader.getRandomName(), 5, 5, "2");
+        Unit archer2 = UnitFactory.create(UnitType.ARCHER, "archer_2", UnitNamesLoader.getRandomName(), 5, 5, "2");
         faction2.addUnit(light2);
         faction2.addUnit(archer2);
 

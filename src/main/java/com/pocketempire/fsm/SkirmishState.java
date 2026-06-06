@@ -13,7 +13,7 @@ import java.util.List;
 public class SkirmishState implements State {
     @Override
     public void enter(Unit unit) {
-        System.out.println(unit.getId() + " is now in Skirmish state");
+        System.out.println(unit.getName() + " is now in Skirmish state");
     }
 
     @Override
@@ -70,7 +70,7 @@ public class SkirmishState implements State {
                     unit.spendOD(cost);
                     unit.setQ(next.getQ());
                     unit.setR(next.getR());
-                    System.out.println(unit.getId() + " skirmish advance to ("
+                    System.out.println(unit.getName() + " skirmish advance to ("
                             + unit.getQ() + "," + unit.getR() + ")");
 
                     if (distAfterStep == range) break;
@@ -127,7 +127,7 @@ public class SkirmishState implements State {
             unit.spendOD(bestCost);
             unit.setQ(bestQ);
             unit.setR(bestR);
-            System.out.println(unit.getId() + " skirmish retreat to ("
+            System.out.println(unit.getName() + " skirmish retreat to ("
                     + unit.getQ() + "," + unit.getR() + ")");
         }
     }

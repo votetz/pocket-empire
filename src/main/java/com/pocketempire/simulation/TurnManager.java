@@ -6,6 +6,7 @@ import com.pocketempire.entities.City;
 import com.pocketempire.units.UnitFactory;
 import com.pocketempire.units.UnitType;
 import com.pocketempire.config.UnitConfigLoader;
+import com.pocketempire.config.UnitNamesLoader;
 import com.pocketempire.world.World;
 import com.pocketempire.world.Tile;
 import com.pocketempire.world.HexUtils;
@@ -72,7 +73,7 @@ public class TurnManager {
 
             unit.spendOD(cost);
             unit.move(dq, dr);
-            System.out.println(unit.getId() + " moved to (" + unit.getQ() + "," + unit.getR()
+            System.out.println(unit.getName() + " moved to (" + unit.getQ() + "," + unit.getR()
                     + ") OD left: " + unit.getRemainingOD());
         }
     }
@@ -113,7 +114,7 @@ public class TurnManager {
 
             unit.spendOD(cost);
             unit.move(dq, dr);
-            System.out.println(unit.getId() + " fled to (" + unit.getQ() + "," + unit.getR()
+            System.out.println(unit.getName() + " fled to (" + unit.getQ() + "," + unit.getR()
                     + ") OD left: " + unit.getRemainingOD());
         }
     }
@@ -192,7 +193,7 @@ public class TurnManager {
 
             String unitId = city.getCurrentProductionType().name().toLowerCase()
                     + "_" + (++unitCounter);
-            Unit unit = UnitFactory.create(city.getCurrentProductionType(), unitId, spawn[0], spawn[1], city.getFactionId());
+            Unit unit = UnitFactory.create(city.getCurrentProductionType(), unitId, UnitNamesLoader.getRandomName(), spawn[0], spawn[1], city.getFactionId());
             faction.addUnit(unit);
             city.setAccumulatedProduction(city.getAccumulatedProduction() - cost);
             System.out.println(city.getName() + " built " + city.getCurrentProductionType().name()

@@ -11,7 +11,7 @@ import java.util.Comparator;
 public class AttackState implements State {
     @Override
     public void enter(Unit unit) {
-        System.out.println(unit.getId() + " is now ATTACKING");
+        System.out.println(unit.getName() + " is now ATTACKING");
     }
 
     @Override

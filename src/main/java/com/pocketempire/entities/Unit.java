@@ -11,6 +11,7 @@ import lombok.Setter;
 
 @Getter
 public class Unit extends Entity {
+    private final String name;
     private int hp;
     private final int maxHp;
     private int attack;
@@ -26,6 +27,7 @@ public class Unit extends Entity {
 
     protected Unit(Builder builder) {
         super(builder.id, builder.q, builder.r);
+        this.name = builder.name;
         this.hp = builder.hp;
         this.maxHp = builder.maxHp;
         this.attack = builder.attack;
@@ -45,6 +47,7 @@ public static class Builder {
     private final int q;
     private final int r;
     private final String factionId;
+    private String name;
 
     private int hp = 10;
     private int maxHp = hp;
@@ -62,6 +65,11 @@ public static class Builder {
         this.r = r;
         this.factionId = factionId;
 }
+
+    public Builder name(String name) {
+        this.name = name;
+        return this;
+    }
 
     public Builder hp(int hp) {
         this.hp = hp;

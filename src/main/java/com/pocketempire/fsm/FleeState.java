@@ -9,7 +9,7 @@ public class FleeState implements State {
 
     @Override
     public void enter(Unit unit) {
-        System.out.println(unit.getId() + " is now FLEEING");
+        System.out.println(unit.getName() + " is now FLEEING");
     }
 
     @Override
@@ -34,7 +34,7 @@ public class FleeState implements State {
 
         if (nearest != null && minDist <= 1) {
             unit.restoreHp(2);
-            System.out.println(unit.getId() + " healed at " + nearest.getName()
+            System.out.println(unit.getName() + " healed at " + nearest.getName()
                     + " (" + unit.getHp() + "/" + unit.getMaxHp() + " HP)");
         }
     }

@@ -8,7 +8,7 @@ public class CombatResolver {
     public static void resolveCombat(Unit attacker, Unit defender) {
         int damageToDefender = calculateDamage(attacker.getAttack(), defender.getDefense());
         defender.takeDamage(damageToDefender);
-        System.out.println(attacker.getId() + " deals " + damageToDefender + " damage to " + defender.getId()
+        System.out.println(attacker.getName() + " deals " + damageToDefender + " damage to " + defender.getName()
                 + " (" + defender.getHp() + "/" + defender.getMaxHp() + " HP)");
 
         // CA only when enemy is in range
@@ -16,15 +16,15 @@ public class CombatResolver {
         if (defender.isAlive() && defender.getRange() >= distance) {
             int damageToAttacker = calculateDamage(defender.getAttack(), attacker.getDefense());
             attacker.takeDamage(damageToAttacker);
-            System.out.println(defender.getId() + " counter-attacks for " + damageToAttacker + " damage to "
-                    + attacker.getId() + " (" + attacker.getHp() + "/" + attacker.getMaxHp() + " HP)");
+            System.out.println(defender.getName() + " counter-attacks for " + damageToAttacker + " damage to "
+                    + attacker.getName() + " (" + attacker.getHp() + "/" + attacker.getMaxHp() + " HP)");
         }
 
         if (!defender.isAlive()) {
-            System.out.println(defender.getId() + " has been destroyed!");
+            System.out.println(defender.getName() + " has been destroyed!");
         }
         if (!attacker.isAlive()) {
-            System.out.println(attacker.getId() + " has been destroyed!");
+            System.out.println(attacker.getName() + " has been destroyed!");
         }
     }
 

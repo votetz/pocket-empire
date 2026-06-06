@@ -1,6 +1,19 @@
 {
   "first_names":
   [
-    "Zorkas", "Cryvon", "Vulcan", "Fenrys", "Torn", "Elias", "Valdor", "Dragos", "Kyle", "Morgan"
+    "Zorkas", "Cryvon", "Vulcan", "Fenrys", "Torn", "Elias", "Valdor", "Dragos", "Kyle", "Morgan",
+    "Aether", "Boreas", "Cassian", "Dravos", "Eryndor", "Garrick", "Helios", "Ignis", "Kaelen",
+    "Lucian", "Maelis", "Nyx", "Orion", "Pyralis", "Ravos", "Sylas", "Thorne", "Varek", "Zephyr",
+    "Aldric", "Brom", "Cedric", "Darian", "Edric", "Fynn", "Gideon", "Harken", "Ivor", "Jaric"
+  ],
+  "prefixes":
+  [
+    "Ald", "Bron", "Cor", "Dar", "El", "Far", "Gar", "Hel", "Iso", "Kael",
+    "Lor", "Mor", "Nor", "Ori", "Pyra", "Rav", "Syl", "Thorn", "Val", "Zeph"
+  ],
+  "suffixes":
+  [
+    "ric", "mar", "wyn", "dor", "ian", "vek", "mir", "lund", "vos", "gard",
+    "thor", "mund", "rik", "wulf", "helm", "stan", "farr", "dred", "kor", "dis"
   ]
 }

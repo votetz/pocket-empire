@@ -6,7 +6,7 @@ import java.util.List;
 public class ChaseState implements State {
     @Override
     public void enter(com.pocketempire.entities.Unit unit) {
-        System.out.println(unit.getId() + " is now in Chase state");
+        System.out.println(unit.getName() + " is now in Chase state");
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ChaseState implements State {
                     unit.setQ(next.getQ());
                     unit.setR(next.getR());
                 }
-                System.out.println(unit.getId() + " is chasing " + target.getId() + " (Distance: " + minDist + ")");
+                System.out.println(unit.getName() + " is chasing " + target.getName() + " (Distance: " + minDist + ")");
             }
         } else {
             unit.changeState(new IdleState(), UnitState.IDLE);

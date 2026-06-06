@@ -15,7 +15,7 @@ public class IdleState implements State {
 
     @Override
     public void enter(Unit unit) {
-        System.out.println(unit.getId() + " is now IDLE");
+        System.out.println(unit.getName() + " is now IDLE");
     }
 
     @Override
@@ -51,7 +51,7 @@ public class IdleState implements State {
                     int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), city.getQ(), city.getR());
                     if (dist <= city.getBorderRadius()) {
                         unit.restoreHp(1);
-                        System.out.println(unit.getId() + " healed (+1 HP, " + unit.getHp() + "/" + unit.getMaxHp() + ") at border of " + city.getName());
+                        System.out.println(unit.getName() + " healed (+1 HP, " + unit.getHp() + "/" + unit.getMaxHp() + ") at border of " + city.getName());
                         return; // Exit after healing once
                     }
                 }
