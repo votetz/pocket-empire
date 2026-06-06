@@ -12,6 +12,7 @@ import com.pocketempire.world.Map;
 import com.pocketempire.world.MapGenerator;
 import com.pocketempire.world.World;
 import com.pocketempire.config.UnitNamesLoader;
+import com.pocketempire.events.ConsoleLogger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +60,7 @@ public class Main {
         World world = new World(map, factions);
 
         TurnManager turnManager = new TurnManager(factions, world);
+        new ConsoleLogger();
 
         List<Unit> allUnits = new ArrayList<>();
         allUnits.addAll(faction1.getUnits());
@@ -83,9 +85,6 @@ public class Main {
 
         System.out.println("Simulating 20 turns");
         for (int i = 0; i < 20; i++) {
-            System.out.println("\nTurn " + turnManager.getCurrentTurn());
-            System.out.println("Current faction: " + turnManager.getCurrentFaction().getName());
-            
             turnManager.nextTurn();
 
             allUnits.clear();

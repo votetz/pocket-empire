@@ -7,6 +7,8 @@ import com.pocketempire.units.UnitFactory;
 import com.pocketempire.units.UnitType;
 import com.pocketempire.config.UnitConfigLoader;
 import com.pocketempire.config.UnitNamesLoader;
+import com.pocketempire.events.GameEvent;
+import com.pocketempire.events.GameEventBus;
 import com.pocketempire.world.World;
 import com.pocketempire.world.Tile;
 import com.pocketempire.world.HexUtils;
@@ -71,10 +73,11 @@ public class TurnManager {
 
             if (unit.getRemainingOD() < cost) break;
 
+            int fromQ = unit.getQ();
+            int fromR = unit.getR();
             unit.spendOD(cost);
             unit.move(dq, dr);
-            System.out.println(unit.getName() + " moved to (" + unit.getQ() + "," + unit.getR()
-                    + ") OD left: " + unit.getRemainingOD());
+            GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR, unit.getQ(), unit.getR()));
         }
     }
 
@@ -112,10 +115,11 @@ public class TurnManager {
 
             if (unit.getRemainingOD() < cost) break;
 
+            int fromQ = unit.getQ();
+            int fromR = unit.getR();
             unit.spendOD(cost);
             unit.move(dq, dr);
-            System.out.println(unit.getName() + " fled to (" + unit.getQ() + "," + unit.getR()
-                    + ") OD left: " + unit.getRemainingOD());
+            GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR, unit.getQ(), unit.getR()));
         }
     }
 
@@ -134,6 +138,8 @@ public class TurnManager {
             nextTurn();
             return;
         }
+
+        GameEventBus.getInstance().publish(new GameEvent.TurnStarted(currentTurn, faction));
 
         for (Unit unit : faction.getUnits()) {
             if (!unit.isAlive()) continue;
@@ -196,8 +202,7 @@ public class TurnManager {
             Unit unit = UnitFactory.create(city.getCurrentProductionType(), unitId, UnitNamesLoader.getRandomName(), spawn[0], spawn[1], city.getFactionId());
             faction.addUnit(unit);
             city.setAccumulatedProduction(city.getAccumulatedProduction() - cost);
-            System.out.println(city.getName() + " built " + city.getCurrentProductionType().name()
-                    + " at (" + spawn[0] + "," + spawn[1] + ")");
+            GameEventBus.getInstance().publish(new GameEvent.UnitSpawned(unit));
         }
     }
 

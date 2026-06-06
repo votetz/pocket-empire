@@ -1,5 +1,7 @@
 package com.pocketempire.fsm;
 
+import com.pocketempire.events.GameEvent;
+import com.pocketempire.events.GameEventBus;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.pathfinding.Pathfinder;
 import com.pocketempire.simulation.CombatResolver;
@@ -12,9 +14,7 @@ import java.util.List;
 
 public class SkirmishState implements State {
     @Override
-    public void enter(Unit unit) {
-        System.out.println(unit.getName() + " is now in Skirmish state");
-    }
+    public void enter(Unit unit) {}
 
     @Override
     public void update(Unit unit, World world) {
@@ -67,11 +67,12 @@ public class SkirmishState implements State {
                     int cost = tile.getType().getMovementCost();
                     if (unit.getRemainingOD() < cost) break;
 
+                    int fromQ = unit.getQ();
+                    int fromR = unit.getR();
                     unit.spendOD(cost);
                     unit.setQ(next.getQ());
                     unit.setR(next.getR());
-                    System.out.println(unit.getName() + " skirmish advance to ("
-                            + unit.getQ() + "," + unit.getR() + ")");
+                    GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR, unit.getQ(), unit.getR()));
 
                     if (distAfterStep == range) break;
                 }
@@ -124,11 +125,12 @@ public class SkirmishState implements State {
 
         if ((bestQ != unit.getQ() || bestR != unit.getR())
                 && unit.getRemainingOD() >= bestCost) {
+            int fromQ = unit.getQ();
+            int fromR = unit.getR();
             unit.spendOD(bestCost);
             unit.setQ(bestQ);
             unit.setR(bestR);
-            System.out.println(unit.getName() + " skirmish retreat to ("
-                    + unit.getQ() + "," + unit.getR() + ")");
+            GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR, unit.getQ(), unit.getR()));
         }
     }
 

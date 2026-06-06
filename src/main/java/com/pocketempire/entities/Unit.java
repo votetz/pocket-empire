@@ -1,5 +1,7 @@
 package com.pocketempire.entities;
 
+import com.pocketempire.events.GameEvent;
+import com.pocketempire.events.GameEventBus;
 import com.pocketempire.fsm.IdleState;
 import com.pocketempire.fsm.State;
 import com.pocketempire.fsm.UnitState;
@@ -154,6 +156,7 @@ public static class Builder {
         this.currentState = newState;
         this.unitState = stateEnum;
         newState.enter(this);
+        GameEventBus.getInstance().publish(new GameEvent.UnitStateChanged(this));
     }
 
     public boolean isAlive(){

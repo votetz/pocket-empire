@@ -1,5 +1,7 @@
 package com.pocketempire.fsm;
 
+import com.pocketempire.events.GameEvent;
+import com.pocketempire.events.GameEventBus;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
@@ -14,9 +16,7 @@ public class IdleState implements State {
     private static final double FLEE_THRESHOLD = 0.5;
 
     @Override
-    public void enter(Unit unit) {
-        System.out.println(unit.getName() + " is now IDLE");
-    }
+    public void enter(Unit unit) {}
 
     @Override
     public void update(Unit unit, World world) {
@@ -51,8 +51,8 @@ public class IdleState implements State {
                     int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), city.getQ(), city.getR());
                     if (dist <= city.getBorderRadius()) {
                         unit.restoreHp(1);
-                        System.out.println(unit.getName() + " healed (+1 HP, " + unit.getHp() + "/" + unit.getMaxHp() + ") at border of " + city.getName());
-                        return; // Exit after healing once
+                        GameEventBus.getInstance().publish(new GameEvent.UnitHealed(unit, 1));
+                        return;
                     }
                 }
             }

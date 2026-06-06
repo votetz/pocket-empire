@@ -10,9 +10,7 @@ import java.util.Comparator;
 
 public class AttackState implements State {
     @Override
-    public void enter(Unit unit) {
-        System.out.println(unit.getName() + " is now ATTACKING");
-    }
+    public void enter(Unit unit) {}
 
     @Override
     public void update(Unit unit, World world) {

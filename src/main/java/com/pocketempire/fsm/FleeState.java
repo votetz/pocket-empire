@@ -1,5 +1,7 @@
 package com.pocketempire.fsm;
 
+import com.pocketempire.events.GameEvent;
+import com.pocketempire.events.GameEventBus;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.world.HexUtils;
@@ -8,9 +10,7 @@ import com.pocketempire.world.World;
 public class FleeState implements State {
 
     @Override
-    public void enter(Unit unit) {
-        System.out.println(unit.getName() + " is now FLEEING");
-    }
+    public void enter(Unit unit) {}
 
     @Override
     public void update(Unit unit, World world) {
@@ -34,8 +34,7 @@ public class FleeState implements State {
 
         if (nearest != null && minDist <= 1) {
             unit.restoreHp(2);
-            System.out.println(unit.getName() + " healed at " + nearest.getName()
-                    + " (" + unit.getHp() + "/" + unit.getMaxHp() + " HP)");
+            GameEventBus.getInstance().publish(new GameEvent.UnitHealed(unit, 2));
         }
     }
 
