@@ -31,7 +31,11 @@ public class AttackState implements State {
                 unit.changeState(new IdleState(), UnitState.IDLE);
                 return;
             } else {
-                unit.changeState(new ChaseState(), UnitState.CHASE);
+                if (unit.getRange() > 1) {
+                    unit.changeState(new SkirmishState(), UnitState.SKIRMISH);
+                } else {
+                    unit.changeState(new ChaseState(), UnitState.CHASE);
+                }
                 return;
             }
         }
@@ -69,7 +73,5 @@ public class AttackState implements State {
     }
 
     @Override
-    public void exit(Unit unit) {
-
-    }
+    public void exit(Unit unit) {}
 }

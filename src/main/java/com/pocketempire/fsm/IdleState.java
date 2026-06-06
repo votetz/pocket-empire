@@ -31,7 +31,11 @@ public class IdleState implements State {
 
         Unit enemy = findNearestEnemy(unit, world.getAllUnits());
         if (enemy != null) {
-            unit.changeState(new AttackState(), UnitState.ATTACKING);
+            if (unit.getRange() > 1) {
+                unit.changeState(new SkirmishState(), UnitState.SKIRMISH);
+            } else {
+                unit.changeState(new AttackState(), UnitState.ATTACKING);
+            }
             return;
         }
     }

@@ -11,7 +11,9 @@ public class CombatResolver {
         System.out.println(attacker.getId() + " deals " + damageToDefender + " damage to " + defender.getId()
                 + " (" + defender.getHp() + "/" + defender.getMaxHp() + " HP)");
 
-        if (defender.isAlive() && defender.getRange() >= calculateDistance(attacker, defender)) {
+        // CA only when enemy is in range
+        int distance = calculateDistance(attacker, defender);
+        if (defender.isAlive() && defender.getRange() >= distance) {
             int damageToAttacker = calculateDamage(defender.getAttack(), attacker.getDefense());
             attacker.takeDamage(damageToAttacker);
             System.out.println(defender.getId() + " counter-attacks for " + damageToAttacker + " damage to "
@@ -27,7 +29,8 @@ public class CombatResolver {
     }
 
     public static void resolveCityAttack(Unit attacker, City city) {
-        int damageToCity = calculateDamage(attacker.getAttack(), 0); // Cities might have base defense logic later
+        int damageToCity = calculateDamage(attacker.getAttack(), 0);
+        // Cities might have base defense logic later
         city.takeDamage(damageToCity);
     }
 

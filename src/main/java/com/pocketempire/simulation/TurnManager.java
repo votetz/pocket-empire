@@ -147,9 +147,12 @@ public class TurnManager {
 
             if (unit.getUnitState() == UnitState.FLEEING) {
                 moveUnitTowardCity(unit, faction);
-            } else {
+            } else if (unit.getRange() == 1) {
+                // Melee units move toward the enemy manually
                 moveUnitTowardEnemy(unit, faction);
             }
+            // Ranged units (range > 1) skip manual movement here —
+            // SkirmishState.update() handles their positioning and firing
 
             if (!unit.isAlive()) continue;
             unit.getCurrentState().update(unit, world);
