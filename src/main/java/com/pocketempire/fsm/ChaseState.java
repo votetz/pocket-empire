@@ -1,14 +1,17 @@
 package com.pocketempire.fsm;
 
 import com.pocketempire.pathfinding.Pathfinder;
+import com.pocketempire.entities.Unit;
+import com.pocketempire.world.HexUtils;
+import com.pocketempire.world.World;
 import java.util.List;
 
 public class ChaseState implements State {
     @Override
-    public void enter(com.pocketempire.entities.Unit unit) {}
+    public void enter(Unit unit) {}
 
     @Override
-    public void update(com.pocketempire.entities.Unit unit, com.pocketempire.world.World world) {
+    public void update(Unit unit, World world) {
         if (unit.getHp() < unit.getMaxHp() * 0.5) {
             unit.changeState(new FleeState(), UnitState.FLEEING);
             return;
@@ -19,9 +22,9 @@ public class ChaseState implements State {
 
         for (var faction : world.getFactions()) {
             if (String.valueOf(faction.getId()).equals(unit.getFactionId())) continue;
-            for (com.pocketempire.entities.Unit enemy : faction.getUnits()) {
+            for (Unit enemy : faction.getUnits()) {
                 if (enemy.getHp() <= 0) continue;
-                int dist = com.pocketempire.world.HexUtils.getDistance(unit.getQ(), unit.getR(), enemy.getQ(), enemy.getR());
+                int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), enemy.getQ(), enemy.getR());
                 if (dist < minDist) {
                     minDist = dist;
                     target = enemy;
@@ -46,6 +49,6 @@ public class ChaseState implements State {
     }
 
     @Override
-    public void exit(com.pocketempire.entities.Unit unit) {}
+    public void exit(Unit unit) {}
 }
 

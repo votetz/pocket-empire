@@ -14,6 +14,7 @@ import java.util.Optional;
 public class IdleState implements State {
 
     private static final double FLEE_THRESHOLD = 0.5;
+    private static final int ENTRENCH_RANGE = 5;
 
     @Override
     public void enter(Unit unit) {}
@@ -30,13 +31,15 @@ public class IdleState implements State {
         }
 
         Unit enemy = findNearestEnemy(unit, world.getAllUnits());
-        if (enemy != null) {
-            if (unit.getRange() > 1) {
-                unit.changeState(new SkirmishState(), UnitState.SKIRMISH);
-            } else {
-                unit.changeState(new AttackState(), UnitState.ATTACKING);
-            }
+        if (enemy == null || HexUtils.getDistance(unit.getQ(), unit.getR(), enemy.getQ(), enemy.getR()) > ENTRENCH_RANGE) {
+            unit.changeState(new EntrenchState(), UnitState.ENTRENCH);
             return;
+        }
+
+        if (unit.getRange() > 1) {
+            unit.changeState(new SkirmishState(), UnitState.SKIRMISH);
+        } else {
+            unit.changeState(new AttackState(), UnitState.ATTACKING);
         }
     }
 
