@@ -1,6 +1,7 @@
-package com.pocketempire.units;
+package com.pocketempire.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pocketempire.units.UnitStats;
 
 import java.io.InputStream;
 import java.util.HashMap;
