@@ -4,15 +4,15 @@ import lombok.Getter;
 
 public enum UnitType {
     // combat units
-    LIGHT(2),
-    ARCHER(3),
-    HEAVY(5),
-    MAGE(5),
-    SIEGE(5),
+    LIGHT(5),
+    ARCHER(6),
+    HEAVY(8),
+    MAGE(8),
+    SIEGE(8),
 
     // peaceful units
-    SETTLER(1),
-    WORKER(2);
+    SETTLER(4),
+    WORKER(5);
 
     @Getter
     private final int cost;
