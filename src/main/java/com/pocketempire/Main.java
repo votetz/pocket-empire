@@ -41,7 +41,7 @@ public class Main {
         faction2.addUnit(heavy2);
 
         City city1 = new City("city1", 5, 6, "Red Capital", 100, 100, 5, 10, "1", "leader1", 3);
-        City city2 = new City("city2", 15, 9, "Blue Capital", 100, 100, 5, 10, "2", "leader2", 3);
+        City city2 = new City("city2", 15, 9, "Purple Capital", 100, 100, 5, 10, "2", "leader2", 3);
         faction1.addCity(city1);
         faction2.addCity(city2);
 
