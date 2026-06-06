@@ -39,6 +39,7 @@ public class TurnManager {
         for (Faction other : factions) {
             if (other == faction || !other.isAlive()) continue;
             for (Unit enemy : other.getUnits()) {
+                if (!enemy.isAlive()) continue;
                 int dist = com.pocketempire.world.HexUtils.getDistance(
                         unit.getQ(), unit.getR(), enemy.getQ(), enemy.getR());
                 if (dist < minDist) {
@@ -134,6 +135,7 @@ public class TurnManager {
         }
 
         for (Unit unit : faction.getUnits()) {
+            if (!unit.isAlive()) continue;
             unit.resetOD();
             unit.update();
 
@@ -141,11 +143,15 @@ public class TurnManager {
                 unit.updateAI(world);
             }
 
+            if (!unit.isAlive()) continue;
+
             if (unit.getUnitState() == UnitState.FLEEING) {
                 moveUnitTowardCity(unit, faction);
             } else {
                 moveUnitTowardEnemy(unit, faction);
             }
+
+            if (!unit.isAlive()) continue;
             unit.getCurrentState().update(unit, world);
         }
 

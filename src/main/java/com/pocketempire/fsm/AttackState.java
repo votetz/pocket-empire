@@ -30,6 +30,9 @@ public class AttackState implements State {
                 CombatResolver.resolveCombat(unit, enemy);
                 unit.changeState(new IdleState(), UnitState.IDLE);
                 return;
+            } else {
+                unit.changeState(new ChaseState(), UnitState.CHASE);
+                return;
             }
         }
 
