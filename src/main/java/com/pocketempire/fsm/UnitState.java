@@ -4,4 +4,5 @@ public enum UnitState {
     IDLE,
     ATTACKING,
     FLEEING,
+    CHASE
 }
