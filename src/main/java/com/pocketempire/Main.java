@@ -17,7 +17,9 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Pocket Empire - Hexagonal Grid Test\n");
+        StatsDisplay statsDisplay = new StatsDisplay();
+        statsDisplay.displayStats();
+        System.out.println();
 
         int mapWidth = 50;
         int mapHeight = 15;

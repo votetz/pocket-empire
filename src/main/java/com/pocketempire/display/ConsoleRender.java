@@ -94,7 +94,8 @@ public class ConsoleRender {
             case WATER, SWAMPS         -> AnsiColor.BLUE;
             case OCEAN                 -> AnsiColor.CYAN;
             case DESERT, SAVANNA       -> AnsiColor.YELLOW;
-            case MOUNTAIN, CAVES       -> AnsiColor.GRAY;case TUNDRA                -> AnsiColor.WHITE;
+            case MOUNTAIN, CAVES       -> AnsiColor.GRAY;
+            case TUNDRA                -> AnsiColor.WHITE;
         };
         return color + tile.getType().symbol + AnsiColor.RESET;
     }
