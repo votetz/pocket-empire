@@ -11,6 +11,7 @@ import com.pocketempire.units.UnitType;
 import com.pocketempire.world.Map;
 import com.pocketempire.world.MapGenerator;
 import com.pocketempire.world.World;
+import com.pocketempire.config.UnitNamesLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,15 +33,15 @@ public class Main {
         Faction faction2 = new Faction(2, "Purple Tribe", 0x0000FF);
         faction2.setAI(true);
 
-        Unit warrior1 = UnitFactory.create(UnitType.LIGHT, "warrior1", 5, 5, "1");
-        Unit archer1 = UnitFactory.create(UnitType.ARCHER, "archer1", 6, 5, "1");
-        faction1.addUnit(warrior1);
+        Unit light1 = UnitFactory.create(UnitType.LIGHT, UnitNamesLoader.getRandomName(), 5, 5, "1");
+        Unit archer1 = UnitFactory.create(UnitType.ARCHER, UnitNamesLoader.getRandomName(), 5, 5, "1");
+        faction1.addUnit(light1);
         faction1.addUnit(archer1);
 
-        Unit warrior2 = UnitFactory.create(UnitType.LIGHT, "warrior2", 15, 10, "2");
-        Unit heavy2 = UnitFactory.create(UnitType.HEAVY, "heavy2", 14, 10, "2");
-        faction2.addUnit(warrior2);
-        faction2.addUnit(heavy2);
+        Unit light2 = UnitFactory.create(UnitType.LIGHT, UnitNamesLoader.getRandomName(), 5, 5, "2");
+        Unit archer2 = UnitFactory.create(UnitType.ARCHER, UnitNamesLoader.getRandomName(), 5, 5, "2");
+        faction2.addUnit(light2);
+        faction2.addUnit(archer2);
 
         City city1 = new City("city1", 5, 6, "Red Capital", 100, 100, 5, 10, "1", "leader1", 3);
         City city2 = new City("city2", 15, 9, "Purple Capital", 100, 100, 5, 10, "2", "leader2", 3);
