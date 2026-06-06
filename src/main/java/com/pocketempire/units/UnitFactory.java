@@ -1,5 +1,6 @@
 package com.pocketempire.units;
 
+import com.pocketempire.config.UnitConfigLoader;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.units.UnitType;
 
