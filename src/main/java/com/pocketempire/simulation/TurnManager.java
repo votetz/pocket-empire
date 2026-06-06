@@ -5,7 +5,7 @@ import com.pocketempire.entities.Unit;
 import com.pocketempire.entities.City;
 import com.pocketempire.units.UnitFactory;
 import com.pocketempire.units.UnitType;
-import com.pocketempire.units.UnitConfigLoader;
+import com.pocketempire.config.UnitConfigLoader;
 import com.pocketempire.world.World;
 import com.pocketempire.world.Tile;
 import com.pocketempire.world.HexUtils;
