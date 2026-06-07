@@ -83,8 +83,8 @@ public class Main {
             com.pocketempire.world.HexUtils.getDistance(6, 5, 14, 10) + " hexes");
         System.out.println();
 
-        System.out.println("Simulating 20 turns");
-        for (int i = 0; i < 20; i++) {
+        System.out.println("Simulating 50 turns");
+        for (int i = 0; i < 50; i++) {
             turnManager.nextTurn();
 
             allUnits.clear();
