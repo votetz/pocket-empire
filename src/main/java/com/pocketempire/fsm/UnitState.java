@@ -7,5 +7,7 @@ public enum UnitState {
     CHASE,
     SKIRMISH,
     ENTRENCH,
-    WANDER
+    WANDER,
+    SETTLING,
+    WORKING
 }

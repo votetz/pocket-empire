@@ -11,6 +11,14 @@
     "Ald", "Bron", "Cor", "Dar", "El", "Far", "Gar", "Hel", "Iso", "Kael",
     "Lor", "Mor", "Nor", "Ori", "Pyra", "Rav", "Syl", "Thorn", "Val", "Zeph"
   ],
+  "city_names":
+  [
+    "Avalon", "Bastion", "Crestfall", "Duskhaven", "Emberhold", "Frostkeep",
+    "Glimmerstone", "Highwall", "Ironforge", "Jadeport", "Kingsford",
+    "Lunaris", "Marblecrest", "Northwatch", "Oakvale", "Portsmouth",
+    "Quietmoor", "Ravenrock", "Silvergard", "Thornwall", "Unity",
+    "Valleyforge", "Whitestone", "Yorkshire", "Zenith"
+  ],
   "suffixes":
   [
     "ric", "mar", "wyn", "dor", "ian", "vek", "mir", "lund", "vos", "gard",

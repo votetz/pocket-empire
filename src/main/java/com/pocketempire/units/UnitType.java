@@ -6,6 +6,7 @@ public enum UnitType {
     HEAVY,
     MAGE,
     SIEGE,
+    GUARDIAN,
     SETTLER,
     WORKER
 }
