@@ -41,7 +41,8 @@ public class SkirmishState implements State {
 
         if (dist <= range) {
             // Within attack range = shoot
-            CombatResolver.resolveCombat(unit, target);
+            CombatResolver.resolveCombat(unit, target,
+                    world.getMap().getTile(target.getQ(), target.getR()).getType().getDefendBonus());
 
             // Enemy too close
             if (dist < range && unit.getRemainingOD() > 0) {
@@ -72,7 +73,8 @@ public class SkirmishState implements State {
                     unit.spendOD(cost);
                     unit.setQ(next.getQ());
                     unit.setR(next.getR());
-                    GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR, unit.getQ(), unit.getR()));
+                    GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR,
+                            unit.getQ(), unit.getR()));
 
                     if (distAfterStep == range) break;
                 }
@@ -81,7 +83,8 @@ public class SkirmishState implements State {
                 int newDist = HexUtils.getDistance(
                         unit.getQ(), unit.getR(), target.getQ(), target.getR());
                 if (newDist <= range) {
-                    CombatResolver.resolveCombat(unit, target);
+                    CombatResolver.resolveCombat(unit, target,
+                            world.getMap().getTile(target.getQ(), target.getR()).getType().getDefendBonus());
                 }
             }
         }

@@ -25,7 +25,8 @@ public class AttackState implements State {
             int dist = HexUtils.getDistance(
                     unit.getQ(), unit.getR(), enemy.getQ(), enemy.getR());
             if (dist <= unit.getRange()) {
-                CombatResolver.resolveCombat(unit, enemy);
+                CombatResolver.resolveCombat(unit, enemy,
+                        world.getMap().getTile(enemy.getQ(), enemy.getR()).getType().getDefendBonus());
                 unit.changeState(new IdleState(), UnitState.IDLE);
                 return;
             } else {

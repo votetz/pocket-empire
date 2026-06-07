@@ -9,14 +9,14 @@ import com.pocketempire.world.HexUtils;
 public class CombatResolver {
     private static final GameEventBus bus = GameEventBus.getInstance();
 
-    public static void resolveCombat(Unit attacker, Unit defender) {
-        int damageToDefender = calculateDamage(attacker.getAttack(), defender.getDefense());
+    public static void resolveCombat(Unit attacker, Unit defender, int terrainBonus) {
+        int damageToDefender = calculateDamage(attacker.getAttack(), defender.getDefense() + defender.getDefenseModifier() + terrainBonus);
         defender.takeDamage(damageToDefender);
         bus.publish(new GameEvent.UnitAttacked(attacker, defender, damageToDefender));
 
         int distance = calculateDistance(attacker, defender);
         if (defender.isAlive() && defender.getRange() >= distance) {
-            int damageToAttacker = calculateDamage(defender.getAttack(), attacker.getDefense());
+            int damageToAttacker = calculateDamage(defender.getAttack(), attacker.getDefense() + attacker.getDefenseModifier());
             attacker.takeDamage(damageToAttacker);
             bus.publish(new GameEvent.CounterAttacked(attacker, defender, damageToAttacker));
         }

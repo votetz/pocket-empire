@@ -9,7 +9,9 @@ import java.util.Comparator;
 
 public class EntrenchState implements State {
     @Override
-    public void enter(Unit unit) {}
+    public void enter(Unit unit) {
+        unit.setDefenseModifier(unit.getDefense() / 2);
+    }
 
     @Override
     public void update(Unit unit, World world) {
@@ -26,7 +28,9 @@ public class EntrenchState implements State {
     }
 
     @Override
-    public void exit(Unit unit) {}
+    public void exit(Unit unit) {
+        unit.setDefenseModifier(0);
+    }
 
     private Unit findNearestEnemy(Unit unit, World world) {
         return world.getAllUnits().stream()

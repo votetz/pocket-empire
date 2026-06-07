@@ -21,6 +21,7 @@ public class Unit extends Entity {
     private int speed;
     private final int range;
     private final int cost;
+    @Setter private int defenseModifier;
     private final String factionId;
     private final UnitType unitType;
     @Setter private UnitState unitState;
