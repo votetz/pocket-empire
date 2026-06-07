@@ -32,6 +32,13 @@ public class ConsoleLogger {
 
                 case GameEvent.UnitStateChanged(var unit) ->
                     System.out.println(unit.getName() + " is now " + unit.getUnitState().name());
+
+                case GameEvent.CityAttacked(var attacker, var city, var damage) ->
+                    System.out.println(attacker.getName() + " deals " + damage + " damage to "
+                            + city.getName() + " (" + city.getHp() + "/" + city.getMaxHp() + " HP)");
+
+                case GameEvent.CityDestroyed(var city, var attacker) ->
+                    System.out.println(city.getName() + " has been destroyed!");
             }
         });
     }

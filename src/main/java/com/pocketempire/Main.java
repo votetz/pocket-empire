@@ -1,7 +1,6 @@
 package com.pocketempire;
 
 import com.pocketempire.display.ConsoleRender;
-import com.pocketempire.display.StatsDisplay;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
@@ -19,10 +18,6 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        StatsDisplay statsDisplay = new StatsDisplay();
-        statsDisplay.displayStats();
-        System.out.println();
-
         int mapWidth = 50;
         int mapHeight = 15;
         Map map = MapGenerator.generateRandomMap(mapWidth, mapHeight);

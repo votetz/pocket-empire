@@ -14,8 +14,6 @@ import lombok.Setter;
 @Getter
 public class Unit extends Entity {
     private final String name;
-    private int hp;
-    private final int maxHp;
     private int attack;
     private int defense;
     private int speed;
@@ -29,10 +27,8 @@ public class Unit extends Entity {
     private int remainingOD;
 
     protected Unit(Builder builder) {
-        super(builder.id, builder.q, builder.r);
+        super(builder.id, builder.q, builder.r, builder.hp, builder.maxHp);
         this.name = builder.name;
-        this.hp = builder.hp;
-        this.maxHp = builder.maxHp;
         this.attack = builder.attack;
         this.defense = builder.defense;
         this.speed = builder.speed;
@@ -141,9 +137,6 @@ public static class Builder {
     }
 
 
-    @Override
-    public void update(){}
-
     public void updateAI(World world) {
         if (currentState != null) {
             currentState.update(this, world);
@@ -160,15 +153,4 @@ public static class Builder {
         GameEventBus.getInstance().publish(new GameEvent.UnitStateChanged(this));
     }
 
-    public boolean isAlive(){
-        return hp > 0;
-    }
-
-    public void takeDamage(int damage) {
-        hp = Math.max(0, hp - damage);
-    }
-
-    public void restoreHp(int amount) {
-        hp = Math.min(maxHp, hp + amount);
-    }
 }

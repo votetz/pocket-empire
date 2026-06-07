@@ -32,6 +32,7 @@ public class CombatResolver {
     public static void resolveCityAttack(Unit attacker, City city) {
         int damageToCity = calculateDamage(attacker.getAttack(), 0);
         city.takeDamage(damageToCity);
+        bus.publish(new GameEvent.CityAttacked(attacker, city, damageToCity));
     }
 
     private static int calculateDamage(int attack, int defense) {

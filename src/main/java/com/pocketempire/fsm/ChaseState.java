@@ -2,6 +2,8 @@ package com.pocketempire.fsm;
 
 import com.pocketempire.pathfinding.Pathfinder;
 import com.pocketempire.entities.Unit;
+import com.pocketempire.events.GameEvent;
+import com.pocketempire.events.GameEventBus;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
 import java.util.List;
@@ -17,30 +19,21 @@ public class ChaseState implements State {
             return;
         }
 
-        com.pocketempire.entities.Unit target = null;
-        int minDist = Integer.MAX_VALUE;
-
-        for (var faction : world.getFactions()) {
-            if (String.valueOf(faction.getId()).equals(unit.getFactionId())) continue;
-            for (Unit enemy : faction.getUnits()) {
-                if (enemy.getHp() <= 0) continue;
-                int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), enemy.getQ(), enemy.getR());
-                if (dist < minDist) {
-                    minDist = dist;
-                    target = enemy;
-                }
-            }
-        }
+        Unit target = world.findNearestEnemy(unit);
 
         if (target != null) {
-            if (minDist <= 1) {
+            int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), target.getQ(), target.getR());
+            if (dist <= 1) {
                 unit.changeState(new AttackState(), UnitState.ATTACKING);
-            } else {
+            } else if (unit.getRemainingOD() > 0) {
                 List<Pathfinder.Node> path = Pathfinder.findPath(world, unit.getQ(), unit.getR(), target.getQ(), target.getR(), unit);
                 if (path != null && path.size() > 1) {
                     Pathfinder.Node next = path.get(1);
+                    int fromQ = unit.getQ(), fromR = unit.getR();
                     unit.setQ(next.getQ());
                     unit.setR(next.getR());
+                    unit.spendOD(1);
+                    GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR, unit.getQ(), unit.getR()));
                 }
             }
         } else {

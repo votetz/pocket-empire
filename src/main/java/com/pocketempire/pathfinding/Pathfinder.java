@@ -66,7 +66,7 @@ public class Pathfinder {
                 Tile tile = world.getMap().getTile(nq, nr);
                 if (tile == null || tile.getType().isBlocksMovement()) continue;
 
-                if (isOccupied(world, nq, nr, unit)) continue;
+                if (world.isTileOccupied(nq, nr, unit)) continue;
 
                 int stepCost = tile.getType().getMovementCost();
                 double newG = current.g + stepCost;
@@ -80,15 +80,6 @@ public class Pathfinder {
             return buildPath(bestNode);
         }
         return Collections.emptyList();
-    }
-
-    private static boolean isOccupied(World world, int q, int r, Unit self) {
-        for (Unit u : world.getAllUnits()) {
-            if (u != self && u.isAlive() && u.getQ() == q && u.getR() == r) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private static List<Node> buildPath(Node end) {

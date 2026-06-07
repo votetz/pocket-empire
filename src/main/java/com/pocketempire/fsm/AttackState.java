@@ -2,11 +2,13 @@ package com.pocketempire.fsm;
 
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Unit;
+import com.pocketempire.events.GameEvent;
+import com.pocketempire.events.GameEventBus;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
 import com.pocketempire.simulation.CombatResolver;
 
-import java.util.Comparator;
+
 
 public class AttackState implements State {
     @Override
@@ -14,12 +16,7 @@ public class AttackState implements State {
 
     @Override
     public void update(Unit unit, World world) {
-        Unit enemy = world.getAllUnits().stream()
-                .filter(u -> !u.getFactionId().equals(unit.getFactionId()))
-                .filter(Unit::isAlive)
-                .min(Comparator.comparingInt(u -> HexUtils.getDistance(
-                        unit.getQ(), unit.getR(), u.getQ(), u.getR())))
-                .orElse(null);
+        Unit enemy = world.findNearestEnemy(unit);
 
         if (enemy != null) {
             int dist = HexUtils.getDistance(
@@ -39,14 +36,14 @@ public class AttackState implements State {
             }
         }
 
-        City targetCity = findNearestEnemyCity(unit, world);
+        City targetCity = world.findNearestEnemyCity(unit);
         if (targetCity != null) {
             int dist = HexUtils.getDistance(
                     unit.getQ(), unit.getR(), targetCity.getQ(), targetCity.getR());
             if (dist <= unit.getRange()) {
                 CombatResolver.resolveCityAttack(unit, targetCity);
                 if (!targetCity.isAlive()) {
-                    System.out.println(targetCity.getName() + " has been destroyed!");
+                    GameEventBus.getInstance().publish(new GameEvent.CityDestroyed(targetCity, unit));
                 }
             }
         }

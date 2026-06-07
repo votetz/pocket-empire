@@ -9,7 +9,6 @@ import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.Tile;
 import com.pocketempire.world.World;
 
-import java.util.Comparator;
 import java.util.List;
 
 public class SkirmishState implements State {
@@ -23,13 +22,7 @@ public class SkirmishState implements State {
             return;
         }
 
-        // Find nearest living enemy
-        Unit target = world.getAllUnits().stream()
-                .filter(u -> !u.getFactionId().equals(unit.getFactionId()))
-                .filter(Unit::isAlive)
-                .min(Comparator.comparingInt(u -> HexUtils.getDistance(
-                        unit.getQ(), unit.getR(), u.getQ(), u.getR())))
-                .orElse(null);
+        Unit target = world.findNearestEnemy(unit);
 
         if (target == null) {
             unit.changeState(new IdleState(), UnitState.IDLE);
@@ -63,7 +56,7 @@ public class SkirmishState implements State {
                     Tile tile = world.getMap().getTile(next.getQ(), next.getR());
                     if (tile == null || tile.getType().isBlocksMovement()) break;
 
-                    if (isTileOccupied(next.getQ(), next.getR(), unit, world)) break;
+                    if (world.isTileOccupied(next.getQ(), next.getR(), unit)) break;
 
                     int cost = tile.getType().getMovementCost();
                     if (unit.getRemainingOD() < cost) break;
@@ -113,7 +106,7 @@ public class SkirmishState implements State {
             if (tile == null || tile.getType().isBlocksMovement()) continue;
 
             // do not repeat
-            if (isTileOccupied(nq, nr, unit, world)) continue;
+            if (world.isTileOccupied(nq, nr, unit)) continue;
 
             int cost    = tile.getType().getMovementCost();
             int newDist = HexUtils.getDistance(nq, nr, target.getQ(), target.getR());
@@ -135,15 +128,6 @@ public class SkirmishState implements State {
             unit.setR(bestR);
             GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR, unit.getQ(), unit.getR()));
         }
-    }
-
-    private boolean isTileOccupied(int q, int r, Unit self, World world) {
-        for (Unit u : world.getAllUnits()) {
-            if (u != self && u.isAlive() && u.getQ() == q && u.getR() == r) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

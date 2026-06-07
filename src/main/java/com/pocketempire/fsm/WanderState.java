@@ -7,7 +7,7 @@ import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.Tile;
 import com.pocketempire.world.World;
 
-import java.util.Comparator;
+
 
 public class WanderState implements State {
     @Override
@@ -15,7 +15,7 @@ public class WanderState implements State {
 
     @Override
     public void update(Unit unit, World world) {
-        Unit nearest = findNearestEnemy(unit, world);
+        Unit nearest = world.findNearestEnemy(unit);
         if (nearest != null) {
             int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), nearest.getQ(), nearest.getR());
             if (dist <= unit.getRange()) {
@@ -55,13 +55,4 @@ public class WanderState implements State {
 
     @Override
     public void exit(Unit unit) {}
-
-    private Unit findNearestEnemy(Unit unit, World world) {
-        return world.getAllUnits().stream()
-                .filter(u -> !u.getFactionId().equals(unit.getFactionId()))
-                .filter(Unit::isAlive)
-                .min(Comparator.comparingInt(u -> HexUtils.getDistance(
-                        unit.getQ(), unit.getR(), u.getQ(), u.getR())))
-                .orElse(null);
-    }
 }

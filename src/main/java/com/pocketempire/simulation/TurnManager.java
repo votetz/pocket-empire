@@ -38,22 +38,7 @@ public class TurnManager {
     }
 
     private void moveUnitTowardEnemy(Unit unit, Faction faction) {
-        Unit target = null;
-        int minDist = Integer.MAX_VALUE;
-
-        for (Faction other : factions) {
-            if (other == faction || !other.isAlive()) continue;
-            for (Unit enemy : other.getUnits()) {
-                if (!enemy.isAlive()) continue;
-                int dist = com.pocketempire.world.HexUtils.getDistance(
-                        unit.getQ(), unit.getR(), enemy.getQ(), enemy.getR());
-                if (dist < minDist) {
-                    minDist = dist;
-                    target = enemy;
-                }
-            }
-        }
-
+        Unit target = world.findNearestEnemy(unit);
         if (target == null) return;
 
         while (unit.getRemainingOD() > 0) {
@@ -190,6 +175,7 @@ public class TurnManager {
         }
 
         int cost = UnitConfigLoader.getConfig(city.getCurrentProductionType().name()).getCost();
+        boolean spawned = false;
 
         while (city.getAccumulatedProduction() >= cost && faction.getGold() >= cost) {
             int[] spawn = findSpawnTile(city);
@@ -202,6 +188,12 @@ public class TurnManager {
             faction.spendGold(cost);
             city.setAccumulatedProduction(city.getAccumulatedProduction() - cost);
             GameEventBus.getInstance().publish(new GameEvent.UnitSpawned(unit));
+            spawned = true;
+        }
+
+        if (spawned) {
+            city.setCurrentProductionType(null);
+            city.setAccumulatedProduction(0);
         }
     }
 
@@ -235,20 +227,10 @@ public class TurnManager {
             if (!world.getMap().isInBounds(nq, nr)) continue;
             Tile tile = world.getMap().getTile(nq, nr);
             if (tile == null || tile.getType().isBlocksMovement()) continue;
-            if (isTileOccupied(nq, nr)) continue;
+            if (world.isTileOccupied(nq, nr)) continue;
             return new int[]{nq, nr};
         }
         return null;
-    }
-
-    private boolean isTileOccupied(int q, int r) {
-        for (Faction f : factions) {
-            if (!f.isAlive()) continue;
-            for (Unit u : f.getUnits()) {
-                if (u.isAlive() && u.getQ() == q && u.getR() == r) return true;
-            }
-        }
-        return false;
     }
 
     private void processGlobalTurnEffects() {

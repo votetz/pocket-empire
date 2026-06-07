@@ -5,7 +5,7 @@ import com.pocketempire.fsm.UnitState;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
 
-import java.util.Comparator;
+
 
 public class EntrenchState implements State {
     @Override
@@ -15,7 +15,7 @@ public class EntrenchState implements State {
 
     @Override
     public void update(Unit unit, World world) {
-        Unit nearest = findNearestEnemy(unit, world);
+        Unit nearest = world.findNearestEnemy(unit);
         if (nearest == null) return;
 
         int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), nearest.getQ(), nearest.getR());
@@ -30,14 +30,5 @@ public class EntrenchState implements State {
     @Override
     public void exit(Unit unit) {
         unit.setDefenseModifier(0);
-    }
-
-    private Unit findNearestEnemy(Unit unit, World world) {
-        return world.getAllUnits().stream()
-                .filter(u -> !u.getFactionId().equals(unit.getFactionId()))
-                .filter(Unit::isAlive)
-                .min(Comparator.comparingInt(u -> HexUtils.getDistance(
-                        unit.getQ(), unit.getR(), u.getQ(), u.getR())))
-                .orElse(null);
     }
 }

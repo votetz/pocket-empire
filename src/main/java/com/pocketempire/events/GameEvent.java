@@ -1,5 +1,6 @@
 package com.pocketempire.events;
 
+import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
 
@@ -12,4 +13,6 @@ public sealed interface GameEvent {
     record CounterAttacked(Unit attacker, Unit defender, int damage) implements GameEvent {}
     record UnitSpawned(Unit unit) implements GameEvent {}
     record UnitStateChanged(Unit unit) implements GameEvent {}
+    record CityAttacked(Unit attacker, City city, int damage) implements GameEvent {}
+    record CityDestroyed(City city, Unit attacker) implements GameEvent {}
 }

@@ -8,7 +8,6 @@ import com.pocketempire.entities.Unit;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
 
-import java.util.Comparator;
 import java.util.Optional;
 
 public class IdleState implements State {
@@ -31,7 +30,7 @@ public class IdleState implements State {
             return;
         }
 
-        Unit enemy = findNearestEnemy(unit, world.getAllUnits());
+        Unit enemy = world.findNearestEnemy(unit);
         if (enemy == null) {
             unit.changeState(new WanderState(), UnitState.WANDER);
             return;
@@ -77,12 +76,4 @@ public class IdleState implements State {
 
     @Override
     public void exit(Unit unit) {}
-
-    private Unit findNearestEnemy(Unit unit, java.util.List<Unit> allUnits) {
-        return allUnits.stream()
-                .filter(u -> !u.getFactionId().equals(unit.getFactionId()))
-                .filter(Unit::isAlive)
-                .min(Comparator.comparingInt(u -> HexUtils.getDistance(unit.getQ(), unit.getR(), u.getQ(), u.getR())))
-                .orElse(null);
-    }
 }

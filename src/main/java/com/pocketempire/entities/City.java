@@ -7,8 +7,6 @@ import lombok.Setter;
 @Getter
 public class City extends Entity {
     private final String name;
-    @Setter private int hp;
-    @Setter private int maxHp;
     @Setter private int population;
     @Setter private int maxPopulation;
     @Setter private String factionId;
@@ -19,10 +17,8 @@ public class City extends Entity {
     @Setter private int borderRadius;
 
     public City(String id, int q, int r, String name, int hp, int maxHp, int population, int maxPopulation, String factionId, String leaderId, int production) {
-        super(id, q, r);
+        super(id, q, r, hp, maxHp);
         this.name = name;
-        this.hp = hp;
-        this.maxHp = maxHp;
         this.population = population;
         this.maxPopulation = maxPopulation;
         this.factionId = factionId;
@@ -40,15 +36,4 @@ public class City extends Entity {
         }
     }
 
-    public boolean isAlive(){
-        return hp > 0;
-    }
-
-    public void takeDamage(int damage) {
-        hp = Math.max(0, hp - damage);
-    }
-
-    public void restoreHp(int amount) {
-        hp = Math.min(maxHp, hp + amount);
-    }
 }
