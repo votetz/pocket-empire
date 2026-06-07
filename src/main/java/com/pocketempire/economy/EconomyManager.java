@@ -1,15 +1,43 @@
 package com.pocketempire.economy;
 
+import com.pocketempire.entities.City;
+import com.pocketempire.world.HexUtils;
+import com.pocketempire.world.Map;
+import com.pocketempire.world.Tile;
+import com.pocketempire.world.World;
+
 public class EconomyManager {
     private static final int GOLD_PER_CITY = 10;
     private static final int GOLD_PER_UNIT_MAINTENANCE = 2;
+    private static final int GOLD_PER_IMPROVED_TILE = 1;
+    private static final int IMPROVED_TILE_RADIUS = 2;
 
-    public void processFactionEconomy(com.pocketempire.entities.Faction faction) {
+    public void processFactionEconomy(com.pocketempire.entities.Faction faction, World world) {
         int income = faction.getCityCount() * GOLD_PER_CITY;
         int maintenance = faction.getUnitCount() * GOLD_PER_UNIT_MAINTENANCE;
-        int netProfit = income - maintenance;
+        int improvedTileBonus = countImprovedTilesNearCities(faction, world.getMap());
 
+        int netProfit = income - maintenance + improvedTileBonus;
         faction.addGold(netProfit);
+    }
+
+    private int countImprovedTilesNearCities(com.pocketempire.entities.Faction faction, Map map) {
+        int count = 0;
+        for (int col = 0; col < map.getWidth(); col++) {
+            for (int row = 0; row < map.getHeight(); row++) {
+                Tile tile = map.getTileOffSet(col, row);
+                if (tile == null || !tile.isImproved()) continue;
+                int q = col - (row - (row & 1)) / 2;
+                int r = row;
+                for (City city : faction.getCities()) {
+                    if (HexUtils.getDistance(q, r, city.getQ(), city.getR()) <= IMPROVED_TILE_RADIUS) {
+                        count++;
+                        break;
+                    }
+                }
+            }
+        }
+        return count;
     }
 
     public boolean canAffordUnit(com.pocketempire.entities.Faction faction, int cost) {

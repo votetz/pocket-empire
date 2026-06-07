@@ -39,6 +39,12 @@ public class ConsoleLogger {
 
                 case GameEvent.CityDestroyed(var city, var attacker) ->
                     System.out.println(city.getName() + " has been destroyed!");
+
+                case GameEvent.CityFounded(var city, var settler) ->
+                    System.out.println(city.getName() + " founded by " + settler.getName());
+
+                case GameEvent.TileImproved(var tile, var worker) ->
+                    System.out.println("Tile (" + tile.getQ() + "," + tile.getR() + ") improved by " + worker.getName());
             }
         });
     }

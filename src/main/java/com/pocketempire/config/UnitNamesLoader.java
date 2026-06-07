@@ -47,4 +47,13 @@ public class UnitNamesLoader {
 
         return "Unknown Unit";
     }
+
+    public static String getRandomCityName() {
+        if (config == null || config.city_names == null || config.city_names.isEmpty()) {
+            return "New City";
+        }
+        String name = config.city_names.remove(random.nextInt(config.city_names.size()));
+        usedNames.add(name);
+        return name;
+    }
 }

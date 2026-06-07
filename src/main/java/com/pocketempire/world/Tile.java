@@ -9,9 +9,10 @@ import com.pocketempire.tiles.TileType;
 @AllArgsConstructor
 @Getter
 public class Tile {
-    private int q;  // axial coordinate q
-    private int r;  // axial coordinate r
+    private int q;
+    private int r;
     private TileType type;
+    private boolean improved;
 
     // Cube coordinates for 3D rendering
     public int cubeX() {

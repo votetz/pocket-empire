@@ -5,6 +5,7 @@ import com.pocketempire.events.GameEventBus;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
+import com.pocketempire.units.UnitType;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
 
@@ -21,6 +22,15 @@ public class IdleState implements State {
 
     @Override
     public void update(Unit unit, World world) {
+        if (unit.getUnitType() == UnitType.SETTLER) {
+            unit.changeState(new SettleState(), UnitState.SETTLING);
+            return;
+        }
+        if (unit.getUnitType() == UnitType.WORKER) {
+            unit.changeState(new WorkState(), UnitState.WORKING);
+            return;
+        }
+
         if (unit.getHp() < unit.getMaxHp()) {
             healAtBorder(unit, world);
         }

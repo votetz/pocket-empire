@@ -55,6 +55,7 @@ public class ConsoleRender {
         int q = col - (row - (row & 1)) / 2;
         int r = row;
         return units.stream()
+                .filter(Unit::isAlive)
                 .filter(u -> u.getQ() == q && u.getR() == r)
                 .findFirst()
                 .orElse(null);
@@ -83,6 +84,7 @@ public class ConsoleRender {
             case HEAVY  -> "H";
             case MAGE   -> "M";
             case SIEGE  -> "S";
+            case GUARDIAN -> "G";
             case SETTLER -> "T";
             case WORKER -> "W";
         };

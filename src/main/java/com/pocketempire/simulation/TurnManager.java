@@ -128,7 +128,7 @@ public class TurnManager {
 
         GameEventBus.getInstance().publish(new GameEvent.TurnStarted(currentTurn, faction));
 
-        economyManager.processFactionEconomy(faction);
+        economyManager.processFactionEconomy(faction, world);
 
         for (Unit unit : faction.getUnits()) {
             if (!unit.isAlive()) continue;
@@ -148,13 +148,13 @@ public class TurnManager {
             }
         }
 
+        cleanDeadUnits();
+
         for (City city : faction.getCities()) {
             if (!city.isAlive()) continue;
             city.update();
             trySpawnUnit(city, faction);
         }
-
-        cleanDeadUnits();
     }
 
     private void cleanDeadUnits() {
@@ -198,6 +198,14 @@ public class TurnManager {
     }
 
     private void chooseProductionForAI(City city, Faction faction) {
+        Random rng = new Random();
+
+        if (rng.nextDouble() < 0.25 && faction.getCities().size() < 4) {
+            city.setCurrentProductionType(
+                    rng.nextBoolean() ? UnitType.SETTLER : UnitType.WORKER);
+            return;
+        }
+
         Unit nearest = null;
         int minDist = Integer.MAX_VALUE;
         for (Faction other : factions) {
@@ -210,8 +218,8 @@ public class TurnManager {
         }
 
         if (nearest == null || minDist > 10) {
-            UnitType[] combat = {UnitType.LIGHT, UnitType.ARCHER, UnitType.HEAVY, UnitType.MAGE, UnitType.SIEGE};
-            city.setCurrentProductionType(combat[new Random().nextInt(combat.length)]);
+            UnitType[] combat = {UnitType.LIGHT, UnitType.ARCHER, UnitType.HEAVY, UnitType.MAGE, UnitType.SIEGE, UnitType.GUARDIAN};
+            city.setCurrentProductionType(combat[rng.nextInt(combat.length)]);
             return;
         }
 

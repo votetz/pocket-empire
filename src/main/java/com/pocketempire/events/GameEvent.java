@@ -3,6 +3,7 @@ package com.pocketempire.events;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
+import com.pocketempire.world.Tile;
 
 public sealed interface GameEvent {
     record UnitMoved(Unit unit, int fromQ, int fromR, int toQ, int toR) implements GameEvent {}
@@ -15,4 +16,6 @@ public sealed interface GameEvent {
     record UnitStateChanged(Unit unit) implements GameEvent {}
     record CityAttacked(Unit attacker, City city, int damage) implements GameEvent {}
     record CityDestroyed(City city, Unit attacker) implements GameEvent {}
+    record CityFounded(City city, Unit settler) implements GameEvent {}
+    record TileImproved(Tile tile, Unit worker) implements GameEvent {}
 }
