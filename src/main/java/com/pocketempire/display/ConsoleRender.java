@@ -64,6 +64,7 @@ public class ConsoleRender {
         String color = switch (city.getFactionId()) {
             case "1" -> AnsiColor.BRIGHT_RED;
             case "2" -> AnsiColor.PURPLE;
+            case "3" -> AnsiColor.ORANGE;
             default  -> AnsiColor.WHITE;
         };
         return color + "C" + AnsiColor.RESET;
@@ -73,6 +74,7 @@ public class ConsoleRender {
         String color = switch (unit.getFactionId()) {
             case "1" -> AnsiColor.BRIGHT_RED;
             case "2" -> AnsiColor.PURPLE;
+            case "3" -> AnsiColor.ORANGE;
             default  -> AnsiColor.WHITE;
         };
         String symbol = switch (unit.getUnitType()) {

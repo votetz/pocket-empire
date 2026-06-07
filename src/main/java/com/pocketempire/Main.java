@@ -26,7 +26,6 @@ public class Main {
         int mapWidth = 50;
         int mapHeight = 15;
         Map map = MapGenerator.generateRandomMap(mapWidth, mapHeight);
-        System.out.println("Map generated: " + mapWidth + "x" + mapHeight + " hexagonal grid\n");
 
         Faction faction1 = new Faction(1, "Red Tribe", 0xFF0000);
         faction1.setAI(true);
@@ -34,13 +33,16 @@ public class Main {
         Faction faction2 = new Faction(2, "Purple Tribe", 0x0000FF);
         faction2.setAI(true);
 
+        Faction faction3 = new Faction(3, "Orange Kingdom", 0x00FF00);
+        faction3.setAI(true);
+
         Unit light1 = UnitFactory.create(UnitType.LIGHT, "light_1", UnitNamesLoader.getRandomName(), 5, 5, "1");
-        Unit archer1 = UnitFactory.create(UnitType.ARCHER, "archer_1", UnitNamesLoader.getRandomName(), 5, 5, "1");
+        Unit archer1 = UnitFactory.create(UnitType.ARCHER, "archer_1", UnitNamesLoader.getRandomName(), 6, 5, "1");
         faction1.addUnit(light1);
         faction1.addUnit(archer1);
 
-        Unit light2 = UnitFactory.create(UnitType.LIGHT, "light_2", UnitNamesLoader.getRandomName(), 5, 5, "2");
-        Unit archer2 = UnitFactory.create(UnitType.ARCHER, "archer_2", UnitNamesLoader.getRandomName(), 5, 5, "2");
+        Unit light2 = UnitFactory.create(UnitType.LIGHT, "light_2", UnitNamesLoader.getRandomName(), 15, 8, "2");
+        Unit archer2 = UnitFactory.create(UnitType.ARCHER, "archer_2", UnitNamesLoader.getRandomName(), 16, 9, "2");
         faction2.addUnit(light2);
         faction2.addUnit(archer2);
 
@@ -49,14 +51,24 @@ public class Main {
         faction1.addCity(city1);
         faction2.addCity(city2);
 
+        Unit light3 = UnitFactory.create(UnitType.LIGHT, "light_3", UnitNamesLoader.getRandomName(), 25, 5, "3");
+        Unit archer3 = UnitFactory.create(UnitType.ARCHER, "archer_3", UnitNamesLoader.getRandomName(), 26, 5, "3");
+        faction3.addUnit(light3);
+        faction3.addUnit(archer3);
+
+        City city3 = new City("city3", 25, 6, "Orange Capital", 100, 100, 5, 10, "3", "leader3", 3);
+        faction3.addCity(city3);
+
         System.out.println("Factions created:");
         System.out.println("  " + faction1.getName() + " - Units: " + faction1.getUnitCount() + ", Cities: " + faction1.getCityCount());
         System.out.println("  " + faction2.getName() + " - Units: " + faction2.getUnitCount() + ", Cities: " + faction2.getCityCount());
+        System.out.println("  " + faction3.getName() + " - Units: " + faction3.getUnitCount() + ", Cities: " + faction3.getCityCount());
         System.out.println();
 
         List<Faction> factions = new ArrayList<>();
         factions.add(faction1);
         factions.add(faction2);
+        factions.add(faction3);
         World world = new World(map, factions);
 
         TurnManager turnManager = new TurnManager(factions, world);
@@ -65,10 +77,12 @@ public class Main {
         List<Unit> allUnits = new ArrayList<>();
         allUnits.addAll(faction1.getUnits());
         allUnits.addAll(faction2.getUnits());
+        allUnits.addAll(faction3.getUnits());
 
         List<City> allCities = new ArrayList<>();
         allCities.addAll(faction1.getCities());
         allCities.addAll(faction2.getCities());
+        allCities.addAll(faction3.getCities());
 
         ConsoleRender renderer = new ConsoleRender(map, allUnits, allCities);
 
@@ -76,23 +90,18 @@ public class Main {
         renderer.render();
         System.out.println();
 
-        System.out.println("Hex Distance Test");
-        System.out.println("Distance between warrior1 (5,5) and warrior2 (15,10): " + 
-            com.pocketempire.world.HexUtils.getDistance(5, 5, 15, 10) + " hexes");
-        System.out.println("Distance between archer1 (6,5) and heavy2 (14,10): " + 
-            com.pocketempire.world.HexUtils.getDistance(6, 5, 14, 10) + " hexes");
-        System.out.println();
-
-        System.out.println("Simulating 50 turns");
-        for (int i = 0; i < 50; i++) {
+        System.out.println("Simulating 33 turns");
+        for (int i = 0; i < 99; i++) {
             turnManager.nextTurn();
 
             allUnits.clear();
             allUnits.addAll(faction1.getUnits());
             allUnits.addAll(faction2.getUnits());
+            allUnits.addAll(faction3.getUnits());
             allCities.clear();
             allCities.addAll(faction1.getCities());
             allCities.addAll(faction2.getCities());
+            allCities.addAll(faction3.getCities());
             renderer.render();
             
             if (turnManager.isGameOver()) {

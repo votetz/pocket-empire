@@ -15,4 +15,5 @@ public class AnsiColor {
     public static final String BRIGHT_YELLOW = "\u001B[93m";
     public static final String BRIGHT_RED = "\u001B[91m";
     public static final String BRIGHT_MAGENTA = "\u001B[95m";
+    public static final String ORANGE = "\u001B[38;5;208m";
 }
