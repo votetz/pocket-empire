@@ -6,5 +6,6 @@ public enum UnitState {
     FLEEING,
     CHASE,
     SKIRMISH,
-    ENTRENCH
+    ENTRENCH,
+    WANDER
 }

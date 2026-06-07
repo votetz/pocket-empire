@@ -15,6 +15,7 @@ public class IdleState implements State {
 
     private static final double FLEE_THRESHOLD = 0.5;
     private static final int ENTRENCH_RANGE = 5;
+    private static final int WANDER_RANGE = 15;
 
     @Override
     public void enter(Unit unit) {}
@@ -31,7 +32,19 @@ public class IdleState implements State {
         }
 
         Unit enemy = findNearestEnemy(unit, world.getAllUnits());
-        if (enemy == null || HexUtils.getDistance(unit.getQ(), unit.getR(), enemy.getQ(), enemy.getR()) > ENTRENCH_RANGE) {
+        if (enemy == null) {
+            unit.changeState(new WanderState(), UnitState.WANDER);
+            return;
+        }
+
+        int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), enemy.getQ(), enemy.getR());
+
+        if (dist > WANDER_RANGE) {
+            unit.changeState(new WanderState(), UnitState.WANDER);
+            return;
+        }
+
+        if (dist > ENTRENCH_RANGE) {
             unit.changeState(new EntrenchState(), UnitState.ENTRENCH);
             return;
         }
