@@ -17,7 +17,7 @@ public enum TileType {
     TUNDRA  (2, false, '*', 1),
 
     // mountain
-    MOUNTAIN(3, true,  '^', 2),
+    MOUNTAIN(3, true,  '^', 0),
     CAVES   (2, false, '#', 2),
 
     // water

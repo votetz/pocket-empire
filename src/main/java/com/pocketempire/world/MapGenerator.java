@@ -3,43 +3,40 @@ package com.pocketempire.world;
 import com.pocketempire.tiles.TileFactory;
 import com.pocketempire.tiles.TileType;
 
-import java.util.Random;
-
 public class MapGenerator {
     public static Map generateRandomMap(int width, int height) {
-        Tile[][] tiles = new Tile[width][height];
-        Random random = new Random();
+        return generateRandomMap(width, height, System.nanoTime());
+    }
 
-        // offset
+    public static Map generateRandomMap(int width, int height, long seed) {
+        Tile[][] tiles = new Tile[width][height];
+        PerlinNoise elevNoise = new PerlinNoise((int) seed);
+        PerlinNoise moistNoise = new PerlinNoise((int) (seed + 1));
+
+        double freq = 0.04;
+
         for (int col = 0; col < width; col++) {
             for (int row = 0; row < height; row++) {
-                // offset to axial for tile
                 int q = col - (row - (row & 1)) / 2;
                 int r = row;
 
-                // ocean
-                if (col == 0 || col == width - 1 || row == 0 || row == height - 1) {
-                    tiles[col][row] = TileFactory.create(q, r, TileType.OCEAN);
-                    continue;
-                }
+                double elev = (elevNoise.noise(q * freq, r * freq) + 1) / 2;
+                double moist = (moistNoise.noise(q * freq + 10, r * freq + 10) + 1) / 2;
 
-                int roll = random.nextInt(100);
-                TileType type;
-                if      (roll < 30) type = TileType.GRASS;
-                else if (roll < 45) type = TileType.FOREST;
-                else if (roll < 55) type = TileType.MOUNTAIN;
-                else if (roll < 65) type = TileType.WATER;
-                else if (roll < 75) type = TileType.DESERT;
-                else if (roll < 82) type = TileType.PLAINS;
-                else if (roll < 88) type = TileType.JUNGLE;
-                else if (roll < 93) type = TileType.TAIGA;
-                else if (roll < 96) type = TileType.TUNDRA;
-                else if (roll < 98) type = TileType.SWAMPS;
-                else                type = TileType.CAVES;
-
+                TileType type = resolveTile(elev, moist);
                 tiles[col][row] = TileFactory.create(q, r, type);
             }
         }
         return new Map(width, height, tiles);
+    }
+
+    private static TileType resolveTile(double elev, double moist) {
+        if (elev < 0.25) return TileType.OCEAN;
+        if (elev < 0.30) return TileType.WATER;
+        if (elev < 0.35) return TileType.DESERT;
+        if (elev < 0.55) return moist < 0.4 ? TileType.DESERT : moist < 0.7 ? TileType.GRASS : TileType.FOREST;
+        if (elev < 0.70) return moist < 0.3 ? TileType.PLAINS : moist < 0.6 ? TileType.FOREST : TileType.SWAMPS;
+        if (elev < 0.80) return moist < 0.4 ? TileType.TUNDRA : TileType.TAIGA;
+        return moist < 0.5 ? TileType.MOUNTAIN : TileType.CAVES;
     }
 }
