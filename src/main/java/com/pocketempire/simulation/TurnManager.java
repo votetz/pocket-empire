@@ -13,6 +13,7 @@ import com.pocketempire.world.World;
 import com.pocketempire.world.Tile;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.fsm.UnitState;
+import com.pocketempire.economy.EconomyManager;
 import com.pocketempire.pathfinding.Pathfinder;
 import com.pocketempire.pathfinding.Pathfinder.Node;
 
@@ -27,6 +28,7 @@ public class TurnManager {
     private List<Faction> factions;
     private World world;
     private int unitCounter;
+    private final EconomyManager economyManager = new EconomyManager();
 
     public TurnManager(List<Faction> factions, World world) {
         this.factions = factions;
@@ -141,6 +143,8 @@ public class TurnManager {
 
         GameEventBus.getInstance().publish(new GameEvent.TurnStarted(currentTurn, faction));
 
+        economyManager.processFactionEconomy(faction);
+
         for (Unit unit : faction.getUnits()) {
             if (!unit.isAlive()) continue;
             unit.resetOD();
@@ -154,7 +158,7 @@ public class TurnManager {
 
             if (unit.getUnitState() == UnitState.FLEEING) {
                 moveUnitTowardCity(unit, faction);
-            } else if (unit.getRange() == 1) {
+            } else if (unit.getRange() == 1 && unit.getUnitState() != UnitState.WANDER) {
                 moveUnitTowardEnemy(unit, faction);
             }
         }
@@ -187,7 +191,7 @@ public class TurnManager {
 
         int cost = UnitConfigLoader.getConfig(city.getCurrentProductionType().name()).getCost();
 
-        while (city.getAccumulatedProduction() >= cost) {
+        while (city.getAccumulatedProduction() >= cost && faction.getGold() >= cost) {
             int[] spawn = findSpawnTile(city);
             if (spawn == null) break;
 
@@ -195,6 +199,7 @@ public class TurnManager {
                     + "_" + (++unitCounter);
             Unit unit = UnitFactory.create(city.getCurrentProductionType(), unitId, UnitNamesLoader.getRandomName(), spawn[0], spawn[1], city.getFactionId());
             faction.addUnit(unit);
+            faction.spendGold(cost);
             city.setAccumulatedProduction(city.getAccumulatedProduction() - cost);
             GameEventBus.getInstance().publish(new GameEvent.UnitSpawned(unit));
         }

@@ -1,17 +1,20 @@
 package com.pocketempire.entities;
 
-import java.util.ArrayList;
 import lombok.Getter;
+import lombok.Setter;
 
+import java.util.ArrayList;
 
+@Getter
 public class Faction {
-    @Getter private int id;
-    @Getter private String name;
-    @Getter private int color;
-    @Getter private ArrayList<Unit> units;
-    @Getter private ArrayList<City> cities;
-    private boolean isAlive;
-    private boolean isAI;
+    private int id;
+    private String name;
+    private int color;
+    private ArrayList<Unit> units;
+    private ArrayList<City> cities;
+    @Setter private boolean isAlive;
+    @Setter private boolean isAI;
+    @Setter private int gold;
 
     public Faction(int id, String name, int color) {
         this.id = id;
@@ -20,14 +23,17 @@ public class Faction {
         this.units = new ArrayList<>();
         this.cities = new ArrayList<>();
         this.isAlive = true;
+        this.gold = 10;
     }
 
-    public boolean isAlive() {
-        return isAlive;
+    public void addGold(int amount) {
+        this.gold += amount;
     }
 
-    public void setAlive(boolean alive) {
-        isAlive = alive;
+    public boolean spendGold(int amount) {
+        if (gold < amount) return false;
+        gold -= amount;
+        return true;
     }
 
     public void addUnit(Unit unit) {
@@ -52,13 +58,5 @@ public class Faction {
 
     public int getCityCount() {
         return cities.size();
-    }
-
-    public boolean isAI() {
-        return isAI;
-    }
-
-    public void setAI(boolean isAI) {
-        this.isAI = isAI;
     }
 }
