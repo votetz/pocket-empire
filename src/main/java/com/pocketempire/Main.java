@@ -68,7 +68,12 @@ public class Main {
         factions.add(faction3);
         World world = new World(map, factions);
 
-        TurnManager turnManager = new TurnManager(factions, world);
+        List<FogMap> fogMaps = new ArrayList<>();
+        for (Faction ignored : factions) {
+            fogMaps.add(new FogMap(map));
+        }
+
+        TurnManager turnManager = new TurnManager(factions, world, fogMaps);
         new ConsoleLogger();
 
         List<Unit> allUnits = new ArrayList<>();
@@ -82,11 +87,6 @@ public class Main {
         allCities.addAll(faction3.getCities());
 
         ConsoleRender renderer = new ConsoleRender(map, allUnits, allCities);
-
-        List<FogMap> fogMaps = new ArrayList<>();
-        for (Faction ignored : factions) {
-            fogMaps.add(new FogMap(map));
-        }
 
         System.out.println("Initial Map");
         FogMap firstFog = fogMaps.get(0);

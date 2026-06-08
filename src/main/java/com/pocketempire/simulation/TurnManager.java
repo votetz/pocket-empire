@@ -10,6 +10,8 @@ import com.pocketempire.config.UnitNamesLoader;
 import com.pocketempire.events.GameEvent;
 import com.pocketempire.events.GameEventBus;
 import com.pocketempire.world.World;
+import com.pocketempire.world.VisibleWorld;
+import com.pocketempire.world.FogMap;
 import com.pocketempire.world.Tile;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.fsm.UnitState;
@@ -28,25 +30,27 @@ public class TurnManager {
     private int currentFactionIndex;
     private List<Faction> factions;
     private World world;
+    private List<FogMap> fogMaps;
     private int unitCounter;
     private final EconomyManager economyManager = new EconomyManager();
     private final VictoryManager victoryManager;
 
-    public TurnManager(List<Faction> factions, World world) {
+    public TurnManager(List<Faction> factions, World world, List<FogMap> fogMaps) {
         this.factions = factions;
         this.world = world;
+        this.fogMaps = fogMaps;
         this.currentTurn = 1;
         this.currentFactionIndex = 0;
         this.victoryManager = new VictoryManager(factions);
     }
 
-    private void moveUnitTowardEnemy(Unit unit, Faction faction) {
-        Unit target = world.findNearestEnemy(unit);
+    private void moveUnitTowardEnemy(Unit unit, Faction faction, World aiWorld) {
+        Unit target = aiWorld.findNearestEnemy(unit);
         if (target == null) return;
 
         while (unit.getRemainingOD() > 0) {
             List<Node> path = Pathfinder.findPath(
-                    world,
+                    aiWorld,
                     unit.getQ(), unit.getR(),
                     target.getQ(), target.getR(),
                     unit
@@ -58,7 +62,7 @@ public class TurnManager {
             int dq = next.getQ() - unit.getQ();
             int dr = next.getR() - unit.getR();
 
-            Tile tile = world.getMap().getTile(next.getQ(), next.getR());
+            Tile tile = aiWorld.getMap().getTile(next.getQ(), next.getR());
             int cost = tile.getType().getMovementCost();
 
             if (unit.getRemainingOD() < cost) break;
@@ -71,7 +75,7 @@ public class TurnManager {
         }
     }
 
-    private void moveUnitTowardCity(Unit unit, Faction faction) {
+    private void moveUnitTowardCity(Unit unit, Faction faction, World aiWorld) {
         City target = null;
         int minDist = Integer.MAX_VALUE;
 
@@ -88,7 +92,7 @@ public class TurnManager {
 
         while (unit.getRemainingOD() > 0) {
             List<Node> path = Pathfinder.findPath(
-                    world,
+                    aiWorld,
                     unit.getQ(), unit.getR(),
                     target.getQ(), target.getR(),
                     unit
@@ -100,7 +104,7 @@ public class TurnManager {
             int dq = next.getQ() - unit.getQ();
             int dr = next.getR() - unit.getR();
 
-            Tile tile = world.getMap().getTile(next.getQ(), next.getR());
+            Tile tile = aiWorld.getMap().getTile(next.getQ(), next.getR());
             int cost = tile.getType().getMovementCost();
 
             if (unit.getRemainingOD() < cost) break;
@@ -133,21 +137,25 @@ public class TurnManager {
 
         economyManager.processFactionEconomy(faction, world);
 
+        World aiWorld = faction.isAI()
+                ? new VisibleWorld(world, fogMaps.get(faction.getId() - 1), String.valueOf(faction.getId()))
+                : world;
+
         for (Unit unit : faction.getUnits()) {
             if (!unit.isAlive()) continue;
             unit.resetOD();
             unit.update();
 
             if (faction.isAI()) {
-                unit.updateAI(world);
+                unit.updateAI(aiWorld);
             }
 
             if (!unit.isAlive()) continue;
 
             if (unit.getUnitState() == UnitState.FLEEING) {
-                moveUnitTowardCity(unit, faction);
+                moveUnitTowardCity(unit, faction, aiWorld);
             } else if (unit.getRange() == 1 && unit.getUnitState() != UnitState.WANDER) {
-                moveUnitTowardEnemy(unit, faction);
+                moveUnitTowardEnemy(unit, faction, aiWorld);
             }
         }
 
@@ -174,7 +182,8 @@ public class TurnManager {
     private void trySpawnUnit(City city, Faction faction) {
         if (city.getCurrentProductionType() == null) {
             if (faction.isAI()) {
-                chooseProductionForAI(city, faction);
+                World aiWorld = new VisibleWorld(world, fogMaps.get(faction.getId() - 1), String.valueOf(faction.getId()));
+                chooseProductionForAI(city, faction, aiWorld);
             }
             if (city.getCurrentProductionType() == null) return;
         }
@@ -202,7 +211,7 @@ public class TurnManager {
         }
     }
 
-    private void chooseProductionForAI(City city, Faction faction) {
+    private void chooseProductionForAI(City city, Faction faction, World aiWorld) {
         Random rng = new Random();
 
         if (rng.nextDouble() < 0.25 && faction.getCities().size() < 4) {
@@ -213,13 +222,11 @@ public class TurnManager {
 
         Unit nearest = null;
         int minDist = Integer.MAX_VALUE;
-        for (Faction other : factions) {
-            if (other == faction || !other.isAlive()) continue;
-            for (Unit enemy : other.getUnits()) {
-                if (!enemy.isAlive()) continue;
-                int dist = HexUtils.getDistance(city.getQ(), city.getR(), enemy.getQ(), enemy.getR());
-                if (dist < minDist) { minDist = dist; nearest = enemy; }
-            }
+        for (Unit enemy : aiWorld.getAllUnits()) {
+            if (enemy.getFactionId().equals(String.valueOf(faction.getId()))) continue;
+            if (!enemy.isAlive()) continue;
+            int dist = HexUtils.getDistance(city.getQ(), city.getR(), enemy.getQ(), enemy.getR());
+            if (dist < minDist) { minDist = dist; nearest = enemy; }
         }
 
         if (nearest == null || minDist > 10) {
