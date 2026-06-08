@@ -15,6 +15,7 @@ public class Faction {
     @Setter private boolean isAlive;
     @Setter private boolean isAI;
     @Setter private int gold;
+    @Setter private int victoryPoints;
 
     public Faction(int id, String name, int color) {
         this.id = id;
@@ -34,6 +35,10 @@ public class Faction {
         if (gold < amount) return false;
         gold -= amount;
         return true;
+    }
+
+    public void addVictoryPoints(int points) {
+        this.victoryPoints += points;
     }
 
     public void addUnit(Unit unit) {

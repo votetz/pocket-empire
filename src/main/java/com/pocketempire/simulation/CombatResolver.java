@@ -22,10 +22,10 @@ public class CombatResolver {
         }
 
         if (!defender.isAlive()) {
-            bus.publish(new GameEvent.UnitDied(defender));
+            bus.publish(new GameEvent.UnitDied(defender, attacker));
         }
         if (!attacker.isAlive()) {
-            bus.publish(new GameEvent.UnitDied(attacker));
+            bus.publish(new GameEvent.UnitDied(attacker, defender));
         }
     }
 

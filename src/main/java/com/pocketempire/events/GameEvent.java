@@ -8,8 +8,9 @@ import com.pocketempire.world.Tile;
 public sealed interface GameEvent {
     record UnitMoved(Unit unit, int fromQ, int fromR, int toQ, int toR) implements GameEvent {}
     record UnitAttacked(Unit attacker, Unit defender, int damage) implements GameEvent {}
-    record UnitDied(Unit unit) implements GameEvent {}
+    record UnitDied(Unit unit, Unit killer) implements GameEvent {}
     record UnitHealed(Unit unit, int amount) implements GameEvent {}
+    record GameOver(Faction winner, String reason) implements GameEvent {}
     record TurnStarted(int turn, Faction faction) implements GameEvent {}
     record CounterAttacked(Unit attacker, Unit defender, int damage) implements GameEvent {}
     record UnitSpawned(Unit unit) implements GameEvent {}

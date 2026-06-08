@@ -12,8 +12,11 @@ public class ConsoleLogger {
                     System.out.println(unit.getName() + " moved to (" + tq + "," + tr
                             + ") OD left: " + unit.getRemainingOD());
 
-                case GameEvent.UnitDied(var unit) ->
+                case GameEvent.UnitDied(var unit, var killer) ->
                     System.out.println(unit.getName() + " has been destroyed!");
+
+                case GameEvent.GameOver(var winner, var reason) ->
+                    System.out.println("\nGame over!\n" + winner.getName() + " wins! (" + reason + ")");
 
                 case GameEvent.UnitAttacked(var attacker, var defender, var damage) ->
                     System.out.println(attacker.getName() + " deals " + damage + " damage to "

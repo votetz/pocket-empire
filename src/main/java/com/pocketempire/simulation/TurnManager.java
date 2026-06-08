@@ -14,6 +14,7 @@ import com.pocketempire.world.Tile;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.fsm.UnitState;
 import com.pocketempire.economy.EconomyManager;
+import com.pocketempire.objective.VictoryManager;
 import com.pocketempire.pathfinding.Pathfinder;
 import com.pocketempire.pathfinding.Pathfinder.Node;
 
@@ -29,12 +30,14 @@ public class TurnManager {
     private World world;
     private int unitCounter;
     private final EconomyManager economyManager = new EconomyManager();
+    private final VictoryManager victoryManager;
 
     public TurnManager(List<Faction> factions, World world) {
         this.factions = factions;
         this.world = world;
         this.currentTurn = 1;
         this.currentFactionIndex = 0;
+        this.victoryManager = new VictoryManager(factions);
     }
 
     private void moveUnitTowardEnemy(Unit unit, Faction faction) {
@@ -111,21 +114,21 @@ public class TurnManager {
     }
 
     public void nextTurn() {
-        startFactionTurn(factions.get(currentFactionIndex));
+        Faction current = factions.get(currentFactionIndex);
+        if (current.isAlive()) {
+            startFactionTurn(current);
+            if (victoryManager.isGameOver()) return;
+        }
         currentFactionIndex++;
         if(currentFactionIndex >= factions.size()) {
             currentFactionIndex = 0;
             currentTurn++;
             processGlobalTurnEffects();
+            victoryManager.checkTimerVictory(currentTurn);
         }
     }
 
     private void startFactionTurn(Faction faction) {
-        if (!faction.isAlive()) {
-            nextTurn();
-            return;
-        }
-
         GameEventBus.getInstance().publish(new GameEvent.TurnStarted(currentTurn, faction));
 
         economyManager.processFactionEconomy(faction, world);
@@ -149,6 +152,8 @@ public class TurnManager {
         }
 
         cleanDeadUnits();
+        victoryManager.checkEliminationVictory(factions);
+        if (victoryManager.isGameOver()) return;
 
         for (City city : faction.getCities()) {
             if (!city.isAlive()) continue;
@@ -250,16 +255,10 @@ public class TurnManager {
     }
 
     public boolean isGameOver() {
-        long aliveCount = factions.stream()
-                .filter(Faction::isAlive)
-                .count();
-        return aliveCount <= 1;
+        return victoryManager.isGameOver();
     }
 
     public Faction getWinner() {
-        return factions.stream()
-                .filter(Faction::isAlive)
-                .findFirst()
-                .orElse(null);
+        return victoryManager.getWinner();
     }
 }

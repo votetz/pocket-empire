@@ -63,7 +63,7 @@ public class SettleState implements State {
                 3, 10, unit.getFactionId(), unit.getName(), 2);
         faction.addCity(city);
         unit.takeDamage(unit.getHp() + 1);
-        GameEventBus.getInstance().publish(new GameEvent.UnitDied(unit));
+        GameEventBus.getInstance().publish(new GameEvent.UnitDied(unit, null));
         GameEventBus.getInstance().publish(new GameEvent.CityFounded(city, unit));
     }
 
