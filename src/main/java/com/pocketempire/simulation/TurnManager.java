@@ -223,7 +223,8 @@ public class TurnManager {
         }
 
         if (nearest == null || minDist > 10) {
-            UnitType[] combat = {UnitType.LIGHT, UnitType.ARCHER, UnitType.HEAVY, UnitType.MAGE, UnitType.SIEGE, UnitType.GUARDIAN};
+            UnitType[] combat = {UnitType.LIGHT, UnitType.ARCHER, UnitType.HEAVY,
+                    UnitType.MAGE, UnitType.SIEGE, UnitType.GUARDIAN, UnitType.SCOUT};
             city.setCurrentProductionType(combat[rng.nextInt(combat.length)]);
             return;
         }
@@ -260,5 +261,9 @@ public class TurnManager {
 
     public Faction getWinner() {
         return victoryManager.getWinner();
+    }
+
+    public List<Faction> getRankedFactions() {
+        return victoryManager.getRankedFactions();
     }
 }

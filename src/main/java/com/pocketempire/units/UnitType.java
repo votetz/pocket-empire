@@ -8,5 +8,6 @@ public enum UnitType {
     SIEGE,
     GUARDIAN,
     SETTLER,
-    WORKER
+    WORKER,
+    SCOUT
 }

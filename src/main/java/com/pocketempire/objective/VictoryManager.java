@@ -8,8 +8,10 @@ import com.pocketempire.events.GameEventBus;
 import lombok.Getter;
 
 import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class VictoryManager {
     private static final int TURN_LIMIT = 50;
@@ -104,9 +106,19 @@ public class VictoryManager {
         }
     }
 
+    public List<Faction> getRankedFactions() {
+        return getSortedByVP();
+    }
+
+    private List<Faction> getSortedByVP() {
+        return factionsById.values().stream()
+                .sorted(Comparator.comparingInt(Faction::getVictoryPoints).reversed())
+                .collect(Collectors.toList());
+    }
+
     private void endGame(Faction winner, String reason) {
         this.gameOver = true;
         this.winner = winner;
-        GameEventBus.getInstance().publish(new GameEvent.GameOver(winner, reason));
+        GameEventBus.getInstance().publish(new GameEvent.GameOver(winner, reason, getSortedByVP()));
     }
 }

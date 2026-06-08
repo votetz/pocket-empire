@@ -4,7 +4,8 @@
   {"type": "HEAVY", "hp": 20, "attack": 3, "defense": 3, "speed": 1, "range": 1, "cost": 7},
   {"type": "MAGE", "hp": 10, "attack": 5, "defense": 1, "speed": 1, "range": 2, "cost": 7},
   {"type": "SIEGE", "hp": 15, "attack": 4, "defense": 2, "speed": 1, "range": 3, "cost": 7},
-  {"type": "GUARDIAN", "hp": 14, "attack": 3, "defense": 4, "speed": 1, "range": 1, "cost": 6},
+  {"type": "GUARDIAN", "hp": 12, "attack": 3, "defense": 4, "speed": 1, "range": 1, "cost": 6},
   {"type": "SETTLER", "hp": 5, "attack": 0, "defense": 1, "speed": 1, "range": 1, "cost": 7},
-  {"type": "WORKER", "hp": 5, "attack": 0, "defense": 1, "speed": 1, "range": 1, "cost": 5}
+  {"type": "WORKER", "hp": 5, "attack": 0, "defense": 1, "speed": 1, "range": 1, "cost": 5},
+  {"type": "SCOUT", "hp": 12, "attack": 1, "defense": 1, "speed": 4, "range": 1, "cost": 5}
 ]

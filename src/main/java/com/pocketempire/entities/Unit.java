@@ -18,6 +18,7 @@ public class Unit extends Entity {
     private int defense;
     private int speed;
     private final int range;
+    private final int sightRange;
     private final int cost;
     @Setter private int defenseModifier;
     private final String factionId;
@@ -33,6 +34,7 @@ public class Unit extends Entity {
         this.defense = builder.defense;
         this.speed = builder.speed;
         this.range = builder.range;
+        this.sightRange = builder.sightRange;
         this.cost = builder.cost;
         this.factionId = builder.factionId;
         this.unitType = builder.unitType;
@@ -54,6 +56,7 @@ public static class Builder {
     private int defense = 1;
     private int speed = 1;
     private int range = 1;
+    private int sightRange;
     private int cost = 1;
     private UnitType unitType;
     private UnitState unitState = UnitState.IDLE;
@@ -96,6 +99,11 @@ public static class Builder {
        return this;
     }
 
+    public Builder sightRange(int sightRange){
+       this.sightRange = sightRange;
+       return this;
+    }
+
     public Builder cost(int cost){
        this.cost = cost;
        return this;
@@ -117,6 +125,7 @@ public static class Builder {
         defense(stats.getDefense());
         speed(stats.getSpeed());
         range(stats.getRange());
+        sightRange(stats.getSpeed() + stats.getRange() + 1);
         cost(stats.getCost());
         return this;
     }
