@@ -1,9 +1,9 @@
 package com.pocketempire.display;
 
-import com.pocketempire.display.AnsiColor;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.entities.City;
 import com.pocketempire.units.UnitType;
+import com.pocketempire.world.FogMap;
 import com.pocketempire.world.Map;
 import com.pocketempire.world.Tile;
 
@@ -20,22 +20,29 @@ public class ConsoleRender {
         this.cities = cities;
     }
 
-    public void render() {
+    public void render(FogMap fog) {
         for (int row = 0; row < map.getHeight(); row++) {
             for (int col = 0; col < map.getWidth(); col++) {
                 int q = col - (row - (row & 1)) / 2;
                 int r = row;
 
-                Tile tile = map.getTile(q, r);
-                Unit unit = getUnitAt(col, row);
-                City city = getCityAt(col, row);
+                if (fog.isVisible(col, row)) {
+                    Tile tile = map.getTile(q, r);
+                    Unit unit = getUnitAt(col, row);
+                    City city = getCityAt(col, row);
 
-                if (unit != null) {
-                    System.out.print(colorizeUnit(unit));
-                } else if (city != null) {
-                    System.out.print(colorizeCity(city));
+                    if (unit != null) {
+                        System.out.print(colorizeUnit(unit));
+                    } else if (city != null) {
+                        System.out.print(colorizeCity(city));
+                    } else {
+                        System.out.print(colorize(tile));
+                    }
+                } else if (fog.isExplored(col, row)) {
+                    Tile tile = map.getTile(q, r);
+                    System.out.print(AnsiColor.GRAY + tile.getType().symbol + AnsiColor.RESET);
                 } else {
-                    System.out.print(colorize(tile));
+                    System.out.print(AnsiColor.BLACK + "·" + AnsiColor.RESET);
                 }
             }
             System.out.println();
@@ -87,6 +94,7 @@ public class ConsoleRender {
             case GUARDIAN -> "G";
             case SETTLER -> "T";
             case WORKER -> "W";
+            case SCOUT -> "U";
         };
         return color + symbol + AnsiColor.RESET;
     }

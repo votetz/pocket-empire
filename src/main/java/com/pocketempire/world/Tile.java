@@ -13,6 +13,8 @@ public class Tile {
     private int r;
     private TileType type;
     private boolean improved;
+    private boolean visible;
+    private boolean explored;
 
     // Cube coordinates for 3D rendering
     public int cubeX() {

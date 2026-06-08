@@ -7,10 +7,12 @@ import com.pocketempire.entities.Unit;
 import com.pocketempire.simulation.TurnManager;
 import com.pocketempire.units.UnitFactory;
 import com.pocketempire.units.UnitType;
+import com.pocketempire.world.FogMap;
 import com.pocketempire.world.Map;
 import com.pocketempire.world.MapGenerator;
 import com.pocketempire.world.World;
 import com.pocketempire.config.UnitNamesLoader;
+import com.pocketempire.entities.Faction;
 import com.pocketempire.events.ConsoleLogger;
 
 import java.util.ArrayList;
@@ -81,12 +83,20 @@ public class Main {
 
         ConsoleRender renderer = new ConsoleRender(map, allUnits, allCities);
 
+        List<FogMap> fogMaps = new ArrayList<>();
+        for (Faction ignored : factions) {
+            fogMaps.add(new FogMap(map));
+        }
+
         System.out.println("Initial Map");
-        renderer.render();
+        FogMap firstFog = fogMaps.get(0);
+        firstFog.update(faction1);
+        renderer.render(firstFog);
         System.out.println();
 
         System.out.println("Simulating 50 turns");
         for (int i = 0; i < 150; i++) {
+            Faction currentFaction = turnManager.getCurrentFaction();
             turnManager.nextTurn();
 
             allUnits.clear();
@@ -97,11 +107,19 @@ public class Main {
             allCities.addAll(faction1.getCities());
             allCities.addAll(faction2.getCities());
             allCities.addAll(faction3.getCities());
-            renderer.render();
+
+            FogMap fog = fogMaps.get(currentFaction.getId() - 1);
+            fog.update(currentFaction);
+            renderer.render(fog);
             
             if (turnManager.isGameOver()) {
                 System.out.println("\nGame over!");
-                System.out.println("Winner: " + turnManager.getWinner().getName());
+                int place = 1;
+                for (Faction f : turnManager.getRankedFactions()) {
+                    System.out.println("  " + place + ". " + f.getName() + " — " + f.getVictoryPoints() + " VP"
+                            + (f == turnManager.getWinner() ? " (winner)" : ""));
+                    place++;
+                }
                 break;
             }
         }
