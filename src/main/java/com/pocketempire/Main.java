@@ -85,8 +85,8 @@ public class Main {
         renderer.render();
         System.out.println();
 
-        System.out.println("Simulating 33 turns");
-        for (int i = 0; i < 99; i++) {
+        System.out.println("Simulating 50 turns");
+        for (int i = 0; i < 150; i++) {
             turnManager.nextTurn();
 
             allUnits.clear();
@@ -100,7 +100,7 @@ public class Main {
             renderer.render();
             
             if (turnManager.isGameOver()) {
-                System.out.println("\nGAME OVER");
+                System.out.println("\nGame over!");
                 System.out.println("Winner: " + turnManager.getWinner().getName());
                 break;
             }
