@@ -34,9 +34,15 @@ public class MapGenerator {
         if (elev < 0.25) return TileType.OCEAN;
         if (elev < 0.30) return TileType.WATER;
         if (elev < 0.35) return TileType.DESERT;
-        if (elev < 0.55) return moist < 0.4 ? TileType.DESERT : moist < 0.7 ? TileType.GRASS : TileType.FOREST;
-        if (elev < 0.70) return moist < 0.3 ? TileType.PLAINS : moist < 0.6 ? TileType.FOREST : TileType.SWAMPS;
-        if (elev < 0.80) return moist < 0.4 ? TileType.TUNDRA : TileType.TAIGA;
-        return moist < 0.5 ? TileType.MOUNTAIN : TileType.CAVES;
+        if (elev < 0.55) return moist < 0.2 ? TileType.DESERT
+                : moist < 0.4 ? TileType.SAVANNA
+                  : moist < 0.7 ? TileType.GRASS
+                    : TileType.FOREST;
+        if (elev < 0.70) return moist < 0.3 ? TileType.PLAINS
+                : moist < 0.6 ? TileType.FOREST
+                  : TileType.SWAMPS;
+        if (elev < 0.80) return moist < 0.4 ? TileType.TUNDRA
+                : TileType.TAIGA; return moist < 0.5 ? TileType.MOUNTAIN
+                  : TileType.CAVES;
     }
 }

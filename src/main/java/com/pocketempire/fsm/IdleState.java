@@ -31,6 +31,11 @@ public class IdleState implements State {
             return;
         }
 
+        if(unit.getUnitType() == UnitType.SCOUT) {
+            unit.changeState(new WanderState(), UnitState.WANDER);
+            return;
+        }
+
         if (unit.getHp() < unit.getMaxHp()) {
             healAtBorder(unit, world);
         }
