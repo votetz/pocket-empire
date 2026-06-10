@@ -3,7 +3,6 @@ package com.pocketempire.world;
 import lombok.*;
 import com.pocketempire.tiles.TileType;
 
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,7 +11,7 @@ public class Tile {
     private int q;
     private int r;
     private TileType type;
-    private boolean improved;
+    @Setter private boolean improved;
     private boolean visible;
     private boolean explored;
 

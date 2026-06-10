@@ -7,14 +7,14 @@ import lombok.Setter;
 @Getter
 public class City extends Entity {
     private final String name;
-    @Setter private int population;
-    @Setter private int maxPopulation;
-    @Setter private String factionId;
-    @Setter private String leaderId;
-    @Setter private int production;
+    private final int population;
+    private final int maxPopulation;
+    private final String factionId;
+    private final String leaderId;
+    private final int production;
     @Setter private int accumulatedProduction;
     @Setter private UnitType currentProductionType;
-    @Setter private int borderRadius;
+    private final int borderRadius;
 
     public City(String id, int q, int r, String name, int hp, int maxHp, int population, int maxPopulation, String factionId, String leaderId, int production) {
         super(id, q, r, hp, maxHp);
