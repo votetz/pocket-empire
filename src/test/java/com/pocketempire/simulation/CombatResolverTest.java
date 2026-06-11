@@ -38,7 +38,7 @@ public class CombatResolverTest {
 
     @Test
     void calculateDamage_lowDefense() {
-        // 1 - (1 / 2) = 1 - 0.5 = 0.5 → min 1
+        // 1 - (1 / 2) = 1 - 0 = 1 (integer division)
         assertEquals(1, CombatResolver.calculateDamage(1, 1));
     }
 }
