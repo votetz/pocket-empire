@@ -12,10 +12,10 @@ import com.pocketempire.world.Map;
 import com.pocketempire.world.MapGenerator;
 import com.pocketempire.world.World;
 import com.pocketempire.config.UnitNamesLoader;
-import com.pocketempire.entities.Faction;
 import com.pocketempire.events.ConsoleLogger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Main {
@@ -68,9 +68,9 @@ public class Main {
         factions.add(faction3);
         World world = new World(map, factions);
 
-        List<FogMap> fogMaps = new ArrayList<>();
-        for (Faction ignored : factions) {
-            fogMaps.add(new FogMap(map));
+        java.util.Map<Integer, FogMap> fogMaps = new HashMap<>();
+        for (Faction faction : factions) {
+            fogMaps.put(faction.getId(), new FogMap(map));
         }
 
         TurnManager turnManager = new TurnManager(factions, world, fogMaps);
@@ -89,7 +89,7 @@ public class Main {
         ConsoleRender renderer = new ConsoleRender(map, allUnits, allCities);
 
         System.out.println("Initial Map");
-        FogMap firstFog = fogMaps.get(0);
+        FogMap firstFog = fogMaps.get(faction1.getId());
         firstFog.update(faction1);
         renderer.render(firstFog);
         System.out.println();
@@ -108,7 +108,7 @@ public class Main {
             allCities.addAll(faction2.getCities());
             allCities.addAll(faction3.getCities());
 
-            FogMap fog = fogMaps.get(currentFaction.getId() - 1);
+            FogMap fog = fogMaps.get(currentFaction.getId());
             fog.update(currentFaction);
             renderer.render(fog);
             

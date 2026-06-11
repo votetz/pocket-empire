@@ -8,8 +8,6 @@ import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
 import com.pocketempire.simulation.CombatResolver;
 
-
-
 public class AttackState implements State {
     @Override
     public void enter(Unit unit) {}

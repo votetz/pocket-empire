@@ -5,8 +5,6 @@ import com.pocketempire.fsm.UnitState;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
 
-
-
 public class EntrenchState implements State {
     @Override
     public void enter(Unit unit) {
