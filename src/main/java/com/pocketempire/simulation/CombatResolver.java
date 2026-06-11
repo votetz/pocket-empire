@@ -35,7 +35,7 @@ public class CombatResolver {
         bus.publish(new GameEvent.CityAttacked(attacker, city, damageToCity));
     }
 
-    private static int calculateDamage(int attack, int defense) {
+    static int calculateDamage(int attack, int defense) {
         int damage = attack - (defense / 2);
         return Math.max(1, damage);
     }
