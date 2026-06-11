@@ -51,23 +51,6 @@ public class AttackState implements State {
         unit.changeState(new IdleState(), UnitState.IDLE);
     }
 
-    private City findNearestEnemyCity(Unit unit, World world) {
-        City nearest = null;
-        int minDist = Integer.MAX_VALUE;
-        for (var faction : world.getFactions()) {
-            if (String.valueOf(faction.getId()).equals(unit.getFactionId())) continue;
-            for (City city : faction.getCities()) {
-                if (!city.isAlive()) continue;
-                int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), city.getQ(), city.getR());
-                if (dist < minDist) {
-                    minDist = dist;
-                    nearest = city;
-                }
-            }
-        }
-        return nearest;
-    }
-
     @Override
     public void exit(Unit unit) {}
 }

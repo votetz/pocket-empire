@@ -44,15 +44,12 @@ public class TurnManager {
         this.victoryManager = new VictoryManager(factions);
     }
 
-    private void moveUnitTowardEnemy(Unit unit, Faction faction, World aiWorld) {
-        Unit target = aiWorld.findNearestEnemy(unit);
-        if (target == null) return;
-
+    private void moveUnitAlongPath(Unit unit, World world, int targetQ, int targetR) {
         while (unit.getRemainingOD() > 0) {
             List<Node> path = Pathfinder.findPath(
-                    aiWorld,
+                    world,
                     unit.getQ(), unit.getR(),
-                    target.getQ(), target.getR(),
+                    targetQ, targetR,
                     unit
             );
 
@@ -62,7 +59,7 @@ public class TurnManager {
             int dq = next.getQ() - unit.getQ();
             int dr = next.getR() - unit.getR();
 
-            Tile tile = aiWorld.getMap().getTile(next.getQ(), next.getR());
+            Tile tile = world.getMap().getTile(next.getQ(), next.getR());
             int cost = tile.getType().getMovementCost();
 
             if (unit.getRemainingOD() < cost) break;
@@ -73,6 +70,12 @@ public class TurnManager {
             unit.move(dq, dr);
             GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR, unit.getQ(), unit.getR()));
         }
+    }
+
+    private void moveUnitTowardEnemy(Unit unit, Faction faction, World aiWorld) {
+        Unit target = aiWorld.findNearestEnemy(unit);
+        if (target == null) return;
+        moveUnitAlongPath(unit, aiWorld, target.getQ(), target.getR());
     }
 
     private void moveUnitTowardCity(Unit unit, Faction faction, World aiWorld) {
@@ -89,32 +92,7 @@ public class TurnManager {
         }
 
         if (target == null || minDist <= 1) return;
-
-        while (unit.getRemainingOD() > 0) {
-            List<Node> path = Pathfinder.findPath(
-                    aiWorld,
-                    unit.getQ(), unit.getR(),
-                    target.getQ(), target.getR(),
-                    unit
-            );
-
-            if (path.size() <= 1) break;
-
-            Node next = path.get(1);
-            int dq = next.getQ() - unit.getQ();
-            int dr = next.getR() - unit.getR();
-
-            Tile tile = aiWorld.getMap().getTile(next.getQ(), next.getR());
-            int cost = tile.getType().getMovementCost();
-
-            if (unit.getRemainingOD() < cost) break;
-
-            int fromQ = unit.getQ();
-            int fromR = unit.getR();
-            unit.spendOD(cost);
-            unit.move(dq, dr);
-            GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR, unit.getQ(), unit.getR()));
-        }
+        moveUnitAlongPath(unit, aiWorld, target.getQ(), target.getR());
     }
 
     public void nextTurn() {
