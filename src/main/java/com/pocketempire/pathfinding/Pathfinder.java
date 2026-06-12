@@ -1,5 +1,7 @@
 package com.pocketempire.pathfinding;
 
+import com.pocketempire.tiles.TileType;
+import com.pocketempire.units.MovementType;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.world.Tile;
@@ -66,6 +68,8 @@ public class Pathfinder {
                 Tile tile = world.getMap().getTile(nq, nr);
                 if (tile == null || tile.getType().isBlocksMovement()) continue;
 
+                if (!canEnterTile(unit, tile)) continue;
+
                 if (world.isTileOccupied(nq, nr, unit)) continue;
 
                 int stepCost = tile.getType().getMovementCost();
@@ -80,6 +84,20 @@ public class Pathfinder {
             return buildPath(bestNode);
         }
         return Collections.emptyList();
+    }
+
+    private static boolean canEnterTile(Unit unit, Tile tile) {
+        MovementType moveType = unit.getMovementType();
+        if (moveType == null) return true;
+
+        boolean waterTile = tile.getType().isWater();
+
+        return switch (moveType) {
+            case GROUND -> !waterTile;
+            case WATER -> waterTile;
+            case AMPHIBIOUS -> true;
+            case AIR -> true;
+        };
     }
 
     private static List<Node> buildPath(Node end) {

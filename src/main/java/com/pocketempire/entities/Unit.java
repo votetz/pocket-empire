@@ -5,6 +5,7 @@ import com.pocketempire.events.GameEventBus;
 import com.pocketempire.fsm.IdleState;
 import com.pocketempire.fsm.State;
 import com.pocketempire.fsm.UnitState;
+import com.pocketempire.units.MovementType;
 import com.pocketempire.units.UnitStats;
 import com.pocketempire.units.UnitType;
 import com.pocketempire.world.World;
@@ -23,6 +24,7 @@ public class Unit extends Entity {
     @Setter private int defenseModifier;
     private final String factionId;
     private final UnitType unitType;
+    private final MovementType movementType;
     @Setter private UnitState unitState;
     @Setter private State currentState;
     private int remainingOD;
@@ -38,6 +40,7 @@ public class Unit extends Entity {
         this.cost = builder.cost;
         this.factionId = builder.factionId;
         this.unitType = builder.unitType;
+        this.movementType = builder.movementType;
         this.unitState = builder.unitState;
         this.remainingOD = builder.speed;
         this.currentState = new IdleState();
@@ -59,6 +62,7 @@ public static class Builder {
     private int sightRange;
     private int cost = 1;
     private UnitType unitType;
+    private MovementType movementType;
     private UnitState unitState = UnitState.IDLE;
 
     public Builder(String id, int q, int r, String factionId) {
@@ -79,43 +83,48 @@ public static class Builder {
         return this;
     }
 
-    public Builder attack(int attack){
+    public Builder attack(int attack) {
        this.attack = attack;
        return this;
     }
 
-    public Builder defense(int defense){
+    public Builder defense(int defense) {
        this.defense = defense;
        return this;
     }
 
-    public Builder speed(int speed){
+    public Builder speed(int speed) {
        this.speed = speed;
        return this;
     }
 
-    public Builder range(int range){
+    public Builder range(int range) {
        this.range = range;
        return this;
     }
 
-    public Builder sightRange(int sightRange){
+    public Builder sightRange(int sightRange) {
        this.sightRange = sightRange;
        return this;
     }
 
-    public Builder cost(int cost){
+    public Builder cost(int cost) {
        this.cost = cost;
        return this;
     }
 
-    public Builder unitState(UnitState unitState){
+    public Builder unitState(UnitState unitState) {
        this.unitState = unitState;
        return this;
     }
 
-    public Builder unitType(UnitType unitType){
+    public Builder unitType(UnitType unitType) {
        this.unitType = unitType;
+       return this;
+    }
+
+    public Builder movementType(MovementType movementType) {
+       this.movementType = movementType;
        return this;
     }
 
@@ -127,6 +136,7 @@ public static class Builder {
         range(stats.getRange());
         sightRange(stats.getSpeed() + stats.getRange() + 1);
         cost(stats.getCost());
+        movementType(stats.getMovementType());
         return this;
     }
 

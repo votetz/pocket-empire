@@ -9,5 +9,6 @@ public enum UnitType {
     GUARDIAN,
     SETTLER,
     WORKER,
-    SCOUT
+    SCOUT,
+    TRIREME
 }

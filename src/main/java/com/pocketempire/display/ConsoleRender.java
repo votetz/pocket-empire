@@ -95,6 +95,7 @@ public class ConsoleRender {
             case SETTLER -> "T";
             case WORKER -> "W";
             case SCOUT -> "U";
+            case TRIREME -> "R";
         };
         return color + symbol + AnsiColor.RESET;
     }

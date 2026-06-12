@@ -17,4 +17,5 @@ public class UnitStats {
     private int speed;
     private int range;
     private int cost;
+    private MovementType movementType;
 }

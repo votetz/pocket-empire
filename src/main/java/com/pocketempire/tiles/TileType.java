@@ -29,6 +29,13 @@ public enum TileType {
     public final boolean blocksMovement; // completely prevents walking
     public final char symbol; // symbol for console
     public final int defendBonus;
+    public boolean isWater() {
+        return this == WATER || this == OCEAN;
+    }
+
+    public boolean isShallowWater() {
+        return this == SWAMPS;
+    }
 
     TileType(int movementCost, boolean blocksMovement, char symbol, int defendBonus) {
         this.movementCost = movementCost;

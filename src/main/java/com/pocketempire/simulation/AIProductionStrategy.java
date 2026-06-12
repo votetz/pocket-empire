@@ -4,6 +4,7 @@ import com.pocketempire.config.UnitConfigLoader;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
+import com.pocketempire.tiles.TileType;
 import com.pocketempire.units.UnitType;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
@@ -47,6 +48,12 @@ public class AIProductionStrategy {
 
         if (scoutCount == 0) {
             city.setCurrentProductionType(UnitType.SCOUT);
+            return;
+        }
+
+        long triremeCount = countUnitsByType(faction, UnitType.TRIREME);
+        if (isNearWater(city, aiWorld) && triremeCount < 3 && rng.nextDouble() < 0.15) {
+            city.setCurrentProductionType(UnitType.TRIREME);
             return;
         }
 
@@ -101,12 +108,26 @@ public class AIProductionStrategy {
         }
     }
 
+    private boolean isNearWater(City city, World world) {
+        for (int[] dir : HexUtils.DIRECTIONS) {
+            int nq = city.getQ() + dir[0];
+            int nr = city.getR() + dir[1];
+            if (world.getMap().isInBounds(nq, nr)) {
+                var tile = world.getMap().getTile(nq, nr);
+                if (tile != null && tile.getType().isWater()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public UnitType getCounterUnit(UnitType enemyType, Random rng) {
         return switch (enemyType) {
             case HEAVY, GUARDIAN -> rng.nextBoolean() ? UnitType.MAGE : UnitType.ARCHER;
             case LIGHT, SCOUT -> rng.nextBoolean() ? UnitType.HEAVY : UnitType.GUARDIAN;
             case ARCHER, MAGE -> rng.nextBoolean() ? UnitType.LIGHT : UnitType.SCOUT;
-            case SIEGE -> UnitType.LIGHT;
+            case SIEGE, TRIREME -> UnitType.LIGHT;
             case SETTLER, WORKER -> UnitType.LIGHT;
         };
     }
