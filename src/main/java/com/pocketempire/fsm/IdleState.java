@@ -10,12 +10,14 @@ import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class IdleState implements State {
 
     private static final double FLEE_THRESHOLD = 0.5;
     private static final int ENTRENCH_RANGE = 5;
     private static final int WANDER_RANGE = 15;
+    private static final int GATHER_RADIUS = 2;
 
     @Override
     public void enter(Unit unit) {}
@@ -49,6 +51,14 @@ public class IdleState implements State {
         if (enemy == null) {
             unit.changeState(new WanderState(), UnitState.WANDER);
             return;
+        }
+
+        if (isCombatUnit(unit.getUnitType())) {
+            int nearbyAllies = countNearbyAllies(unit, world);
+            if (nearbyAllies < getGatherThreshold(unit)) {
+                unit.changeState(new GatheringState(), UnitState.GATHERING);
+                return;
+            }
         }
 
         int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), enemy.getQ(), enemy.getR());
@@ -87,6 +97,34 @@ public class IdleState implements State {
                 }
             }
         }
+    }
+
+    private int countNearbyAllies(Unit unit, World world) {
+        int count = 0;
+        for (var other : world.getAllUnits()) {
+            if (other == unit || !other.isAlive()) continue;
+            if (!other.getFactionId().equals(unit.getFactionId())) continue;
+            if (!isCombatUnit(other.getUnitType())) continue;
+            int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), other.getQ(), other.getR());
+            if (dist <= GATHER_RADIUS) count++;
+        }
+        return count;
+    }
+
+    private boolean isCombatUnit(UnitType type) {
+        return switch (type) {
+            case LIGHT, HEAVY, GUARDIAN, ARCHER, MAGE, SIEGE, DROMON, TRIREME -> true;
+            default -> false;
+        };
+    }
+
+    private int getGatherThreshold(Unit unit) {
+        return switch (unit.getUnitType()) {
+            case HEAVY, GUARDIAN -> 1;
+            case LIGHT -> 1;
+            case ARCHER, MAGE, SIEGE -> 2;
+            default -> 0;
+        };
     }
 
     @Override

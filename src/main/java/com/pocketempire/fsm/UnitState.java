@@ -9,5 +9,6 @@ public enum UnitState {
     ENTRENCH,
     WANDER,
     SETTLING,
-    WORKING
+    WORKING,
+    GATHERING
 }

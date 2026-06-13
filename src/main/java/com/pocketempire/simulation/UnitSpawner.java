@@ -117,12 +117,12 @@ public class UnitSpawner {
     }
 
     private BuildingConfig chooseBuildingForCity(City city) {
-        if (!city.hasBuilding("WALLS")) return BuildingConfigLoader.getConfig("WALLS");
-        if (!city.hasBuilding("MARKET")) return BuildingConfigLoader.getConfig("MARKET");
-        if (!city.hasBuilding("FORGE")) return BuildingConfigLoader.getConfig("FORGE");
-        if (city.hasBuilding("FORGE") && !city.hasBuilding("WORKSHOP")) return BuildingConfigLoader.getConfig("WORKSHOP");
-        if (!city.hasBuilding("GRANARY")) return BuildingConfigLoader.getConfig("GRANARY");
-        if (!city.hasBuilding("BARRACKS")) return BuildingConfigLoader.getConfig("BARRACKS");
+        if (!city.hasBuilding("Walls")) return BuildingConfigLoader.getConfig("Walls");
+        if (!city.hasBuilding("Market")) return BuildingConfigLoader.getConfig("Market");
+        if (!city.hasBuilding("Forge")) return BuildingConfigLoader.getConfig("Forge");
+        if (city.hasBuilding("Forge") && !city.hasBuilding("Workshop")) return BuildingConfigLoader.getConfig("Workshop");
+        if (!city.hasBuilding("Granary")) return BuildingConfigLoader.getConfig("Granary");
+        if (!city.hasBuilding("Barracks")) return BuildingConfigLoader.getConfig("Barracks");
         return null;
     }
 }

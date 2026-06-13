@@ -80,7 +80,7 @@ public class Pathfinder {
             }
         }
 
-        if (bestNode != startNode) {
+        if (bestNode.h == 0) {
             return buildPath(bestNode);
         }
         return Collections.emptyList();

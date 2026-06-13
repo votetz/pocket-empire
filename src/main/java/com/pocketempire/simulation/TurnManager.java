@@ -78,7 +78,7 @@ public class TurnManager {
 
             if (unit.getUnitState() == UnitState.FLEEING) {
                 unitMover.moveUnitTowardCity(unit, faction, aiWorld);
-            } else if (unit.getRange() == 1 && unit.getUnitState() != UnitState.WANDER) {
+            } else if (unit.getRange() == 1 && unit.getUnitState() != UnitState.WANDER && unit.getUnitState() != UnitState.GATHERING) {
                 unitMover.moveUnitTowardEnemy(unit, faction, aiWorld);
             }
         }
