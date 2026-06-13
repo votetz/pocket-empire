@@ -1,5 +1,8 @@
 package com.pocketempire.events;
 
+import com.pocketempire.entities.StatusEffect;
+import com.pocketempire.entities.Unit;
+
 public class ConsoleLogger {
     public ConsoleLogger() {
         var bus = GameEventBus.getInstance();
@@ -50,6 +53,15 @@ public class ConsoleLogger {
 
                 case GameEvent.BuildingBuilt(var city, var building) ->
                     System.out.println(city.getName() + " built " + building.getName());
+                case GameEvent.StatusApplied(Unit unit, StatusEffect effect, int duration) -> {
+                    String icon = switch (effect) {
+                        case BURNING -> "\uD83D\uDD25";
+                        case FROZEN -> "\u2744\uFE0F";
+                        case POISONED -> "\uD83E\uDDEA";
+                        case STUNNED -> "\uD83D\uDCA3";
+                    };
+                    System.out.printf(" %s %s is now %s for %d turns%n", icon, unit.getName(), effect.name(), duration);
+                }
             }
         });
     }

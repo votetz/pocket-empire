@@ -1,9 +1,7 @@
 package com.pocketempire.events;
 
-import com.pocketempire.entities.Building;
-import com.pocketempire.entities.City;
-import com.pocketempire.entities.Faction;
-import com.pocketempire.entities.Unit;
+import com.pocketempire.entities.*;
+
 import java.util.List;
 import com.pocketempire.world.Tile;
 
@@ -24,4 +22,5 @@ public sealed interface GameEvent {
     record CityFounded(City city, Unit settler) implements GameEvent {}
     record TileImproved(Tile tile, Unit worker) implements GameEvent {}
     record BuildingBuilt(City city, Building building) implements GameEvent {}
+    record StatusApplied(Unit unit, StatusEffect effect, int duration) implements GameEvent {}
 }

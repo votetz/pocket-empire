@@ -12,6 +12,10 @@ import com.pocketempire.world.World;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.EnumMap;
+import java.util.Iterator;
+import java.util.Map;
+
 @Getter
 public class Unit extends Entity {
     private final String name;
@@ -28,6 +32,7 @@ public class Unit extends Entity {
     @Setter private UnitState unitState;
     @Setter private State currentState;
     private int remainingOD;
+    private final Map<StatusEffect, Integer> activeEffects = new EnumMap<>(StatusEffect.class);
 
     protected Unit(Builder builder) {
         super(builder.id, builder.q, builder.r, builder.hp, builder.maxHp);
@@ -172,4 +177,23 @@ public static class Builder {
         GameEventBus.getInstance().publish(new GameEvent.UnitStateChanged(this));
     }
 
+    public void applyEffect(StatusEffect effect, int duration) {
+        activeEffects.put(effect, duration);
+    }
+
+    public void tickEffects() {
+        Iterator<Map.Entry<StatusEffect, Integer>> it = activeEffects.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<StatusEffect, Integer> entry = it.next();
+            if (entry.getKey().getTickDamage() > 0) {
+                takeDamage(entry.getKey().getTickDamage()); // Entity.takeDamage()
+            }
+            entry.setValue(entry.getValue() - 1);
+            if (entry.getValue() <= 0) it.remove();
+        }
+    }
+
+    public boolean hasEffect(StatusEffect effect) {
+        return activeEffects.containsKey(effect);
+    }
 }
