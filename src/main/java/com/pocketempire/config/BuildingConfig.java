@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BuildingConfig {
     private String name;
-    private String displayName;
     private int productionCost;
     private int goldBonus;
     private int hpBonus;

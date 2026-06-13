@@ -33,7 +33,7 @@ public class ConsoleLogger {
                             + unit.getHp() + "/" + unit.getMaxHp() + " HP)");
 
                 case GameEvent.UnitSpawned(var unit) ->
-                    System.out.println(unit.getName() + " (" + unit.getUnitType() + ") spawned at (" + unit.getQ() + "," + unit.getR() + ")");
+                    System.out.println(unit.getName() + " (" + unit.getUnitType() + ") spawned at (" + unit.getQ() + "," + unit.getR() + ")" + unit.getUnitType());
 
                 case GameEvent.UnitStateChanged(var unit) ->
                     System.out.println(unit.getName() + " is now " + unit.getUnitState().name());
@@ -52,7 +52,7 @@ public class ConsoleLogger {
                     System.out.println("Tile (" + tile.getQ() + "," + tile.getR() + ") improved by " + worker.getName());
 
                 case GameEvent.BuildingBuilt(var city, var building) ->
-                    System.out.println(city.getName() + " built " + building.getDisplayName());
+                    System.out.println(city.getName() + " built " + building.getName());
 
                 case GameEvent.StatusApplied(Unit unit, StatusEffectConfig effect, int duration) ->
                     System.out.printf("%s %s is now %s for %d turns%n", effect.getIcon(), unit.getName(), effect.getName(), duration);
