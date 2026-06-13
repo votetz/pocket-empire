@@ -64,7 +64,7 @@ public class GameSetup {
         faction.addUnit(light);
         faction.addUnit(archer);
 
-        City city = new City("city" + factionId, unitQ, unitR + 1, faction.getName() + " Capital", 100, 100, 5, 10, factionId, "leader" + factionId, 3);
+        City city = new City("city" + factionId, unitQ, unitR + 1, faction.getName() + " Capital", 50, 50, 5, 10, factionId, "leader" + factionId, 3);
         faction.addCity(city);
     }
 

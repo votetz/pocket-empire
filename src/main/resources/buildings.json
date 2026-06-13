@@ -1,5 +1,5 @@
 [
-  {"name": "Walls", "productionCost": 10, "goldBonus": 0, "hpBonus": 50, "productionBonus": 0, "forgeBonus": 0, "attackBonus": 0, "improvedTileGoldBonus": 0},
+  {"name": "Walls", "productionCost": 10, "goldBonus": 0, "hpBonus": 25, "productionBonus": 0, "forgeBonus": 0, "attackBonus": 0, "improvedTileGoldBonus": 0},
   {"name": "Market", "productionCost": 14, "goldBonus": 5, "hpBonus": 0, "productionBonus": 0, "forgeBonus": 0, "attackBonus": 0, "improvedTileGoldBonus": 0},
   {"name": "Forge", "productionCost": 8, "goldBonus": 0, "hpBonus": 0, "productionBonus": 2, "forgeBonus": 0, "attackBonus": 0, "improvedTileGoldBonus": 0},
   {"name": "Workshop", "productionCost": 12, "goldBonus": 0, "hpBonus": 0, "productionBonus": 0, "forgeBonus": 1, "attackBonus": 0, "improvedTileGoldBonus": 0},
