@@ -1,9 +1,12 @@
 package com.pocketempire.simulation;
 
 import com.pocketempire.config.UnitConfigLoader;
+import com.pocketempire.entities.Building;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
+import com.pocketempire.events.GameEvent;
+import com.pocketempire.events.GameEventBus;
 import com.pocketempire.tiles.TileType;
 import com.pocketempire.units.UnitType;
 import com.pocketempire.world.HexUtils;
@@ -106,6 +109,13 @@ public class AIProductionStrategy {
             UnitType[] ranged = {UnitType.ARCHER, UnitType.MAGE, UnitType.SIEGE};
             city.setCurrentProductionType(ranged[rng.nextInt(ranged.length)]);
         }
+    }
+
+    private Building chooseBuildingForCity(City city) {
+        if (!city.hasBuilding(Building.WALLS)) return Building.WALLS;
+        if (!city.hasBuilding(Building.MARKET)) return Building.MARKET;
+        if (!city.hasBuilding(Building.FORGE)) return Building.FORGE;
+        return null;
     }
 
     private boolean isNearWater(City city, World world) {

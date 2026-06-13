@@ -4,6 +4,9 @@ import com.pocketempire.units.UnitType;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 public class City extends Entity {
     private final String name;
@@ -15,6 +18,7 @@ public class City extends Entity {
     @Setter private int accumulatedProduction;
     @Setter private UnitType currentProductionType;
     private final int borderRadius;
+    private final List<Building> buildings;
 
     public City(String id, int q, int r, String name, int hp, int maxHp, int population, int maxPopulation, String factionId, String leaderId, int production) {
         super(id, q, r, hp, maxHp);
@@ -27,12 +31,37 @@ public class City extends Entity {
         this.accumulatedProduction = 0;
         this.currentProductionType = null;
         this.borderRadius = 3;
+        this.buildings = new ArrayList<>();
+    }
+
+    public void addBuilding(Building building) {
+        buildings.add(building);
+        if (building.getHpBonus() > 0) {
+            setMaxHp(getMaxHp() + building.getHpBonus());
+            setHp(getHp() + building.getHpBonus());
+        }
+    }
+
+    public boolean hasBuilding(Building building) {
+        return buildings.contains(building);
+    }
+
+    public int getGoldBonus() {
+        return buildings.stream().mapToInt(Building::getGoldBonus).sum();
+    }
+
+    public int getProductionBonus() {
+        return buildings.stream().mapToInt(Building::getProductionBonus).sum();
+    }
+
+    public int getEffectiveProduction() {
+        return production + getProductionBonus();
     }
 
     @Override
     public void update() {
-        if (isAlive() && currentProductionType != null) {
-            accumulatedProduction += production;
+        if (isAlive()) {
+            accumulatedProduction += getEffectiveProduction();
         }
     }
 

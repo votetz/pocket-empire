@@ -9,15 +9,16 @@ import com.pocketempire.world.World;
 public class EconomyManager {
     private static final int GOLD_PER_CITY = 10;
     private static final int GOLD_PER_UNIT_MAINTENANCE = 2;
-    private static final int GOLD_PER_IMPROVED_TILE = 1;
+    // private static final int GOLD_PER_IMPROVED_TILE = 1;
     private static final int IMPROVED_TILE_RADIUS = 2;
 
     public void processFactionEconomy(com.pocketempire.entities.Faction faction, World world) {
         int income = faction.getCityCount() * GOLD_PER_CITY;
         int maintenance = faction.getUnitCount() * GOLD_PER_UNIT_MAINTENANCE;
         int improvedTileBonus = countImprovedTilesNearCities(faction, world.getMap());
+        int buildingBonus = faction.getCities().stream().mapToInt(City::getGoldBonus).sum();
 
-        int netProfit = income - maintenance + improvedTileBonus;
+        int netProfit = income - maintenance + improvedTileBonus + buildingBonus;
         faction.addGold(netProfit);
     }
 

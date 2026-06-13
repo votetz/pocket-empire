@@ -1,14 +1,15 @@
 package com.pocketempire.entities;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public abstract class Entity {
     protected final String id;
-    protected int q;
-    protected int r;
-    protected int hp;
-    protected int maxHp;
+    @Setter protected int q;
+    @Setter protected int r;
+    @Setter protected int hp;
+    @Setter protected int maxHp;
 
     public Entity(String id, int q, int r, int hp, int maxHp) {
         this.id = id;
@@ -16,14 +17,6 @@ public abstract class Entity {
         this.r = r;
         this.hp = hp;
         this.maxHp = maxHp;
-    }
-
-    public void setQ(int q) {
-        this.q = q;
-    }
-
-    public void setR(int r) {
-        this.r = r;
     }
 
     public void move(int dq, int dr) {

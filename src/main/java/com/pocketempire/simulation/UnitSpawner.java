@@ -2,6 +2,7 @@ package com.pocketempire.simulation;
 
 import com.pocketempire.config.UnitConfigLoader;
 import com.pocketempire.config.UnitNamesLoader;
+import com.pocketempire.entities.Building;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
@@ -31,6 +32,14 @@ public class UnitSpawner {
     }
 
     public void trySpawnUnit(City city, Faction faction) {
+        Building buildingChoice = chooseBuildingForCity(city);
+        if (buildingChoice != null && city.getAccumulatedProduction() >= buildingChoice.getProductionCost()) {
+            city.addBuilding(buildingChoice);
+            city.setAccumulatedProduction(city.getAccumulatedProduction() - buildingChoice.getProductionCost());
+            GameEventBus.getInstance().publish(new GameEvent.BuildingBuilt(city, buildingChoice));
+            return;
+        }
+
         if (city.getCurrentProductionType() == null) {
             if (faction.isAI()) {
                 FogMap fogMap = fogMaps.get(faction.getId());
@@ -84,6 +93,13 @@ public class UnitSpawner {
                 return new int[]{nq, nr};
             }
         }
+        return null;
+    }
+
+    private Building chooseBuildingForCity(City city) {
+        if (!city.hasBuilding(Building.WALLS)) return Building.WALLS;
+        if (!city.hasBuilding(Building.MARKET)) return Building.MARKET;
+        if (!city.hasBuilding(Building.FORGE)) return Building.FORGE;
         return null;
     }
 }

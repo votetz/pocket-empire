@@ -47,6 +47,9 @@ public class ConsoleLogger {
 
                 case GameEvent.TileImproved(var tile, var worker) ->
                     System.out.println("Tile (" + tile.getQ() + "," + tile.getR() + ") improved by " + worker.getName());
+
+                case GameEvent.BuildingBuilt(var city, var building) ->
+                    System.out.println(city.getName() + " built " + building.getName());
             }
         });
     }
