@@ -1,6 +1,6 @@
 package com.pocketempire.events;
 
-import com.pocketempire.entities.StatusEffect;
+import com.pocketempire.config.StatusEffectConfig;
 import com.pocketempire.entities.Unit;
 
 public class ConsoleLogger {
@@ -52,16 +52,15 @@ public class ConsoleLogger {
                     System.out.println("Tile (" + tile.getQ() + "," + tile.getR() + ") improved by " + worker.getName());
 
                 case GameEvent.BuildingBuilt(var city, var building) ->
-                    System.out.println(city.getName() + " built " + building.getName());
-                case GameEvent.StatusApplied(Unit unit, StatusEffect effect, int duration) -> {
-                    String icon = switch (effect) {
-                        case BURNING -> "\uD83D\uDD25";
-                        case FROZEN -> "\u2744\uFE0F";
-                        case POISONED -> "\uD83E\uDDEA";
-                        case STUNNED -> "\uD83D\uDCA3";
-                    };
-                    System.out.printf(" %s %s is now %s for %d turns%n", icon, unit.getName(), effect.name(), duration);
-                }
+                    System.out.println(city.getName() + " built " + building.getDisplayName());
+
+                case GameEvent.StatusApplied(Unit unit, StatusEffectConfig effect, int duration) ->
+                    System.out.printf("%s %s is now %s for %d turns%n", effect.getIcon(), unit.getName(), effect.getName(), duration);
+
+                case GameEvent.StatusTick(Unit unit, StatusEffectConfig effect, int damage) ->
+                    System.out.printf("%s %s takes %d %s damage (%d/%d HP)%n",
+                            effect.getIcon(), unit.getName(), damage, effect.getName(),
+                            unit.getHp(), unit.getMaxHp());
             }
         });
     }

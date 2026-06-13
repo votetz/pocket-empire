@@ -1,6 +1,7 @@
 package com.pocketempire.simulation;
 
-import com.pocketempire.entities.StatusEffect;
+import com.pocketempire.config.StatusEffectConfig;
+import com.pocketempire.config.StatusEffectConfigLoader;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.entities.City;
 import com.pocketempire.units.UnitType;
@@ -15,32 +16,35 @@ public class CombatResolver {
     private static final Random rng = new Random();
 
     public static void resolveCombat(Unit attacker, Unit defender, int terrainBonus) {
-        if (attacker.hasEffect(StatusEffect.STUNNED)) return;
+        if (attacker.hasEffect("STUNNED")) return;
 
-        int attackMod = attacker.hasEffect(StatusEffect.FROZEN) ? -1 : 0;
+        StatusEffectConfig frozen = StatusEffectConfigLoader.getConfig("FROZEN");
+        StatusEffectConfig burning = StatusEffectConfigLoader.getConfig("BURNING");
+
+        int attackMod = attacker.hasEffect(frozen) ? -1 : 0;
         int defenseMod = 0;
-        if (defender.hasEffect(StatusEffect.BURNING)) defenseMod -= 1;
-        if (defender.hasEffect(StatusEffect.FROZEN)) defenseMod -= 1;
+        if (defender.hasEffect(burning)) defenseMod -= 1;
+        if (defender.hasEffect(frozen)) defenseMod -= 1;
 
         int damageToDefender = calculateDamage(attacker.getAttack() + attackMod, defender.getDefense()
                 + defender.getDefenseModifier() + defenseMod + terrainBonus);
         defender.takeDamage(damageToDefender);
         bus.publish(new GameEvent.UnitAttacked(attacker, defender, damageToDefender));
 
-        if (attacker.getUnitType() == UnitType.DROMON && defender.isAlive() && defender instanceof Unit u) {
-            u.applyEffect(StatusEffect.BURNING, StatusEffect.BURNING.getDefaultDuration());
-            bus.publish(new GameEvent.StatusApplied(u, StatusEffect.BURNING, StatusEffect.BURNING.getDefaultDuration()));
+        if (attacker.getUnitType() == UnitType.DROMON && defender.isAlive() && defender instanceof Unit u && rng.nextDouble() < 0.5) {
+            u.applyEffect(burning, burning.getDefaultDuration());
+            bus.publish(new GameEvent.StatusApplied(u, burning, burning.getDefaultDuration()));
         }
 
         if (attacker.getUnitType() == UnitType.MAGE && defender.isAlive() && defender instanceof Unit u2 && rng.nextDouble() < 0.3) {
-            u2.applyEffect(StatusEffect.BURNING, StatusEffect.BURNING.getDefaultDuration());
-            bus.publish(new GameEvent.StatusApplied(u2, StatusEffect.BURNING, StatusEffect.BURNING.getDefaultDuration()));
+            u2.applyEffect(burning, burning.getDefaultDuration());
+            bus.publish(new GameEvent.StatusApplied(u2, burning, burning.getDefaultDuration()));
         }
 
         int distance = calculateDistance(attacker, defender);
         if (defender.isAlive() && defender.getRange() >= distance) {
-            int counterAttackMod = defender.hasEffect(StatusEffect.FROZEN) ? -1 : 0;
-            int counterDefenseMod = attacker.hasEffect(StatusEffect.BURNING) ? -1 : 0;
+            int counterAttackMod = defender.hasEffect(frozen) ? -1 : 0;
+            int counterDefenseMod = attacker.hasEffect(burning) ? -1 : 0;
             int damageToAttacker = calculateDamage(defender.getAttack() + counterAttackMod,
                     attacker.getDefense() + attacker.getDefenseModifier() + counterDefenseMod);
             attacker.takeDamage(damageToAttacker);

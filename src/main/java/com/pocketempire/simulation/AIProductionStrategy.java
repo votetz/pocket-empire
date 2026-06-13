@@ -1,7 +1,6 @@
 package com.pocketempire.simulation;
 
 import com.pocketempire.config.UnitConfigLoader;
-import com.pocketempire.entities.Building;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
@@ -133,7 +132,8 @@ public class AIProductionStrategy {
             case HEAVY, GUARDIAN -> rng.nextBoolean() ? UnitType.MAGE : UnitType.ARCHER;
             case LIGHT, SCOUT -> rng.nextBoolean() ? UnitType.HEAVY : UnitType.GUARDIAN;
             case ARCHER, MAGE -> rng.nextBoolean() ? UnitType.LIGHT : UnitType.SCOUT;
-            case SIEGE, TRIREME -> UnitType.LIGHT;
+            case SIEGE -> UnitType.LIGHT;
+            case TRIREME -> UnitType.DROMON;
             case SETTLER, WORKER -> UnitType.LIGHT;
             case DROMON -> UnitType.TRIREME;
         };

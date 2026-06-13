@@ -1,11 +1,11 @@
 package com.pocketempire.events;
 
+import com.pocketempire.config.BuildingConfig;
+import com.pocketempire.config.StatusEffectConfig;
 import com.pocketempire.entities.*;
 
 import java.util.List;
 import com.pocketempire.world.Tile;
-
-import java.util.List;
 
 public sealed interface GameEvent {
     record UnitMoved(Unit unit, int fromQ, int fromR, int toQ, int toR) implements GameEvent {}
@@ -21,6 +21,7 @@ public sealed interface GameEvent {
     record CityDestroyed(City city, Unit attacker) implements GameEvent {}
     record CityFounded(City city, Unit settler) implements GameEvent {}
     record TileImproved(Tile tile, Unit worker) implements GameEvent {}
-    record BuildingBuilt(City city, Building building) implements GameEvent {}
-    record StatusApplied(Unit unit, StatusEffect effect, int duration) implements GameEvent {}
+    record BuildingBuilt(City city, BuildingConfig building) implements GameEvent {}
+    record StatusApplied(Unit unit, StatusEffectConfig effect, int duration) implements GameEvent {}
+    record StatusTick(Unit unit, StatusEffectConfig effect, int damage) implements GameEvent {}
 }

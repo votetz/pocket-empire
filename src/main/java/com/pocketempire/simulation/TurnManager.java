@@ -1,5 +1,6 @@
 package com.pocketempire.simulation;
 
+import com.pocketempire.config.StatusEffectConfig;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.entities.City;
@@ -14,6 +15,7 @@ import com.pocketempire.objective.VictoryManager;
 
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,14 +44,14 @@ public class TurnManager {
     public void nextTurn() {
         Faction current = factions.get(currentFactionIndex);
         if (current.isAlive()) {
+            processFactionEffects(current);
             startFactionTurn(current);
             if (victoryManager.isGameOver()) return;
         }
         currentFactionIndex++;
-        if(currentFactionIndex >= factions.size()) {
+        if (currentFactionIndex >= factions.size()) {
             currentFactionIndex = 0;
             currentTurn++;
-            processGlobalTurnEffects();
             victoryManager.checkTimerVictory(currentTurn);
         }
     }
@@ -101,8 +103,19 @@ public class TurnManager {
         }
     }
 
-    private void processGlobalTurnEffects() {
-        // Implement global turn effects here
+    private void processFactionEffects(Faction faction) {
+        GameEventBus bus = GameEventBus.getInstance();
+        for (Unit unit : faction.getUnits()) {
+            if (!unit.isAlive()) continue;
+            java.util.List<java.util.Map.Entry<StatusEffectConfig, Integer>> effects =
+                    new java.util.ArrayList<>(unit.getActiveEffects().entrySet());
+            unit.tickEffects();
+            for (java.util.Map.Entry<StatusEffectConfig, Integer> entry : effects) {
+                if (entry.getKey().getTickDamage() > 0) {
+                    bus.publish(new GameEvent.StatusTick(unit, entry.getKey(), entry.getKey().getTickDamage()));
+                }
+            }
+        }
     }
 
     public Faction getCurrentFaction() {

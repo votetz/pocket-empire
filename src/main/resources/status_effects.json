@@ -1,0 +1,6 @@
+[
+  {"name": "BURNING", "tickDamage": 2, "defaultDuration": 3, "icon": "\uD83D\uDD25"},
+  {"name": "FROZEN", "tickDamage": 0, "defaultDuration": 2, "icon": "\u2744\uFE0F"},
+  {"name": "POISONED", "tickDamage": 1, "defaultDuration": 3, "icon": "\uD83E\uDDEA"},
+  {"name": "STUNNED", "tickDamage": 0, "defaultDuration": 1, "icon": "\uD83D\uDCA3"}
+]

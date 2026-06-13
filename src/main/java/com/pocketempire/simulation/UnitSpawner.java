@@ -1,8 +1,9 @@
 package com.pocketempire.simulation;
 
+import com.pocketempire.config.BuildingConfig;
+import com.pocketempire.config.BuildingConfigLoader;
 import com.pocketempire.config.UnitConfigLoader;
 import com.pocketempire.config.UnitNamesLoader;
-import com.pocketempire.entities.Building;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
@@ -36,7 +37,7 @@ public class UnitSpawner {
     }
 
     public void trySpawnUnit(City city, Faction faction) {
-        Building buildingChoice = chooseBuildingForCity(city);
+        BuildingConfig buildingChoice = chooseBuildingForCity(city);
         if (buildingChoice != null && city.getAccumulatedProduction() >= buildingChoice.getProductionCost()) {
             city.addBuilding(buildingChoice);
             city.setAccumulatedProduction(city.getAccumulatedProduction() - buildingChoice.getProductionCost());
@@ -115,12 +116,13 @@ public class UnitSpawner {
         return null;
     }
 
-    private Building chooseBuildingForCity(City city) {
-        if (!city.hasBuilding(Building.WALLS)) return Building.WALLS;
-        if (!city.hasBuilding(Building.MARKET)) return Building.MARKET;
-        if (!city.hasBuilding(Building.FORGE)) return Building.FORGE;
-        if (city.hasBuilding(Building.FORGE) && !city.hasBuilding(Building.WORKSHOP)) return Building.WORKSHOP;
-        if (!city.hasBuilding(Building.BARRACKS)) return Building.BARRACKS;
+    private BuildingConfig chooseBuildingForCity(City city) {
+        if (!city.hasBuilding("WALLS")) return BuildingConfigLoader.getConfig("WALLS");
+        if (!city.hasBuilding("MARKET")) return BuildingConfigLoader.getConfig("MARKET");
+        if (!city.hasBuilding("FORGE")) return BuildingConfigLoader.getConfig("FORGE");
+        if (city.hasBuilding("FORGE") && !city.hasBuilding("WORKSHOP")) return BuildingConfigLoader.getConfig("WORKSHOP");
+        if (!city.hasBuilding("GRANARY")) return BuildingConfigLoader.getConfig("GRANARY");
+        if (!city.hasBuilding("BARRACKS")) return BuildingConfigLoader.getConfig("BARRACKS");
         return null;
     }
 }

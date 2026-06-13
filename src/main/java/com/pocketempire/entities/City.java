@@ -1,5 +1,6 @@
 package com.pocketempire.entities;
 
+import com.pocketempire.config.BuildingConfig;
 import com.pocketempire.units.UnitType;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,7 @@ public class City extends Entity {
     @Setter private int accumulatedProduction;
     @Setter private UnitType currentProductionType;
     private final int borderRadius;
-    private final List<Building> buildings;
+    private final List<BuildingConfig> buildings;
 
     public City(String id, int q, int r, String name, int hp, int maxHp, int population, int maxPopulation, String factionId, String leaderId, int production) {
         super(id, q, r, hp, maxHp);
@@ -34,7 +35,7 @@ public class City extends Entity {
         this.buildings = new ArrayList<>();
     }
 
-    public void addBuilding(Building building) {
+    public void addBuilding(BuildingConfig building) {
         buildings.add(building);
         if (building.getHpBonus() > 0) {
             setMaxHp(getMaxHp() + building.getHpBonus());
@@ -42,27 +43,35 @@ public class City extends Entity {
         }
     }
 
-    public boolean hasBuilding(Building building) {
+    public boolean hasBuilding(BuildingConfig building) {
         return buildings.contains(building);
     }
 
+    public boolean hasBuilding(String name) {
+        return buildings.stream().anyMatch(b -> b.getName().equals(name));
+    }
+
     public int getGoldBonus() {
-        return buildings.stream().mapToInt(Building::getGoldBonus).sum();
+        return buildings.stream().mapToInt(BuildingConfig::getGoldBonus).sum();
     }
 
     public int getProductionBonus() {
         int forgeCount = (int) buildings.stream()
-                .filter(b -> b == Building.FORGE)
+                .filter(b -> b.getName().equals("FORGE"))
                 .count();
         int forgeBonusTotal = forgeCount * buildings.stream()
-                .filter(b -> b == Building.WORKSHOP)
-                .mapToInt(Building::getForgeBonus)
+                .filter(b -> b.getName().equals("WORKSHOP"))
+                .mapToInt(BuildingConfig::getForgeBonus)
                 .sum();
-        return buildings.stream().mapToInt(Building::getProductionBonus).sum() + forgeBonusTotal;
+        return buildings.stream().mapToInt(BuildingConfig::getProductionBonus).sum() + forgeBonusTotal;
     }
 
     public int getAttackBonus() {
-        return buildings.stream().mapToInt(Building::getAttackBonus).sum();
+        return buildings.stream().mapToInt(BuildingConfig::getAttackBonus).sum();
+    }
+
+    public int getImprovedTileGoldBonus() {
+        return buildings.stream().mapToInt(BuildingConfig::getImprovedTileGoldBonus).sum();
     }
 
     public int getEffectiveProduction() {

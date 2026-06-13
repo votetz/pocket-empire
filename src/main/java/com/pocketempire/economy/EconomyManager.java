@@ -17,8 +17,15 @@ public class EconomyManager {
         int maintenance = faction.getUnitCount() * GOLD_PER_UNIT_MAINTENANCE;
         int improvedTileBonus = countImprovedTilesNearCities(faction, world.getMap());
         int buildingBonus = faction.getCities().stream().mapToInt(City::getGoldBonus).sum();
+        int granaryBonus = 0;
+        for (City city : faction.getCities()) {
+            if (city.getImprovedTileGoldBonus() > 0) {
+                int nearCity = countImprovedTilesNearCity(city, world.getMap());
+                granaryBonus += nearCity * city.getImprovedTileGoldBonus();
+            }
+        }
 
-        int netProfit = income - maintenance + improvedTileBonus + buildingBonus;
+        int netProfit = income - maintenance + improvedTileBonus + buildingBonus + granaryBonus;
         faction.addGold(netProfit);
     }
 
@@ -35,6 +42,22 @@ public class EconomyManager {
                         count++;
                         break;
                     }
+                }
+            }
+        }
+        return count;
+    }
+
+    private int countImprovedTilesNearCity(City city, Map map) {
+        int count = 0;
+        for (int col = 0; col < map.getWidth(); col++) {
+            for (int row = 0; row < map.getHeight(); row++) {
+                Tile tile = map.getTileOffSet(col, row);
+                if (tile == null || !tile.isImproved()) continue;
+                int q = col - (row - (row & 1)) / 2;
+                int r = row;
+                if (HexUtils.getDistance(q, r, city.getQ(), city.getR()) <= IMPROVED_TILE_RADIUS) {
+                    count++;
                 }
             }
         }

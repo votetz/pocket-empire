@@ -11,6 +11,7 @@ import com.pocketempire.world.Map;
 import com.pocketempire.world.MapGenerator;
 import com.pocketempire.world.World;
 
+import lombok.Getter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,10 +20,10 @@ public class GameSetup {
     private final int mapWidth;
     private final int mapHeight;
 
-    private Map map;
-    private World world;
-    private List<Faction> factions;
-    private java.util.Map<Integer, FogMap> fogMaps;
+    @Getter private Map map;
+    @Getter private World world;
+    @Getter private List<Faction> factions;
+    @Getter private java.util.Map<Integer, FogMap> fogMaps;
 
     public GameSetup(int mapWidth, int mapHeight) {
         this.mapWidth = mapWidth;
@@ -72,9 +73,4 @@ public class GameSetup {
             fogMaps.put(faction.getId(), new FogMap(map));
         }
     }
-
-    public Map getMap() { return map; }
-    public World getWorld() { return world; }
-    public List<Faction> getFactions() { return factions; }
-    public java.util.Map<Integer, FogMap> getFogMaps() { return fogMaps; }
 }
