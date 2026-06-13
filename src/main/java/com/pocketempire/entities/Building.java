@@ -1,7 +1,9 @@
 package com.pocketempire.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@AllArgsConstructor
 @Getter
 public enum Building {
     WALLS("Walls", 10, 0, 50, 0, 0, 0),
@@ -17,14 +19,4 @@ public enum Building {
     private final int productionBonus;
     private final int forgeBonus;
     private final int attackBonus;
-
-    Building(String name, int productionCost, int goldBonus, int hpBonus, int productionBonus, int forgeBonus, int attackBonus) {
-        this.name = name;
-        this.productionCost = productionCost;
-        this.goldBonus = goldBonus;
-        this.hpBonus = hpBonus;
-        this.productionBonus = productionBonus;
-        this.forgeBonus = forgeBonus;
-        this.attackBonus = attackBonus;
-    }
 }
