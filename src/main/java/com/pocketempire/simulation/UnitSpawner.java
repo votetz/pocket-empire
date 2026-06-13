@@ -8,7 +8,11 @@ import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.events.GameEvent;
 import com.pocketempire.events.GameEventBus;
+import com.pocketempire.tiles.TileType;
+import com.pocketempire.units.MovementType;
 import com.pocketempire.units.UnitFactory;
+import com.pocketempire.units.UnitType;
+import com.pocketempire.units.UnitStats;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.Tile;
 import com.pocketempire.world.World;
@@ -55,12 +59,18 @@ public class UnitSpawner {
         boolean spawned = false;
 
         while (city.getAccumulatedProduction() >= cost && faction.getGold() >= cost) {
-            int[] spawn = findSpawnTile(city);
-            if (spawn == null) break;
+            int[] spawn = findSpawnTile(city, city.getCurrentProductionType());
+            if (spawn == null) {
+                city.setCurrentProductionType(null);
+                break;
+            }
 
             String unitId = city.getCurrentProductionType().name().toLowerCase()
                     + "_" + (++unitCounter);
             Unit unit = UnitFactory.create(city.getCurrentProductionType(), unitId, UnitNamesLoader.getRandomName(), spawn[0], spawn[1], city.getFactionId());
+            if (city.getAttackBonus() > 0) {
+                unit.setAttack(unit.getAttack() + city.getAttackBonus());
+            }
             faction.addUnit(unit);
             faction.spendGold(cost);
             city.setAccumulatedProduction(city.getAccumulatedProduction() - cost);
@@ -74,13 +84,15 @@ public class UnitSpawner {
         }
     }
 
-    private int[] findSpawnTile(City city) {
-        int[] result = findSpawnTileInRadius(city, 1);
+    private int[] findSpawnTile(City city, UnitType unitType) {
+        int[] result = findSpawnTileInRadius(city, 1, unitType);
         if (result != null) return result;
-        return findSpawnTileInRadius(city, 2);
+        return findSpawnTileInRadius(city, 2, unitType);
     }
 
-    private int[] findSpawnTileInRadius(City city, int radius) {
+    private int[] findSpawnTileInRadius(City city, int radius, UnitType unitType) {
+        UnitStats stats = UnitConfigLoader.getConfig(unitType.name());
+        MovementType movementType = stats.getMovementType();
         for (int dq = -radius; dq <= radius; dq++) {
             for (int dr = Math.max(-radius, -dq - radius); dr <= Math.min(radius, -dq + radius); dr++) {
                 if (dq == 0 && dr == 0) continue;
@@ -88,8 +100,15 @@ public class UnitSpawner {
                 int nr = city.getR() + dr;
                 if (!world.getMap().isInBounds(nq, nr)) continue;
                 Tile tile = world.getMap().getTile(nq, nr);
-                if (tile == null || tile.getType().isBlocksMovement()) continue;
+                if (tile == null) continue;
                 if (world.isTileOccupied(nq, nr)) continue;
+                TileType type = tile.getType();
+                boolean canSpawn = switch (movementType) {
+                    case WATER -> type.isWater();
+                    case GROUND -> !type.isWater() && !type.isBlocksMovement();
+                    default -> !type.isBlocksMovement();
+                };
+                if (!canSpawn) continue;
                 return new int[]{nq, nr};
             }
         }
@@ -101,6 +120,7 @@ public class UnitSpawner {
         if (!city.hasBuilding(Building.MARKET)) return Building.MARKET;
         if (!city.hasBuilding(Building.FORGE)) return Building.FORGE;
         if (city.hasBuilding(Building.FORGE) && !city.hasBuilding(Building.WORKSHOP)) return Building.WORKSHOP;
+        if (!city.hasBuilding(Building.BARRACKS)) return Building.BARRACKS;
         return null;
     }
 }

@@ -111,22 +111,17 @@ public class AIProductionStrategy {
         }
     }
 
-    private Building chooseBuildingForCity(City city) {
-        if (!city.hasBuilding(Building.WALLS)) return Building.WALLS;
-        if (!city.hasBuilding(Building.MARKET)) return Building.MARKET;
-        if (!city.hasBuilding(Building.FORGE)) return Building.FORGE;
-        if (city.hasBuilding(Building.FORGE) && !city.hasBuilding(Building.WORKSHOP)) return Building.WORKSHOP;
-        return null;
-    }
-
     private boolean isNearWater(City city, World world) {
-        for (int[] dir : HexUtils.DIRECTIONS) {
-            int nq = city.getQ() + dir[0];
-            int nr = city.getR() + dir[1];
-            if (world.getMap().isInBounds(nq, nr)) {
-                var tile = world.getMap().getTile(nq, nr);
-                if (tile != null && tile.getType().isWater()) {
-                    return true;
+        for (int dq = -2; dq <= 2; dq++) {
+            for (int dr = Math.max(-2, -dq - 2); dr <= Math.min(2, -dq + 2); dr++) {
+                if (dq == 0 && dr == 0) continue;
+                int nq = city.getQ() + dq;
+                int nr = city.getR() + dr;
+                if (world.getMap().isInBounds(nq, nr)) {
+                    var tile = world.getMap().getTile(nq, nr);
+                    if (tile != null && tile.getType().isWater()) {
+                        return true;
+                    }
                 }
             }
         }

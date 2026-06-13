@@ -61,6 +61,10 @@ public class City extends Entity {
         return buildings.stream().mapToInt(Building::getProductionBonus).sum() + forgeBonusTotal;
     }
 
+    public int getAttackBonus() {
+        return buildings.stream().mapToInt(Building::getAttackBonus).sum();
+    }
+
     public int getEffectiveProduction() {
         return production + getProductionBonus();
     }
@@ -71,5 +75,4 @@ public class City extends Entity {
             accumulatedProduction += getEffectiveProduction();
         }
     }
-
 }

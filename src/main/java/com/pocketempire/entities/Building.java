@@ -4,10 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum Building {
-    WALLS("Walls", 10, 0, 50, 0, 0),
-    MARKET("Market", 8, 5, 0, 0, 0),
-    FORGE("Forge", 8, 0, 0, 2, 0),
-    WORKSHOP("Workshop", 12, 0, 0, 0, 1);
+    WALLS("Walls", 10, 0, 50, 0, 0, 0),
+    MARKET("Market", 8, 5, 0, 0, 0, 0),
+    FORGE("Forge", 8, 0, 0, 2, 0, 0),
+    WORKSHOP("Workshop", 12, 0, 0, 0, 1, 0),
+    BARRACKS("Barracks", 10, 0, 0, 0, 0, 1);
 
     private final String name;
     private final int productionCost;
@@ -15,13 +16,15 @@ public enum Building {
     private final int hpBonus;
     private final int productionBonus;
     private final int forgeBonus;
+    private final int attackBonus;
 
-    Building(String name, int productionCost, int goldBonus, int hpBonus, int productionBonus, int forgeBonus) {
+    Building(String name, int productionCost, int goldBonus, int hpBonus, int productionBonus, int forgeBonus, int attackBonus) {
         this.name = name;
         this.productionCost = productionCost;
         this.goldBonus = goldBonus;
         this.hpBonus = hpBonus;
         this.productionBonus = productionBonus;
         this.forgeBonus = forgeBonus;
+        this.attackBonus = attackBonus;
     }
 }

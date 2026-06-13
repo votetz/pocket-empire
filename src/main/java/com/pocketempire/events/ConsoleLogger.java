@@ -30,7 +30,7 @@ public class ConsoleLogger {
                             + unit.getHp() + "/" + unit.getMaxHp() + " HP)");
 
                 case GameEvent.UnitSpawned(var unit) ->
-                    System.out.println(unit.getName() + " spawned at (" + unit.getQ() + "," + unit.getR() + ")");
+                    System.out.println(unit.getName() + " (" + unit.getUnitType() + ") spawned at (" + unit.getQ() + "," + unit.getR() + ")");
 
                 case GameEvent.UnitStateChanged(var unit) ->
                     System.out.println(unit.getName() + " is now " + unit.getUnitState().name());

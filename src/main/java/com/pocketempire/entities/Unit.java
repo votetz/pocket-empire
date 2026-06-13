@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 public class Unit extends Entity {
     private final String name;
-    private int attack;
+    @Setter private int attack;
     private int defense;
     private int speed;
     private final int range;
