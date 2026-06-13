@@ -8,7 +8,6 @@ import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
 
 public class FleeState implements State {
-
     @Override
     public void enter(Unit unit) {}
 
