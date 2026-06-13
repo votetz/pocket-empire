@@ -135,6 +135,7 @@ public class AIProductionStrategy {
             case ARCHER, MAGE -> rng.nextBoolean() ? UnitType.LIGHT : UnitType.SCOUT;
             case SIEGE, TRIREME -> UnitType.LIGHT;
             case SETTLER, WORKER -> UnitType.LIGHT;
+            case DROMON -> UnitType.TRIREME;
         };
     }
 

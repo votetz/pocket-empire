@@ -10,5 +10,6 @@ public enum UnitType {
     SETTLER,
     WORKER,
     SCOUT,
-    TRIREME
+    TRIREME,
+    DROMON
 }

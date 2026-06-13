@@ -33,10 +33,6 @@ public enum TileType {
         return this == WATER || this == OCEAN;
     }
 
-    public boolean isShallowWater() {
-        return this == SWAMPS;
-    }
-
     TileType(int movementCost, boolean blocksMovement, char symbol, int defendBonus) {
         this.movementCost = movementCost;
         this.blocksMovement = blocksMovement;
