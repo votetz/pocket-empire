@@ -100,6 +100,7 @@ public class UnitSpawner {
         if (!city.hasBuilding(Building.WALLS)) return Building.WALLS;
         if (!city.hasBuilding(Building.MARKET)) return Building.MARKET;
         if (!city.hasBuilding(Building.FORGE)) return Building.FORGE;
+        if (city.hasBuilding(Building.FORGE) && !city.hasBuilding(Building.WORKSHOP)) return Building.WORKSHOP;
         return null;
     }
 }

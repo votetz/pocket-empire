@@ -51,7 +51,14 @@ public class City extends Entity {
     }
 
     public int getProductionBonus() {
-        return buildings.stream().mapToInt(Building::getProductionBonus).sum();
+        int forgeCount = (int) buildings.stream()
+                .filter(b -> b == Building.FORGE)
+                .count();
+        int forgeBonusTotal = forgeCount * buildings.stream()
+                .filter(b -> b == Building.WORKSHOP)
+                .mapToInt(Building::getForgeBonus)
+                .sum();
+        return buildings.stream().mapToInt(Building::getProductionBonus).sum() + forgeBonusTotal;
     }
 
     public int getEffectiveProduction() {
