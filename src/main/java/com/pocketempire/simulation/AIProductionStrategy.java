@@ -11,6 +11,8 @@ import com.pocketempire.units.UnitType;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class AIProductionStrategy {
@@ -69,10 +71,13 @@ public class AIProductionStrategy {
         }
 
         if (nearest != null && minDist <= 10) {
-            UnitType counter = getCounterUnit(nearest.getUnitType(), rng);
-            if (faction.getGold() >= UnitConfigLoader.getConfig(counter.name()).getCost()) {
-                city.setCurrentProductionType(counter);
-                return;
+            UnitType mostCommon = findMostCommonEnemyType(aiWorld, faction);
+            if (mostCommon != null) {
+                UnitType counter = getCounterUnit(mostCommon, rng);
+                if (faction.getGold() >= UnitConfigLoader.getConfig(counter.name()).getCost()) {
+                    city.setCurrentProductionType(counter);
+                    return;
+                }
             }
         }
 
@@ -137,6 +142,20 @@ public class AIProductionStrategy {
             case SETTLER, WORKER -> UnitType.LIGHT;
             case DROMON -> UnitType.TRIREME;
         };
+    }
+
+    public UnitType findMostCommonEnemyType(World world, Faction faction) {
+        Map<UnitType, Integer> counts = new HashMap<>();
+        for (Unit enemy : world.getAllUnits()) {
+            if (enemy.getFactionId().equals(String.valueOf(faction.getId()))) continue;
+            if (!enemy.isAlive()) continue;
+            if (enemy.getUnitType() == UnitType.SETTLER || enemy.getUnitType() == UnitType.WORKER) continue;
+            counts.merge(enemy.getUnitType(), 1, Integer::sum);
+        }
+        return counts.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
     }
 
     public long countUnitsByType(Faction faction, UnitType type) {
