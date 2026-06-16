@@ -17,8 +17,8 @@ public class VictoryManager {
     private static final int TURN_LIMIT = 50;
     private static final int VP_PER_CITY_PER_TURN = 1;
     private static final int MAX_CITY_VP = 2;
-    private static final int VP_PER_KILL = 2;
-    private static final int VP_PER_CITY_FOUNDED = 5;
+    private static final int VP_PER_KILL = 5;
+    private static final int VP_PER_CITY_FOUNDED = 10;
     private static final int VP_PER_TILE_IMPROVED = 3;
 
     private final Map<String, Faction> factionsById = new HashMap<>();
