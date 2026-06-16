@@ -38,7 +38,7 @@ public class UnitSpawner {
         this.unitCounter = 0;
     }
 
-    public void trySpawnUnit(City city, Faction faction) {
+    public void trySpawnUnit(City city, Faction faction, int currentTurn) {
         BuildingConfig buildingChoice = chooseBuildingForCity(city);
         if (buildingChoice != null && city.getAccumulatedProduction() >= buildingChoice.getProductionCost()) {
             city.addBuilding(buildingChoice);
@@ -52,7 +52,7 @@ public class UnitSpawner {
                 FogMap fogMap = fogMaps.get(faction.getId());
                 if (fogMap != null) {
                     World aiWorld = new VisibleWorld(world, fogMap, String.valueOf(faction.getId()));
-                    aiProductionStrategy.chooseProductionForAI(city, faction, aiWorld);
+                    aiProductionStrategy.chooseProductionForAI(city, faction, aiWorld, currentTurn);
                 }
             }
             if (city.getCurrentProductionType() == null) return;

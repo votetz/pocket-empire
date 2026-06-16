@@ -90,7 +90,7 @@ public class TurnManager {
         for (City city : faction.getCities()) {
             if (!city.isAlive()) continue;
             city.update();
-            unitSpawner.trySpawnUnit(city, faction);
+            unitSpawner.trySpawnUnit(city, faction, currentTurn);
         }
     }
 

@@ -18,7 +18,7 @@ import java.util.Random;
 
 public class AIProductionStrategy {
 
-    public void chooseProductionForAI(City city, Faction faction, World aiWorld) {
+    public void chooseProductionForAI(City city, Faction faction, World aiWorld, int currentTurn) {
         Random rng = new Random();
 
         long workerCount = countUnitsByType(faction, UnitType.WORKER);
@@ -31,6 +31,12 @@ public class AIProductionStrategy {
 
         long combatTotal = heavyCount + lightCount + rangedCount;
 
+        int settlerCost = UnitConfigLoader.getConfig(UnitType.SETTLER.name()).getCost();
+        if (faction.getCityCount() == 1 && currentTurn >= 10 && settlerCount == 0 && faction.getGold() >= settlerCost) {
+            city.setCurrentProductionType(UnitType.SETTLER);
+            return;
+        }
+
         if (faction.getGold() < 5) {
             if (rng.nextDouble() < 0.5) {
                 city.setCurrentProductionType(UnitType.LIGHT);
@@ -41,13 +47,13 @@ public class AIProductionStrategy {
             return;
         }
 
-        if (workerCount < faction.getCityCount() && rng.nextDouble() < 0.35) {
-            city.setCurrentProductionType(UnitType.WORKER);
+        if (faction.getCityCount() < 5 && settlerCount < 2 && combatTotal >= 1 && rng.nextDouble() < 0.4) {
+            city.setCurrentProductionType(UnitType.SETTLER);
             return;
         }
 
-        if (faction.getCityCount() < 5 && settlerCount < 1 && combatTotal >= 2 && rng.nextDouble() < 0.2) {
-            city.setCurrentProductionType(UnitType.SETTLER);
+        if (workerCount < faction.getCityCount() && rng.nextDouble() < 0.35) {
+            city.setCurrentProductionType(UnitType.WORKER);
             return;
         }
 
