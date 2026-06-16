@@ -49,7 +49,6 @@ public class VisibleWorld extends World {
             if (String.valueOf(faction.getId()).equals(unit.getFactionId())) continue;
             for (City city : faction.getCities()) {
                 if (!city.isAlive()) continue;
-                if (!fogMap.isExplored(city.getQ(), city.getR())) continue;
                 int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), city.getQ(), city.getR());
                 if (dist < minDist) {
                     minDist = dist;

@@ -57,8 +57,6 @@ public class Pathfinder {
                 return buildPath(current);
             }
 
-            if (current.g > unit.getRemainingOD()) continue;
-
             for (int[] neighbor : HexUtils.getNeighbors(current.q, current.r)) {
                 int nq = neighbor[0], nr = neighbor[1];
 
@@ -66,8 +64,10 @@ public class Pathfinder {
                 if (closedSet.contains(new Point(nq, nr))) continue;
 
                 Tile tile = world.getMap().getTile(nq, nr);
-                if (tile == null || tile.getType().isBlocksMovement()) continue;
-
+                if (tile == null) continue;
+                if (tile.getType().isBlocksMovement()) {
+                    if (unit.getMovementType() != MovementType.TRANSPORTABLE || !tile.getType().isWater()) continue;
+                }
                 if (!canEnterTile(unit, tile)) continue;
 
                 if (world.isTileOccupied(nq, nr, unit)) continue;
@@ -95,7 +95,7 @@ public class Pathfinder {
         return switch (moveType) {
             case GROUND -> !waterTile;
             case WATER -> waterTile;
-            case AMPHIBIOUS -> true;
+            case TRANSPORTABLE -> true;
             case AIR -> true;
         };
     }

@@ -47,6 +47,14 @@ public class IdleState implements State {
             return;
         }
 
+        if (unit.getUnitType() == UnitType.SIEGE) {
+            City enemyCity = world.findNearestEnemyCity(unit);
+            if (enemyCity != null) {
+                unit.changeState(new AttackState(), UnitState.ATTACKING);
+                return;
+            }
+        }
+
         Unit enemy = world.findNearestEnemy(unit);
         if (enemy == null) {
             unit.changeState(new WanderState(), UnitState.WANDER);
