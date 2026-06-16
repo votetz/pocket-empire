@@ -11,6 +11,7 @@ import com.pocketempire.events.GameEvent;
 import com.pocketempire.events.GameEventBus;
 import com.pocketempire.tiles.TileType;
 import com.pocketempire.units.MovementType;
+import com.pocketempire.units.MageType;
 import com.pocketempire.units.UnitFactory;
 import com.pocketempire.units.UnitType;
 import com.pocketempire.units.UnitStats;
@@ -22,6 +23,7 @@ import com.pocketempire.world.FogMap;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class UnitSpawner {
     private final World world;
@@ -69,6 +71,9 @@ public class UnitSpawner {
             String unitId = city.getCurrentProductionType().name().toLowerCase()
                     + "_" + (++unitCounter);
             Unit unit = UnitFactory.create(city.getCurrentProductionType(), unitId, UnitNamesLoader.getRandomName(), spawn[0], spawn[1], city.getFactionId());
+            if (city.getCurrentProductionType() == UnitType.MAGE) {
+                unit.setMageType(aiProductionStrategy.chooseMageType(new Random()));
+            }
             if (city.getAttackBonus() > 0) {
                 unit.setAttack(unit.getAttack() + city.getAttackBonus());
             }

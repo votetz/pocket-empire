@@ -32,8 +32,10 @@ public class ConsoleLogger {
                     System.out.println(unit.getName() + " healed (+" + amount + " HP, "
                             + unit.getHp() + "/" + unit.getMaxHp() + " HP)");
 
-                case GameEvent.UnitSpawned(var unit) ->
-                    System.out.println(unit.getName() + " (" + unit.getUnitType() + ") spawned at (" + unit.getQ() + "," + unit.getR() + ")" + unit.getUnitType());
+                case GameEvent.UnitSpawned(var unit) -> {
+                    String mageInfo = unit.getMageType() != null ? " [" + unit.getMageType() + "]" : "";
+                    System.out.println(unit.getName() + " (" + unit.getUnitType() + mageInfo + ") spawned at (" + unit.getQ() + "," + unit.getR() + ")");
+                }
 
                 case GameEvent.UnitStateChanged(var unit) ->
                     System.out.println(unit.getName() + " is now " + unit.getUnitState().name());

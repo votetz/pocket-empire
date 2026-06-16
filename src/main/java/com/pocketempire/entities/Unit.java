@@ -6,6 +6,7 @@ import com.pocketempire.events.GameEventBus;
 import com.pocketempire.fsm.IdleState;
 import com.pocketempire.fsm.State;
 import com.pocketempire.fsm.UnitState;
+import com.pocketempire.units.MageType;
 import com.pocketempire.units.MovementType;
 import com.pocketempire.units.UnitStats;
 import com.pocketempire.units.UnitType;
@@ -34,6 +35,8 @@ public class Unit extends Entity {
     @Setter private State currentState;
     private int remainingOD;
     private final Map<StatusEffectConfig, Integer> activeEffects = new HashMap<>();
+    @Setter private MageType mageType;
+    private final int blinkRange;
 
     protected Unit(Builder builder) {
         super(builder.id, builder.q, builder.r, builder.hp, builder.maxHp);
@@ -50,6 +53,8 @@ public class Unit extends Entity {
         this.unitState = builder.unitState;
         this.remainingOD = builder.movement;
         this.currentState = new IdleState();
+        this.mageType = builder.mageType;
+        this.blinkRange = (builder.mageType == MageType.TELEPORT) ? 3 : 0;
     }
 
 public static class Builder {
@@ -70,6 +75,7 @@ public static class Builder {
     private UnitType unitType;
     private MovementType movementType;
     private UnitState unitState = UnitState.IDLE;
+    private MageType mageType;
 
     public Builder(String id, int q, int r, String factionId) {
         this.id = id;
@@ -131,6 +137,11 @@ public static class Builder {
 
     public Builder movementType(MovementType movementType) {
        this.movementType = movementType;
+       return this;
+    }
+
+    public Builder mageType(MageType mageType) {
+       this.mageType = mageType;
        return this;
     }
 

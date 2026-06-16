@@ -7,6 +7,7 @@ import com.pocketempire.entities.Unit;
 import com.pocketempire.events.GameEvent;
 import com.pocketempire.events.GameEventBus;
 import com.pocketempire.tiles.TileType;
+import com.pocketempire.units.MageType;
 import com.pocketempire.units.UnitType;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
@@ -162,5 +163,10 @@ public class AIProductionStrategy {
         return faction.getUnits().stream()
                 .filter(u -> u.isAlive() && u.getUnitType() == type)
                 .count();
+    }
+
+    public MageType chooseMageType(Random rng) {
+        MageType[] types = MageType.values();
+        return types[rng.nextInt(types.length)];
     }
 }

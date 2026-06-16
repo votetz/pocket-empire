@@ -4,6 +4,7 @@ import com.pocketempire.config.StatusEffectConfig;
 import com.pocketempire.config.StatusEffectConfigLoader;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.entities.City;
+import com.pocketempire.units.MageType;
 import com.pocketempire.units.UnitType;
 import com.pocketempire.events.GameEvent;
 import com.pocketempire.events.GameEventBus;
@@ -20,6 +21,7 @@ public class CombatResolver {
 
         StatusEffectConfig frozen = StatusEffectConfigLoader.getConfig("FROZEN");
         StatusEffectConfig burning = StatusEffectConfigLoader.getConfig("BURNING");
+        StatusEffectConfig poisoned = StatusEffectConfigLoader.getConfig("POISONED");
 
         int attackMod = attacker.hasEffect(frozen) ? -1 : 0;
         int defenseMod = 0;
@@ -36,9 +38,20 @@ public class CombatResolver {
             bus.publish(new GameEvent.StatusApplied(u, burning, burning.getDefaultDuration()));
         }
 
-        if (attacker.getUnitType() == UnitType.MAGE && defender.isAlive() && defender instanceof Unit u2 && rng.nextDouble() < 0.3) {
-            u2.applyEffect(burning, burning.getDefaultDuration());
-            bus.publish(new GameEvent.StatusApplied(u2, burning, burning.getDefaultDuration()));
+        if (attacker.getUnitType() == UnitType.MAGE && defender.isAlive() && defender instanceof Unit u2) {
+            MageType mt = attacker.getMageType();
+            if (mt != null && rng.nextDouble() < 0.3) {
+                StatusEffectConfig effect = switch (mt) {
+                    case FIRE -> burning;
+                    case ICE -> frozen;
+                    case POISON -> poisoned;
+                    case TELEPORT -> null;
+                };
+                if (effect != null) {
+                    u2.applyEffect(effect, effect.getDefaultDuration());
+                    bus.publish(new GameEvent.StatusApplied(u2, effect, effect.getDefaultDuration()));
+                }
+            }
         }
 
         int distance = calculateDistance(attacker, defender);

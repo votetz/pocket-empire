@@ -15,6 +15,11 @@ import java.util.List;
 public class UnitMover {
 
     public void moveUnitAlongPath(Unit unit, World world, int targetQ, int targetR) {
+        if (unit.getBlinkRange() > 0) {
+            blinkToward(unit, world, targetQ, targetR);
+            return;
+        }
+
         while (unit.getRemainingOD() > 0) {
             List<Pathfinder.Node> path = Pathfinder.findPath(
                     world,
@@ -39,6 +44,45 @@ public class UnitMover {
             unit.spendOD(cost);
             unit.move(dq, dr);
             GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR, unit.getQ(), unit.getR()));
+        }
+    }
+
+    private void blinkToward(Unit unit, World world, int targetQ, int targetR) {
+        if (unit.getRemainingOD() <= 0) return;
+
+        int bestQ = unit.getQ();
+        int bestR = unit.getR();
+        int bestDist = HexUtils.getDistance(unit.getQ(), unit.getR(), targetQ, targetR);
+
+        int range = unit.getBlinkRange();
+        for (int dq = -range; dq <= range; dq++) {
+            for (int dr = Math.max(-range, -dq - range); dr <= Math.min(range, -dq + range); dr++) {
+                if (dq == 0 && dr == 0) continue;
+                int nq = unit.getQ() + dq;
+                int nr = unit.getR() + dr;
+
+                if (!world.getMap().isInBounds(nq, nr)) continue;
+                Tile tile = world.getMap().getTile(nq, nr);
+                if (tile == null) continue;
+                if (tile.getType().isBlocksMovement()) continue;
+                if (world.isTileOccupied(nq, nr, unit)) continue;
+
+                int dist = HexUtils.getDistance(nq, nr, targetQ, targetR);
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    bestQ = nq;
+                    bestR = nr;
+                }
+            }
+        }
+
+        if (bestQ != unit.getQ() || bestR != unit.getR()) {
+            int fromQ = unit.getQ();
+            int fromR = unit.getR();
+            unit.setQ(bestQ);
+            unit.setR(bestR);
+            unit.spendOD(unit.getRemainingOD());
+            GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR, bestQ, bestR));
         }
     }
 
