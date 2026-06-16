@@ -60,7 +60,6 @@ public class PathfinderTest {
 
     @Test
     void findPath_longPath() {
-        // archer (SPD 2, OD 2) from (0,0) to (3,1) = distance 3, exceeds OD
         TileType[][] grid = {
             {TileType.GRASS, TileType.GRASS, TileType.GRASS, TileType.GRASS, TileType.GRASS},
             {TileType.GRASS, TileType.GRASS, TileType.GRASS, TileType.GRASS, TileType.GRASS},
@@ -71,7 +70,9 @@ public class PathfinderTest {
 
         List<Pathfinder.Node> path = Pathfinder.findPath(world, 0, 0, 3, 1, unit);
 
-        assertTrue(path.isEmpty());
+        assertFalse(path.isEmpty());
+        assertEquals(3, path.get(path.size() - 1).getQ());
+        assertEquals(1, path.get(path.size() - 1).getR());
     }
 
     @Test

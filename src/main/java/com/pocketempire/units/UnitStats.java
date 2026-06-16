@@ -14,7 +14,7 @@ public class UnitStats {
     private int hp;
     private int attack;
     private int defense;
-    private int speed;
+    private int movement;
     private int range;
     private int cost;
     private MovementType movementType;

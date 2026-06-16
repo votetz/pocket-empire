@@ -1,13 +1,13 @@
 [
-  {"type": "LIGHT", "hp": 12, "attack": 3, "defense": 2, "speed": 2, "range": 1, "cost": 5, "movementType": "GROUND"},
-  {"type": "ARCHER", "hp": 10, "attack": 3, "defense": 1, "speed": 2, "range": 2, "cost": 5, "movementType": "GROUND"},
-  {"type": "HEAVY", "hp": 20, "attack": 4, "defense": 3, "speed": 1, "range": 1, "cost": 7, "movementType": "GROUND"},
-  {"type": "MAGE", "hp": 10, "attack": 5, "defense": 1, "speed": 1, "range": 2, "cost": 7, "movementType": "GROUND"},
-  {"type": "SIEGE", "hp": 15, "attack": 4, "defense": 2, "speed": 1, "range": 3, "cost": 7, "movementType": "GROUND"},
-  {"type": "GUARDIAN", "hp": 13, "attack": 3, "defense": 4, "speed": 1, "range": 1, "cost": 6, "movementType": "GROUND"},
-  {"type": "SETTLER", "hp": 5, "attack": 0, "defense": 1, "speed": 1, "range": 1, "cost": 7, "movementType": "GROUND"},
-  {"type": "WORKER", "hp": 5, "attack": 0, "defense": 1, "speed": 1, "range": 1, "cost": 5, "movementType": "GROUND"},
-  {"type": "SCOUT", "hp": 12, "attack": 1, "defense": 1, "speed": 4, "range": 1, "cost": 4, "movementType": "GROUND"},
-  {"type": "TRIREME", "hp": 10, "attack": 2, "defense": 1, "speed": 3, "range": 1, "cost": 5, "movementType": "WATER"},
-  {"type": "DROMON", "hp": 12, "attack": 3, "defense": 2, "speed": 2, "range": 3, "cost": 8, "movementType": "WATER"}
+  {"type": "LIGHT", "hp": 12, "attack": 3, "defense": 2, "movement": 2, "range": 1, "cost": 5, "movementType": "GROUND"},
+  {"type": "ARCHER", "hp": 10, "attack": 3, "defense": 1, "movement": 2, "range": 2, "cost": 5, "movementType": "GROUND"},
+  {"type": "HEAVY", "hp": 20, "attack": 4, "defense": 3, "movement": 1, "range": 1, "cost": 7, "movementType": "GROUND"},
+  {"type": "MAGE", "hp": 10, "attack": 5, "defense": 1, "movement": 1, "range": 2, "cost": 7, "movementType": "GROUND"},
+  {"type": "SIEGE", "hp": 15, "attack": 4, "defense": 2, "movement": 2, "range": 3, "cost": 7, "movementType": "TRANSPORTABLE"},
+  {"type": "GUARDIAN", "hp": 13, "attack": 3, "defense": 4, "movement": 1, "range": 1, "cost": 6, "movementType": "GROUND"},
+  {"type": "SETTLER", "hp": 5, "attack": 0, "defense": 1, "movement": 1, "range": 1, "cost": 7, "movementType": "GROUND"},
+  {"type": "WORKER", "hp": 5, "attack": 0, "defense": 1, "movement": 1, "range": 1, "cost": 5, "movementType": "GROUND"},
+  {"type": "SCOUT", "hp": 12, "attack": 1, "defense": 1, "movement": 4, "range": 1, "cost": 4, "movementType": "GROUND"},
+  {"type": "TRIREME", "hp": 10, "attack": 2, "defense": 1, "movement": 3, "range": 1, "cost": 5, "movementType": "WATER"},
+  {"type": "DROMON", "hp": 12, "attack": 3, "defense": 2, "movement": 2, "range": 3, "cost": 8, "movementType": "WATER"}
 ]

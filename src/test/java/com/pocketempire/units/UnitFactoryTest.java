@@ -15,11 +15,11 @@ public class UnitFactoryTest {
         assertEquals("f1", unit.getFactionId());
         assertEquals(0, unit.getQ());
         assertEquals(0, unit.getR());
-        // LIGHT: hp=12, attack=3, defense=2, speed=2, range=1
+        // LIGHT: hp=12, attack=3, defense=2, movement=2, range=1
         assertEquals(12, unit.getMaxHp());
         assertEquals(3, unit.getAttack());
         assertEquals(2, unit.getDefense());
-        assertEquals(2, unit.getSpeed());
+        assertEquals(2, unit.getMovement());
         assertEquals(1, unit.getRange());
     }
 
@@ -45,11 +45,11 @@ public class UnitFactoryTest {
     }
 
     @Test
-    void create_scoutUnit_hasHighSpeed() {
+    void create_scoutUnit_hasHighMovement() {
         var unit = UnitFactory.create(UnitType.SCOUT, "u5", "Scout", 0, 0, "f1");
 
-        // SCOUT: speed=4, attack=1
-        assertEquals(4, unit.getSpeed());
+        // SCOUT: movement=4, attack=1
+        assertEquals(4, unit.getMovement());
         assertEquals(1, unit.getAttack());
     }
 

@@ -4,7 +4,7 @@ public enum MovementType {
     GROUND,
     AIR,
     WATER,
-    AMPHIBIOUS
+    TRANSPORTABLE
 }
 
 // TODO: Don't forget to specify this in the unit fields

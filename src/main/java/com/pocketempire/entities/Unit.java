@@ -22,7 +22,7 @@ public class Unit extends Entity {
     private final String name;
     @Setter private int attack;
     private int defense;
-    private int speed;
+    private int movement;
     private final int range;
     private final int sightRange;
     private final int cost;
@@ -40,7 +40,7 @@ public class Unit extends Entity {
         this.name = builder.name;
         this.attack = builder.attack;
         this.defense = builder.defense;
-        this.speed = builder.speed;
+        this.movement = builder.movement;
         this.range = builder.range;
         this.sightRange = builder.sightRange;
         this.cost = builder.cost;
@@ -48,7 +48,7 @@ public class Unit extends Entity {
         this.unitType = builder.unitType;
         this.movementType = builder.movementType;
         this.unitState = builder.unitState;
-        this.remainingOD = builder.speed;
+        this.remainingOD = builder.movement;
         this.currentState = new IdleState();
     }
 
@@ -63,7 +63,7 @@ public static class Builder {
     private int maxHp = hp;
     private int attack = 2;
     private int defense = 1;
-    private int speed = 1;
+    private int movement = 1;
     private int range = 1;
     private int sightRange;
     private int cost = 1;
@@ -99,8 +99,8 @@ public static class Builder {
        return this;
     }
 
-    public Builder speed(int speed) {
-       this.speed = speed;
+    public Builder movement(int movement) {
+       this.movement = movement;
        return this;
     }
 
@@ -138,9 +138,9 @@ public static class Builder {
         hp(stats.getHp());
         attack(stats.getAttack());
         defense(stats.getDefense());
-        speed(stats.getSpeed());
+        movement(stats.getMovement());
         range(stats.getRange());
-        sightRange(stats.getSpeed() + stats.getRange() + 1);
+        sightRange(stats.getMovement() + stats.getRange() + 1);
         cost(stats.getCost());
         movementType(stats.getMovementType());
         return this;
@@ -152,7 +152,7 @@ public static class Builder {
 }
 
     public void resetOD() {
-        this.remainingOD = speed;
+        this.remainingOD = movement;
     }
 
     public boolean spendOD(int cost) {
