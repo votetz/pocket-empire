@@ -33,12 +33,12 @@ public class SkirmishState implements State {
         int range = unit.getRange();
 
         if (dist <= range) {
-            // Within attack range = shoot
             CombatResolver.resolveCombat(unit, target,
                     world.getMap().getTile(target.getQ(), target.getR()).getType().getDefendBonus());
 
-            // Enemy too close
-            if (dist < range && unit.getRemainingOD() > 0) {
+            if (unit.getBlinkRange() > 0 && unit.getRemainingOD() > 0) {
+                blinkAwayFrom(unit, target, world);
+            } else if (dist < range && unit.getRemainingOD() > 0) {
                 retreatFrom(unit, target, world);
             }
         } else {
@@ -105,7 +105,6 @@ public class SkirmishState implements State {
             Tile tile = world.getMap().getTile(nq, nr);
             if (tile == null || tile.getType().isBlocksMovement()) continue;
 
-            // do not repeat
             if (world.isTileOccupied(nq, nr, unit)) continue;
 
             int cost    = tile.getType().getMovementCost();
@@ -127,6 +126,45 @@ public class SkirmishState implements State {
             unit.setQ(bestQ);
             unit.setR(bestR);
             GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR, unit.getQ(), unit.getR()));
+        }
+    }
+
+    private void blinkAwayFrom(Unit unit, Unit enemy, World world) {
+        int bestQ = unit.getQ();
+        int bestR = unit.getR();
+        int bestScore = -9999;
+
+        int range = unit.getBlinkRange();
+        for (int dq = -range; dq <= range; dq++) {
+            for (int dr = Math.max(-range, -dq - range); dr <= Math.min(range, -dq + range); dr++) {
+                if (dq == 0 && dr == 0) continue;
+                int nq = unit.getQ() + dq;
+                int nr = unit.getR() + dr;
+
+                if (!world.getMap().isInBounds(nq, nr)) continue;
+                Tile tile = world.getMap().getTile(nq, nr);
+                if (tile == null || tile.getType().isBlocksMovement()) continue;
+                if (world.isTileOccupied(nq, nr, unit)) continue;
+
+                int distFromEnemy = HexUtils.getDistance(nq, nr, enemy.getQ(), enemy.getR());
+                int distToSelf = HexUtils.getDistance(nq, nr, unit.getQ(), unit.getR());
+                int score = distFromEnemy * 2 - distToSelf;
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestQ = nq;
+                    bestR = nr;
+                }
+            }
+        }
+
+        if (bestQ != unit.getQ() || bestR != unit.getR()) {
+            int fromQ = unit.getQ();
+            int fromR = unit.getR();
+            unit.setQ(bestQ);
+            unit.setR(bestR);
+            unit.spendOD(unit.getRemainingOD());
+            GameEventBus.getInstance().publish(new GameEvent.MageBlinked(unit, fromQ, fromR, bestQ, bestR));
         }
     }
 

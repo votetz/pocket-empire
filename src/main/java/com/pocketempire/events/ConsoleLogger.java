@@ -63,6 +63,10 @@ public class ConsoleLogger {
                     System.out.printf("%s %s takes %d %s damage (%d/%d HP)%n",
                             effect.getIcon(), unit.getName(), damage, effect.getName(),
                             unit.getHp(), unit.getMaxHp());
+
+                case GameEvent.MageBlinked(Unit unit, int fromQ, int fromR, int toQ, int toR) ->
+                    System.out.printf("\u2728 %s blinks (%d,%d) \u2192 (%d,%d)%n",
+                            unit.getName(), fromQ, fromR, toQ, toR);
             }
         });
     }

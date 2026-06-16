@@ -7,6 +7,7 @@ import com.pocketempire.events.GameEventBus;
 import com.pocketempire.units.UnitType;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
+import com.pocketempire.world.Tile;
 import com.pocketempire.simulation.CombatResolver;
 import com.pocketempire.pathfinding.Pathfinder;
 
@@ -42,6 +43,11 @@ public class AttackState implements State {
             if (dist <= unit.getRange()) {
                 CombatResolver.resolveCombat(unit, enemy,
                         world.getMap().getTile(enemy.getQ(), enemy.getR()).getType().getDefendBonus());
+
+                if (unit.getBlinkRange() > 0 && unit.getRemainingOD() > 0) {
+                    blinkAwayFrom(unit, enemy, world);
+                }
+
                 unit.changeState(new IdleState(), UnitState.IDLE);
                 return;
             } else {
@@ -55,6 +61,45 @@ public class AttackState implements State {
         }
 
         unit.changeState(new IdleState(), UnitState.IDLE);
+    }
+
+    private void blinkAwayFrom(Unit unit, Unit enemy, World world) {
+        int bestQ = unit.getQ();
+        int bestR = unit.getR();
+        int bestScore = Integer.MIN_VALUE;
+
+        int range = unit.getBlinkRange();
+        for (int dq = -range; dq <= range; dq++) {
+            for (int dr = Math.max(-range, -dq - range); dr <= Math.min(range, -dq + range); dr++) {
+                if (dq == 0 && dr == 0) continue;
+                int nq = unit.getQ() + dq;
+                int nr = unit.getR() + dr;
+
+                if (!world.getMap().isInBounds(nq, nr)) continue;
+                Tile tile = world.getMap().getTile(nq, nr);
+                if (tile == null || tile.getType().isBlocksMovement()) continue;
+                if (world.isTileOccupied(nq, nr, unit)) continue;
+
+                int distFromEnemy = HexUtils.getDistance(nq, nr, enemy.getQ(), enemy.getR());
+                int distToSelf = HexUtils.getDistance(nq, nr, unit.getQ(), unit.getR());
+                int score = distFromEnemy * 2 - distToSelf;
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestQ = nq;
+                    bestR = nr;
+                }
+            }
+        }
+
+        if (bestQ != unit.getQ() || bestR != unit.getR()) {
+            int fromQ = unit.getQ();
+            int fromR = unit.getR();
+            unit.setQ(bestQ);
+            unit.setR(bestR);
+            unit.spendOD(unit.getRemainingOD());
+            GameEventBus.getInstance().publish(new GameEvent.MageBlinked(unit, fromQ, fromR, bestQ, bestR));
+        }
     }
 
     private void moveToward(Unit unit, int targetQ, int targetR, World world) {

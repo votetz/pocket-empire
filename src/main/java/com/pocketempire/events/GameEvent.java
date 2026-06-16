@@ -24,4 +24,5 @@ public sealed interface GameEvent {
     record BuildingBuilt(City city, BuildingConfig building) implements GameEvent {}
     record StatusApplied(Unit unit, StatusEffectConfig effect, int duration) implements GameEvent {}
     record StatusTick(Unit unit, StatusEffectConfig effect, int damage) implements GameEvent {}
+    record MageBlinked(Unit unit, int fromQ, int fromR, int toQ, int toR) implements GameEvent {}
 }

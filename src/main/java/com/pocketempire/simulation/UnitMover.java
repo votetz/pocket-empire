@@ -82,7 +82,7 @@ public class UnitMover {
             unit.setQ(bestQ);
             unit.setR(bestR);
             unit.spendOD(unit.getRemainingOD());
-            GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR, bestQ, bestR));
+            GameEventBus.getInstance().publish(new GameEvent.MageBlinked(unit, fromQ, fromR, bestQ, bestR));
         }
     }
 
