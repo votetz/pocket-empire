@@ -16,9 +16,10 @@ import java.util.stream.Collectors;
 public class VictoryManager {
     private static final int TURN_LIMIT = 50;
     private static final int VP_PER_CITY_PER_TURN = 1;
+    private static final int MAX_CITY_VP = 2;
     private static final int VP_PER_KILL = 2;
     private static final int VP_PER_CITY_FOUNDED = 5;
-    private static final int VP_PER_TILE_IMPROVED = 1;
+    private static final int VP_PER_TILE_IMPROVED = 3;
 
     private final Map<String, Faction> factionsById = new HashMap<>();
     @Getter private boolean gameOver = false;
@@ -68,7 +69,7 @@ public class VictoryManager {
     }
 
     private void onTurnStarted(Faction faction) {
-        int cities = faction.getCityCount();
+        int cities = Math.min(faction.getCityCount(), MAX_CITY_VP);
         faction.addVictoryPoints(cities * VP_PER_CITY_PER_TURN);
     }
 
