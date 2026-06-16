@@ -28,10 +28,21 @@ public class CombatResolver {
         if (defender.hasEffect(burning)) defenseMod -= 1;
         if (defender.hasEffect(frozen)) defenseMod -= 1;
 
-        int damageToDefender = calculateDamage(attacker.getAttack() + attackMod, defender.getDefense()
+        int ramBonus = 0;
+        if (attacker.getUnitType() == UnitType.TRIREME) {
+            int hexesMoved = attacker.getMovement() - attacker.getRemainingOD();
+            ramBonus = Math.min(hexesMoved, 2);
+        }
+
+        int damageToDefender = calculateDamage(attacker.getAttack() + attackMod + ramBonus, defender.getDefense()
                 + defender.getDefenseModifier() + defenseMod + terrainBonus);
         defender.takeDamage(damageToDefender);
         bus.publish(new GameEvent.UnitAttacked(attacker, defender, damageToDefender));
+
+        if (ramBonus > 0 && attacker.isAlive()) {
+            attacker.takeDamage(ramBonus);
+            bus.publish(new GameEvent.TriremeRam(attacker, defender, ramBonus, ramBonus));
+        }
 
         if (attacker.getUnitType() == UnitType.DROMON && defender.isAlive() && defender instanceof Unit u && rng.nextDouble() < 0.5) {
             u.applyEffect(burning, burning.getDefaultDuration());
@@ -58,10 +69,22 @@ public class CombatResolver {
         if (defender.isAlive() && defender.getRange() >= distance) {
             int counterAttackMod = defender.hasEffect(frozen) ? -1 : 0;
             int counterDefenseMod = attacker.hasEffect(burning) ? -1 : 0;
-            int damageToAttacker = calculateDamage(defender.getAttack() + counterAttackMod,
+
+            boolean isGuardianCounter = defender.getUnitType() == UnitType.GUARDIAN;
+            boolean isEntrenched = isGuardianCounter && defender.getUnitState() == com.pocketempire.fsm.UnitState.ENTRENCH;
+            int guardianAttackBonus = isGuardianCounter ? (isEntrenched ? 2 : 1) : 0;
+            double guardianStunChance = isGuardianCounter ? (isEntrenched ? 0.22 : 0.15) : 0;
+
+            int damageToAttacker = calculateDamage(defender.getAttack() + counterAttackMod + guardianAttackBonus,
                     attacker.getDefense() + attacker.getDefenseModifier() + counterDefenseMod);
             attacker.takeDamage(damageToAttacker);
             bus.publish(new GameEvent.CounterAttacked(attacker, defender, damageToAttacker));
+
+            if (isGuardianCounter && attacker.isAlive() && rng.nextDouble() < guardianStunChance) {
+                StatusEffectConfig stunned = StatusEffectConfigLoader.getConfig("STUNNED");
+                attacker.applyEffect(stunned, stunned.getDefaultDuration());
+                bus.publish(new GameEvent.StatusApplied(attacker, stunned, stunned.getDefaultDuration()));
+            }
         }
 
         if (!defender.isAlive()) {

@@ -67,6 +67,11 @@ public class ConsoleLogger {
                 case GameEvent.MageBlinked(Unit unit, int fromQ, int fromR, int toQ, int toR) ->
                     System.out.printf("\u2728 %s blinks (%d,%d) \u2192 (%d,%d)%n",
                             unit.getName(), fromQ, fromR, toQ, toR);
+
+                case GameEvent.TriremeRam(Unit attacker, Unit defender, int bonusDamage, int selfDamage) ->
+                    System.out.printf("\uD83D\uDC0A %s rams %s (+%d bonus, -%d self) (%d/%d HP)%n",
+                            attacker.getName(), defender.getName(), bonusDamage, selfDamage,
+                            attacker.getHp(), attacker.getMaxHp());
             }
         });
     }
