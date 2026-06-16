@@ -4,11 +4,13 @@ import com.pocketempire.config.UnitNamesLoader;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
+import com.pocketempire.tiles.TileType;
 import com.pocketempire.units.UnitFactory;
 import com.pocketempire.units.UnitType;
 import com.pocketempire.world.FogMap;
 import com.pocketempire.world.Map;
 import com.pocketempire.world.MapGenerator;
+import com.pocketempire.world.Tile;
 import com.pocketempire.world.World;
 
 import lombok.Getter;
@@ -58,14 +60,47 @@ public class GameSetup {
         factions.add(faction3);
     }
 
-    private void createInitialUnitsAndCities(Faction faction, String factionId, int unitQ, int unitR) {
-        Unit light = UnitFactory.create(UnitType.LIGHT, "light_" + factionId, UnitNamesLoader.getRandomName(), unitQ, unitR, factionId);
-        Unit archer = UnitFactory.create(UnitType.ARCHER, "archer_" + factionId, UnitNamesLoader.getRandomName(), unitQ + 1, unitR, factionId);
+    private void createInitialUnitsAndCities(Faction faction, String factionId, int preferQ, int preferR) {
+        int[] cityPos = findValidCityTile(preferQ, preferR);
+
+        Unit light = UnitFactory.create(UnitType.LIGHT, "light_" + factionId, UnitNamesLoader.getRandomName(), preferQ, preferR, factionId);
+        Unit archer = UnitFactory.create(UnitType.ARCHER, "archer_" + factionId, UnitNamesLoader.getRandomName(), preferQ + 1, preferR, factionId);
         faction.addUnit(light);
         faction.addUnit(archer);
 
-        City city = new City("city" + factionId, unitQ, unitR + 1, faction.getName() + " Capital", 50, 50, 5, 10, factionId, "leader" + factionId, 3);
+        City city = new City("city" + factionId, cityPos[0], cityPos[1], faction.getName() + " Capital", 50, 50, 5, 10, factionId, "leader" + factionId, 3);
         faction.addCity(city);
+    }
+
+    private int[] findValidCityTile(int preferQ, int preferR) {
+        if (isvalidCityTile(preferQ, preferR)) {
+            return new int[]{preferQ, preferR};
+        }
+
+        for (int radius = 1; radius <= 10; radius++) {
+            for (int dq = -radius; dq <= radius; dq++) {
+                for (int dr = Math.max(-radius, -dq - radius); dr <= Math.min(radius, -dq + radius); dr++) {
+                    if (dq == 0 && dr == 0) continue;
+                    int nq = preferQ + dq;
+                    int nr = preferR + dr;
+                    if (isvalidCityTile(nq, nr)) {
+                        return new int[]{nq, nr};
+                    }
+                }
+            }
+        }
+
+        return new int[]{preferQ, preferR};
+    }
+
+    private boolean isvalidCityTile(int q, int r) {
+        if (!map.isInBounds(q, r)) return false;
+        Tile tile = map.getTile(q, r);
+        if (tile == null) return false;
+        TileType type = tile.getType();
+        if (type.isWater()) return false;
+        if (type.isBlocksMovement()) return false;
+        return true;
     }
 
     private void createFogMaps() {
