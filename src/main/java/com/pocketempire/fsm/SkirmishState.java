@@ -34,7 +34,8 @@ public class SkirmishState implements State {
 
         if (dist <= range) {
             CombatResolver.resolveCombat(unit, target,
-                    world.getMap().getTile(target.getQ(), target.getR()).getType().getDefendBonus());
+                    world.getMap().getTile(target.getQ(), target.getR()).getType().getDefendBonus(),
+                    world.getMap().getTile(unit.getQ(), unit.getR()).getType().getAttackModifier());
 
             if (unit.getBlinkRange() > 0 && unit.getRemainingOD() > 0) {
                 blinkAwayFrom(unit, target, world);
@@ -77,7 +78,8 @@ public class SkirmishState implements State {
                         unit.getQ(), unit.getR(), target.getQ(), target.getR());
                 if (newDist <= range) {
                     CombatResolver.resolveCombat(unit, target,
-                            world.getMap().getTile(target.getQ(), target.getR()).getType().getDefendBonus());
+                            world.getMap().getTile(target.getQ(), target.getR()).getType().getDefendBonus(),
+                            world.getMap().getTile(unit.getQ(), unit.getR()).getType().getAttackModifier());
                 }
             }
         }
