@@ -40,7 +40,7 @@ public class ConsoleRender {
                     }
                 } else if (fog.isExplored(col, row)) {
                     Tile tile = map.getTile(q, r);
-                    System.out.print(AnsiColor.GRAY + tile.getType().symbol + AnsiColor.RESET);
+                    System.out.print(AnsiColor.GRAY + tile.getType().getSymbol() + AnsiColor.RESET);
                 } else {
                     System.out.print(AnsiColor.BLACK + "·" + AnsiColor.RESET);
                 }
@@ -111,6 +111,6 @@ public class ConsoleRender {
             case MOUNTAIN, CAVES       -> AnsiColor.GRAY;
             case TUNDRA                -> AnsiColor.WHITE;
         };
-        return color + tile.getType().symbol + AnsiColor.RESET;
+        return color + tile.getType().getSymbol() + AnsiColor.RESET;
     }
 }
