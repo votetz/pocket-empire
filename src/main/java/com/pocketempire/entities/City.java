@@ -13,7 +13,7 @@ public class City extends Entity {
     private final String name;
     private final int population;
     private final int maxPopulation;
-    private final String factionId;
+    @Setter private String factionId;
     private final String leaderId;
     private final int production;
     @Setter private int accumulatedProduction;
@@ -43,9 +43,9 @@ public class City extends Entity {
         }
     }
 
-    public boolean hasBuilding(BuildingConfig building) {
-        return buildings.contains(building);
-    }
+   // public boolean hasBuilding(BuildingConfig building) {
+   //     return buildings.contains(building);
+   // }
 
     public boolean hasBuilding(String name) {
         return buildings.stream().anyMatch(b -> b.getName().equals(name));
@@ -76,6 +76,14 @@ public class City extends Entity {
 
     public int getEffectiveProduction() {
         return production + getProductionBonus();
+    }
+
+    public void capture(String newFactionId) {
+        this.factionId = newFactionId;
+        setHp(getMaxHp() / 2);
+        setAccumulatedProduction(0);
+        setCurrentProductionType(null);
+
     }
 
     @Override

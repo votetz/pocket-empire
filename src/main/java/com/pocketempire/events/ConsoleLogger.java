@@ -47,6 +47,9 @@ public class ConsoleLogger {
                 case GameEvent.CityDestroyed(var city, var attacker) ->
                     System.out.println(city.getName() + " has been destroyed!");
 
+                case GameEvent.CityCaptured(var city, var captor, var oldFactionId) ->
+                    System.out.println(city.getName() + " captured by " + captor.getName() + "!");
+
                 case GameEvent.CityFounded(var city, var settler) ->
                     System.out.println(city.getName() + " founded by " + settler.getName());
 

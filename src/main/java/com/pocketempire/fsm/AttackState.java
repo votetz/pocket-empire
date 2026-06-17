@@ -23,10 +23,7 @@ public class AttackState implements State {
                 int dist = HexUtils.getDistance(
                         unit.getQ(), unit.getR(), targetCity.getQ(), targetCity.getR());
                 if (dist <= unit.getRange()) {
-                    CombatResolver.resolveCityAttack(unit, targetCity);
-                    if (!targetCity.isAlive()) {
-                        GameEventBus.getInstance().publish(new GameEvent.CityDestroyed(targetCity, unit));
-                    }
+                    CombatResolver.resolveCityAttack(unit, targetCity, world);
                     unit.changeState(new IdleState(), UnitState.IDLE);
                     return;
                 } else {

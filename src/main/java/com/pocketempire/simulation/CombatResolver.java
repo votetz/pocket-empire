@@ -9,6 +9,7 @@ import com.pocketempire.units.UnitType;
 import com.pocketempire.events.GameEvent;
 import com.pocketempire.events.GameEventBus;
 import com.pocketempire.world.HexUtils;
+import com.pocketempire.world.World;
 
 import java.util.Random;
 
@@ -95,10 +96,41 @@ public class CombatResolver {
         }
     }
 
-    public static void resolveCityAttack(Unit attacker, City city) {
+    public static void resolveCityAttack(Unit attacker, City city, World world) {
         int damageToCity = calculateDamage(attacker.getAttack(), 0);
-        city.takeDamage(damageToCity);
-        bus.publish(new GameEvent.CityAttacked(attacker, city, damageToCity));
+
+        if (city.getHp() <= damageToCity) {
+            if (shouldCapture(attacker, world)) {
+                String oldFactionId = city.getFactionId();
+                city.capture(attacker.getFactionId());
+
+                for (var faction : world.getFactions()) {
+                    if (String.valueOf(faction.getId()).equals(oldFactionId)) {
+                        faction.removeCity(city);
+                    }
+                    if (String.valueOf(faction.getId()).equals(attacker.getFactionId())) {
+                        faction.addCity(city);
+                    }
+                }
+
+                bus.publish(new GameEvent.CityCaptured(city, attacker, oldFactionId));
+            } else {
+                city.takeDamage(damageToCity);
+                bus.publish(new GameEvent.CityDestroyed(city, attacker));
+            }
+        } else {
+            city.takeDamage(damageToCity);
+            bus.publish(new GameEvent.CityAttacked(attacker, city, damageToCity));
+        }
+    }
+
+    private static boolean shouldCapture(Unit attacker, World world) {
+        for (var faction : world.getFactions()) {
+            if (String.valueOf(faction.getId()).equals(attacker.getFactionId())) {
+                return faction.getCityCount() < 4;
+            }
+        }
+        return true;
     }
 
     static int calculateDamage(int attack, int defense) {

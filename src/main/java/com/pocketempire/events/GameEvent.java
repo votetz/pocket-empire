@@ -26,4 +26,5 @@ public sealed interface GameEvent {
     record StatusTick(Unit unit, StatusEffectConfig effect, int damage) implements GameEvent {}
     record MageBlinked(Unit unit, int fromQ, int fromR, int toQ, int toR) implements GameEvent {}
     record TriremeRam(Unit attacker, Unit defender, int bonusDamage, int selfDamage) implements GameEvent {}
+    record CityCaptured(City city, Unit captor, String oldFactionId) implements GameEvent {}
 }
