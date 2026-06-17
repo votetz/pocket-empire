@@ -137,8 +137,8 @@ public class CombatResolver {
     }
 
     static int calculateDamage(int attack, int defense, UnitRole attackerRole, UnitRole targetRole) {
-        double multiplier = (attackerRole != null && targetRole != null) ? attackerRole.getMultiplier(targetRole) : 1.0;
-        int damage = (int) ((attack - defense / 2) * multiplier);
+        int bonus = (attackerRole != null && targetRole != null) ? attackerRole.getAttackBonus(targetRole) : 0;
+        int damage = (attack + bonus - defense / 2);
         return Math.max(1, damage);
     }
 

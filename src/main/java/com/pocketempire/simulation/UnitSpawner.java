@@ -13,6 +13,7 @@ import com.pocketempire.tiles.TileType;
 import com.pocketempire.units.MovementType;
 import com.pocketempire.units.MageType;
 import com.pocketempire.units.UnitFactory;
+import com.pocketempire.units.UnitRole;
 import com.pocketempire.units.UnitType;
 import com.pocketempire.units.UnitStats;
 import com.pocketempire.world.HexUtils;
@@ -73,6 +74,12 @@ public class UnitSpawner {
             Unit unit = UnitFactory.create(city.getCurrentProductionType(), unitId, UnitNamesLoader.getRandomName(), spawn[0], spawn[1], city.getFactionId());
             if (city.getCurrentProductionType() == UnitType.MAGE) {
                 unit.setMageType(aiProductionStrategy.chooseMageType(new Random()));
+                switch (unit.getMageType()) {
+                    case FIRE -> unit.setUnitRole(UnitRole.SNIPER);
+                    case ICE -> unit.setUnitRole(UnitRole.SUPPORT);
+                    case POISON -> unit.setUnitRole(UnitRole.SNIPER);
+                    case TELEPORT -> unit.setUnitRole(UnitRole.ASSASSIN);
+                }
             }
             if (city.getAttackBonus() > 0) {
                 unit.setAttack(unit.getAttack() + city.getAttackBonus());

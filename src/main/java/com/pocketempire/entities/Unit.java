@@ -34,7 +34,7 @@ public class Unit extends Entity {
     private final Map<StatusEffectConfig, Integer> activeEffects = new HashMap<>();
     @Setter private MageType mageType;
     private final int blinkRange;
-    private UnitRole unitRole;
+    @Setter private UnitRole unitRole;
 
     protected Unit(Builder builder) {
         super(builder.id, builder.q, builder.r, builder.hp, builder.maxHp);

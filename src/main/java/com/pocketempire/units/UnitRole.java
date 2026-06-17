@@ -21,8 +21,8 @@ public enum UnitRole {
         return COUNTERS.getOrDefault(this, Set.of()).contains(other);
     }
 
-    public double getMultiplier(UnitRole target) {
-        return counters(target) ? 1.3 : 1.0;
+    public int getAttackBonus(UnitRole target) {
+        return counters(target) ? 2 : 0;
     }
 }
 
