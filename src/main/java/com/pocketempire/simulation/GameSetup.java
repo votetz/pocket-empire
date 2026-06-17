@@ -35,6 +35,9 @@ public class GameSetup {
     }
 
     public void setup() {
+        for (TileType type : TileType.values()) {
+            type.loadBonuses();
+        }
         map = MapGenerator.generateRandomMap(mapWidth, mapHeight);
         createFactions();
         world = new World(map, factions);
