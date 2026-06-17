@@ -4,7 +4,7 @@ import com.pocketempire.config.StatusEffectConfig;
 import com.pocketempire.config.StatusEffectConfigLoader;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.entities.City;
-import com.pocketempire.units.MageType;
+import com.pocketempire.units.AbilityType;
 import com.pocketempire.units.UnitRole;
 import com.pocketempire.units.UnitType;
 import com.pocketempire.events.GameEvent;
@@ -53,7 +53,7 @@ public class CombatResolver {
         }
 
         if (attacker.getUnitType() == UnitType.MAGE && defender.isAlive() && defender instanceof Unit u2) {
-            MageType mt = attacker.getMageType();
+            AbilityType mt = attacker.getAbilityType();
             if (mt != null && rng.nextDouble() < 0.3) {
                 StatusEffectConfig effect = switch (mt) {
                     case FIRE -> burning;

@@ -33,7 +33,7 @@ public class ConsoleLogger {
                             + unit.getHp() + "/" + unit.getMaxHp() + " HP)");
 
                 case GameEvent.UnitSpawned(var unit) -> {
-                    String mageInfo = unit.getMageType() != null ? " [" + unit.getMageType() + "]" : "";
+                    String mageInfo = unit.getAbilityType() != null ? " [" + unit.getAbilityType() + "]" : "";
                     System.out.println(unit.getName() + " (" + unit.getUnitType() + mageInfo + ") spawned at (" + unit.getQ() + "," + unit.getR() + ")");
                 }
 

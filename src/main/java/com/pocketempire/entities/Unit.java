@@ -32,7 +32,7 @@ public class Unit extends Entity {
     @Setter private State currentState;
     private int remainingOD;
     private final Map<StatusEffectConfig, Integer> activeEffects = new HashMap<>();
-    @Setter private MageType mageType;
+    @Setter private AbilityType abilityType;
     private final int blinkRange;
     @Setter private UnitRole unitRole;
 
@@ -51,8 +51,8 @@ public class Unit extends Entity {
         this.unitState = builder.unitState;
         this.remainingOD = builder.movement;
         this.currentState = new IdleState();
-        this.mageType = builder.mageType;
-        this.blinkRange = (builder.mageType == MageType.TELEPORT) ? 3 : 0;
+        this.abilityType = builder.abilityType;
+        this.blinkRange = (builder.abilityType == AbilityType.TELEPORT) ? 3 : 0;
         this.unitRole = builder.unitRole;
     }
 
@@ -74,7 +74,7 @@ public static class Builder {
     private UnitType unitType;
     private MovementType movementType;
     private UnitState unitState = UnitState.IDLE;
-    private MageType mageType;
+    private AbilityType abilityType;
     private UnitRole unitRole;
 
     public Builder(String id, int q, int r, String factionId) {
@@ -140,8 +140,8 @@ public static class Builder {
        return this;
     }
 
-    public Builder mageType(MageType mageType) {
-       this.mageType = mageType;
+    public Builder abilityType(AbilityType abilityType) {
+       this.abilityType = abilityType;
        return this;
     }
 

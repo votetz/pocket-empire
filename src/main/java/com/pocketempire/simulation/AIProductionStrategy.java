@@ -4,10 +4,7 @@ import com.pocketempire.config.UnitConfigLoader;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
-import com.pocketempire.events.GameEvent;
-import com.pocketempire.events.GameEventBus;
-import com.pocketempire.tiles.TileType;
-import com.pocketempire.units.MageType;
+import com.pocketempire.units.AbilityType;
 import com.pocketempire.units.UnitType;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
@@ -171,8 +168,8 @@ public class AIProductionStrategy {
                 .count();
     }
 
-    public MageType chooseMageType(Random rng) {
-        MageType[] types = MageType.values();
+    public AbilityType chooseAbilityType(Random rng) {
+        AbilityType[] types = AbilityType.values();
         return types[rng.nextInt(types.length)];
     }
 }

@@ -1,6 +1,6 @@
 package com.pocketempire.units;
 
-public enum MageType {
+public enum AbilityType {
     FIRE,
     ICE,
     POISON,
