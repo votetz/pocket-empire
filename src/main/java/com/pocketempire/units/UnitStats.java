@@ -19,4 +19,5 @@ public class UnitStats {
     private int cost;
     private MovementType movementType;
     @com.fasterxml.jackson.annotation.JsonProperty("role") private UnitRole unitRole;
+    private double effectChance;
 }

@@ -132,6 +132,7 @@ public class UnitSpawner {
         if (city.hasBuilding("Forge") && !city.hasBuilding("Workshop")) return BuildingConfigLoader.getConfig("Workshop");
         if (!city.hasBuilding("Granary")) return BuildingConfigLoader.getConfig("Granary");
         if (!city.hasBuilding("Barracks")) return BuildingConfigLoader.getConfig("Barracks");
+        if (!city.hasBuilding("Temple")) return BuildingConfigLoader.getConfig("Temple");
         return null;
     }
 }

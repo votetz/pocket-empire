@@ -1,13 +1,13 @@
 [
-  {"type": "LIGHT", "hp": 12, "attack": 3, "defense": 2, "movement": 2, "range": 1, "cost": 5, "movementType": "GROUND", "role": "ASSAULT"},
-  {"type": "ARCHER", "hp": 10, "attack": 3, "defense": 1, "movement": 2, "range": 2, "cost": 5, "movementType": "GROUND", "role": "SNIPER"},
-  {"type": "HEAVY", "hp": 20, "attack": 4, "defense": 3, "movement": 1, "range": 1, "cost": 7, "movementType": "GROUND", "role": "ASSAULT"},
-  {"type": "MAGE", "hp": 10, "attack": 5, "defense": 1, "movement": 1, "range": 2, "cost": 7, "movementType": "GROUND", "role": "SNIPER"},
-  {"type": "CATAPULT", "hp": 15, "attack": 4, "defense": 2, "movement": 1, "range": 3, "cost": 7, "movementType": "TRANSPORTABLE", "role": "SIEGE"},
-  {"type": "GUARDIAN", "hp": 14, "attack": 3, "defense": 4, "movement": 1, "range": 1, "cost": 6, "movementType": "GROUND", "role": "TANK"},
-  {"type": "SETTLER", "hp": 5, "attack": 0, "defense": 1, "movement": 1, "range": 1, "cost": 7, "movementType": "GROUND", "role": "CIVILIAN"},
-  {"type": "WORKER", "hp": 5, "attack": 0, "defense": 1, "movement": 1, "range": 1, "cost": 5, "movementType": "GROUND", "role": "CIVILIAN"},
-  {"type": "SCOUT", "hp": 12, "attack": 1, "defense": 1, "movement": 4, "range": 1, "cost": 4, "movementType": "GROUND", "role": "ASSASSIN"},
-  {"type": "TRIREME", "hp": 10, "attack": 2, "defense": 1, "movement": 3, "range": 1, "cost": 5, "movementType": "WATER", "role": "NAVAL_RAM"},
-  {"type": "DROMON", "hp": 12, "attack": 3, "defense": 2, "movement": 2, "range": 3, "cost": 8, "movementType": "WATER", "role": "NAVAL_FIRE"}
+  {"type": "LIGHT", "hp": 12, "attack": 3, "defense": 2, "movement": 2, "range": 1, "cost": 5, "movementType": "GROUND", "role": "ASSAULT", "effectChance": 0.0},
+  {"type": "ARCHER", "hp": 10, "attack": 3, "defense": 1, "movement": 2, "range": 2, "cost": 5, "movementType": "GROUND", "role": "SNIPER", "effectChance": 0.0},
+  {"type": "HEAVY", "hp": 20, "attack": 4, "defense": 3, "movement": 1, "range": 1, "cost": 7, "movementType": "GROUND", "role": "ASSAULT", "effectChance": 0.0},
+  {"type": "MAGE", "hp": 10, "attack": 5, "defense": 1, "movement": 1, "range": 2, "cost": 7, "movementType": "GROUND", "role": "SNIPER", "effectChance": 0.3},
+  {"type": "CATAPULT", "hp": 15, "attack": 4, "defense": 2, "movement": 1, "range": 3, "cost": 7, "movementType": "TRANSPORTABLE", "role": "SIEGE", "effectChance": 0.0},
+  {"type": "GUARDIAN", "hp": 14, "attack": 3, "defense": 4, "movement": 1, "range": 1, "cost": 6, "movementType": "GROUND", "role": "TANK", "effectChance": 0.0},
+  {"type": "SETTLER", "hp": 5, "attack": 0, "defense": 1, "movement": 1, "range": 1, "cost": 7, "movementType": "GROUND", "role": "CIVILIAN", "effectChance": 0.0},
+  {"type": "WORKER", "hp": 5, "attack": 0, "defense": 1, "movement": 1, "range": 1, "cost": 5, "movementType": "GROUND", "role": "CIVILIAN", "effectChance": 0.0},
+  {"type": "SCOUT", "hp": 12, "attack": 1, "defense": 1, "movement": 4, "range": 1, "cost": 4, "movementType": "GROUND", "role": "ASSASSIN", "effectChance": 0.0},
+  {"type": "TRIREME", "hp": 10, "attack": 2, "defense": 1, "movement": 3, "range": 1, "cost": 5, "movementType": "WATER", "role": "NAVAL_RAM", "effectChance": 0.0},
+  {"type": "DROMON", "hp": 12, "attack": 3, "defense": 2, "movement": 2, "range": 3, "cost": 8, "movementType": "WATER", "role": "NAVAL_FIRE", "effectChance": 0.5}
 ]

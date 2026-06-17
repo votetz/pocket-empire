@@ -35,6 +35,7 @@ public class Unit extends Entity {
     @Setter private AbilityType abilityType;
     private final int blinkRange;
     @Setter private UnitRole unitRole;
+    private final double effectChance;
 
     protected Unit(Builder builder) {
         super(builder.id, builder.q, builder.r, builder.hp, builder.maxHp);
@@ -54,6 +55,7 @@ public class Unit extends Entity {
         this.abilityType = builder.abilityType;
         this.blinkRange = (builder.abilityType == AbilityType.TELEPORT) ? 3 : 0;
         this.unitRole = builder.unitRole;
+        this.effectChance = builder.effectChance;
     }
 
 public static class Builder {
@@ -76,6 +78,7 @@ public static class Builder {
     private UnitState unitState = UnitState.IDLE;
     private AbilityType abilityType;
     private UnitRole unitRole;
+    private double effectChance;
 
     public Builder(String id, int q, int r, String factionId) {
         this.id = id;
@@ -150,6 +153,11 @@ public static class Builder {
        return this;
     }
 
+    public Builder effectChance(double effectChance) {
+       this.effectChance = effectChance;
+       return this;
+    }
+
     public Builder config(UnitStats stats) {
         hp(stats.getHp());
         attack(stats.getAttack());
@@ -160,6 +168,7 @@ public static class Builder {
         cost(stats.getCost());
         movementType(stats.getMovementType());
         unitRole(stats.getUnitRole());
+        effectChance(stats.getEffectChance());
         return this;
     }
 
