@@ -1,0 +1,15 @@
+{
+  "GRASS":    {"defendBonus": 0, "attackModifier": 0},
+  "PLAINS":   {"defendBonus": 0, "attackModifier": 0},
+  "DESERT":   {"defendBonus": 0, "attackModifier": 0},
+  "SAVANNA":  {"defendBonus": 0, "attackModifier": 0},
+  "FOREST":   {"defendBonus": 1, "attackModifier": 0},
+  "JUNGLE":   {"defendBonus": 1, "attackModifier": 0},
+  "TAIGA":    {"defendBonus": 1, "attackModifier": 0},
+  "TUNDRA":   {"defendBonus": 1, "attackModifier": 0},
+  "MOUNTAIN": {"defendBonus": 0, "attackModifier": 0},
+  "CAVES":    {"defendBonus": 2, "attackModifier": 0},
+  "WATER":    {"defendBonus": 0, "attackModifier": 0},
+  "OCEAN":    {"defendBonus": 0, "attackModifier": 0},
+  "SWAMPS":   {"defendBonus": 0, "attackModifier": -1}
+}
