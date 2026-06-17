@@ -39,7 +39,8 @@ public class AttackState implements State {
                     unit.getQ(), unit.getR(), enemy.getQ(), enemy.getR());
             if (dist <= unit.getRange()) {
                 CombatResolver.resolveCombat(unit, enemy,
-                        world.getMap().getTile(enemy.getQ(), enemy.getR()).getType().getDefendBonus());
+                        world.getMap().getTile(enemy.getQ(), enemy.getR()).getType().getDefendBonus(),
+                        world.getMap().getTile(unit.getQ(), unit.getR()).getType().getAttackModifier());
 
                 if (unit.getBlinkRange() > 0 && unit.getRemainingOD() > 0) {
                     blinkAwayFrom(unit, enemy, world);

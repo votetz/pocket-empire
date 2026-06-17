@@ -74,6 +74,10 @@ public class City extends Entity {
         return buildings.stream().mapToInt(BuildingConfig::getImprovedTileGoldBonus).sum();
     }
 
+    public int getHealBonus() {
+        return buildings.stream().mapToInt(BuildingConfig::getHealBonus).sum();
+    }
+
     public int getEffectiveProduction() {
         return production + getProductionBonus();
     }

@@ -98,8 +98,9 @@ public class IdleState implements State {
                 if (city.isAlive()) {
                     int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), city.getQ(), city.getR());
                     if (dist <= city.getBorderRadius()) {
-                        unit.restoreHp(1);
-                        GameEventBus.getInstance().publish(new GameEvent.UnitHealed(unit, 1));
+                        int healAmount = 1 + city.getHealBonus();
+                        unit.restoreHp(healAmount);
+                        GameEventBus.getInstance().publish(new GameEvent.UnitHealed(unit, healAmount));
                         return;
                     }
                 }

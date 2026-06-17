@@ -32,8 +32,9 @@ public class FleeState implements State {
         }
 
         if (nearest != null && minDist <= 1) {
-            unit.restoreHp(2);
-            GameEventBus.getInstance().publish(new GameEvent.UnitHealed(unit, 2));
+            int healAmount = 2 + nearest.getHealBonus();
+            unit.restoreHp(healAmount);
+            GameEventBus.getInstance().publish(new GameEvent.UnitHealed(unit, healAmount));
         }
     }
 

@@ -18,7 +18,7 @@ public class CombatResolver {
     private static final GameEventBus bus = GameEventBus.getInstance();
     private static final Random rng = new Random();
 
-    public static void resolveCombat(Unit attacker, Unit defender, int terrainBonus) {
+    public static void resolveCombat(Unit attacker, Unit defender, int terrainBonus, int attackerTerrainModifier) {
         if (attacker.hasEffect("STUNNED")) return;
 
         StatusEffectConfig frozen = StatusEffectConfigLoader.getConfig("FROZEN");
@@ -36,7 +36,7 @@ public class CombatResolver {
             ramBonus = Math.min(hexesMoved, 2);
         }
 
-        int damageToDefender = calculateDamage(attacker.getAttack() + attackMod + ramBonus, defender.getDefense()
+        int damageToDefender = calculateDamage(attacker.getAttack() + attackMod + ramBonus + attackerTerrainModifier, defender.getDefense()
                 + defender.getDefenseModifier() + defenseMod + terrainBonus,
                 attacker.getUnitRole(), defender.getUnitRole());
         defender.takeDamage(damageToDefender);
@@ -47,14 +47,14 @@ public class CombatResolver {
             bus.publish(new GameEvent.TriremeRam(attacker, defender, ramBonus, ramBonus));
         }
 
-        if (attacker.getUnitType() == UnitType.DROMON && defender.isAlive() && defender instanceof Unit u && rng.nextDouble() < 0.5) {
+        if (attacker.getUnitType() == UnitType.DROMON && defender.isAlive() && defender instanceof Unit u && rng.nextDouble() < attacker.getEffectChance()) {
             u.applyEffect(burning, burning.getDefaultDuration());
             bus.publish(new GameEvent.StatusApplied(u, burning, burning.getDefaultDuration()));
         }
 
         if (attacker.getUnitType() == UnitType.MAGE && defender.isAlive() && defender instanceof Unit u2) {
             AbilityType mt = attacker.getAbilityType();
-            if (mt != null && rng.nextDouble() < 0.3) {
+            if (mt != null && rng.nextDouble() < attacker.getEffectChance()) {
                 StatusEffectConfig effect = switch (mt) {
                     case FIRE -> burning;
                     case ICE -> frozen;

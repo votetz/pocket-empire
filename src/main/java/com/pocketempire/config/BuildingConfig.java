@@ -18,4 +18,5 @@ public class BuildingConfig {
     private int forgeBonus;
     private int attackBonus;
     private int improvedTileGoldBonus;
+    private int healBonus;
 }
