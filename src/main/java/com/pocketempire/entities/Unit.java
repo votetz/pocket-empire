@@ -6,10 +6,7 @@ import com.pocketempire.events.GameEventBus;
 import com.pocketempire.fsm.IdleState;
 import com.pocketempire.fsm.State;
 import com.pocketempire.fsm.UnitState;
-import com.pocketempire.units.MageType;
-import com.pocketempire.units.MovementType;
-import com.pocketempire.units.UnitStats;
-import com.pocketempire.units.UnitType;
+import com.pocketempire.units.*;
 import com.pocketempire.world.World;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,6 +34,7 @@ public class Unit extends Entity {
     private final Map<StatusEffectConfig, Integer> activeEffects = new HashMap<>();
     @Setter private MageType mageType;
     private final int blinkRange;
+    private UnitRole unitRole;
 
     protected Unit(Builder builder) {
         super(builder.id, builder.q, builder.r, builder.hp, builder.maxHp);
@@ -55,6 +53,7 @@ public class Unit extends Entity {
         this.currentState = new IdleState();
         this.mageType = builder.mageType;
         this.blinkRange = (builder.mageType == MageType.TELEPORT) ? 3 : 0;
+        this.unitRole = builder.unitRole;
     }
 
 public static class Builder {
@@ -76,6 +75,7 @@ public static class Builder {
     private MovementType movementType;
     private UnitState unitState = UnitState.IDLE;
     private MageType mageType;
+    private UnitRole unitRole;
 
     public Builder(String id, int q, int r, String factionId) {
         this.id = id;
@@ -145,6 +145,11 @@ public static class Builder {
        return this;
     }
 
+    public Builder unitRole(UnitRole unitRole) {
+       this.unitRole = unitRole;
+       return this;
+    }
+
     public Builder config(UnitStats stats) {
         hp(stats.getHp());
         attack(stats.getAttack());
@@ -154,6 +159,7 @@ public static class Builder {
         sightRange(stats.getMovement() + stats.getRange() + 1);
         cost(stats.getCost());
         movementType(stats.getMovementType());
+        unitRole(stats.getUnitRole());
         return this;
     }
 

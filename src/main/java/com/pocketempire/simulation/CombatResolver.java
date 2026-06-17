@@ -5,6 +5,7 @@ import com.pocketempire.config.StatusEffectConfigLoader;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.entities.City;
 import com.pocketempire.units.MageType;
+import com.pocketempire.units.UnitRole;
 import com.pocketempire.units.UnitType;
 import com.pocketempire.events.GameEvent;
 import com.pocketempire.events.GameEventBus;
@@ -36,7 +37,8 @@ public class CombatResolver {
         }
 
         int damageToDefender = calculateDamage(attacker.getAttack() + attackMod + ramBonus, defender.getDefense()
-                + defender.getDefenseModifier() + defenseMod + terrainBonus);
+                + defender.getDefenseModifier() + defenseMod + terrainBonus,
+                attacker.getUnitRole(), defender.getUnitRole());
         defender.takeDamage(damageToDefender);
         bus.publish(new GameEvent.UnitAttacked(attacker, defender, damageToDefender));
 
@@ -77,7 +79,8 @@ public class CombatResolver {
             double guardianStunChance = isGuardianCounter ? (isEntrenched ? 0.22 : 0.15) : 0;
 
             int damageToAttacker = calculateDamage(defender.getAttack() + counterAttackMod + guardianAttackBonus,
-                    attacker.getDefense() + attacker.getDefenseModifier() + counterDefenseMod);
+                    attacker.getDefense() + attacker.getDefenseModifier() + counterDefenseMod,
+                    defender.getUnitRole(), attacker.getUnitRole());
             attacker.takeDamage(damageToAttacker);
             bus.publish(new GameEvent.CounterAttacked(attacker, defender, damageToAttacker));
 
@@ -97,7 +100,7 @@ public class CombatResolver {
     }
 
     public static void resolveCityAttack(Unit attacker, City city, World world) {
-        int damageToCity = calculateDamage(attacker.getAttack(), 0);
+        int damageToCity = calculateDamage(attacker.getAttack(), 0, attacker.getUnitRole(), null);
 
         if (city.getHp() <= damageToCity) {
             if (shouldCapture(attacker, world)) {
@@ -133,8 +136,9 @@ public class CombatResolver {
         return true;
     }
 
-    static int calculateDamage(int attack, int defense) {
-        int damage = attack - (defense / 2);
+    static int calculateDamage(int attack, int defense, UnitRole attackerRole, UnitRole targetRole) {
+        double multiplier = (attackerRole != null && targetRole != null) ? attackerRole.getMultiplier(targetRole) : 1.0;
+        int damage = (int) ((attack - defense / 2) * multiplier);
         return Math.max(1, damage);
     }
 
