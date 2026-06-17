@@ -98,7 +98,7 @@ public class GatheringState implements State {
 
     private boolean isCombatUnit(UnitType type) {
         return switch (type) {
-            case LIGHT, HEAVY, GUARDIAN, ARCHER, MAGE, SIEGE, DROMON, TRIREME -> true;
+            case LIGHT, HEAVY, GUARDIAN, ARCHER, MAGE, CATAPULT, DROMON, TRIREME -> true;
             default -> false;
         };
     }
@@ -107,7 +107,7 @@ public class GatheringState implements State {
         return switch (unit.getUnitType()) {
             case HEAVY, GUARDIAN -> 1;
             case LIGHT -> 1;
-            case ARCHER, MAGE, SIEGE -> 2;
+            case ARCHER, MAGE, CATAPULT -> 2;
             default -> 0;
         };
     }

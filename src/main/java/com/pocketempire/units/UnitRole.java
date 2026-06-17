@@ -1,28 +1,27 @@
 package com.pocketempire.units;
 
-import java.util.HashMap;
+import com.pocketempire.config.RoleConfigLoader;
+
 import java.util.Map;
 import java.util.Set;
 
 public enum UnitRole {
     ASSAULT, TANK, ASSASSIN, SNIPER, SIEGE, SUPPORT, CIVILIAN, NAVAL_RAM, NAVAL_FIRE;
 
-    private static final Map<UnitRole, Set<UnitRole>> COUNTERS = new HashMap<>();
+    private static Map<UnitRole, Set<UnitRole>> counters;
 
-    static {
-        COUNTERS.put(ASSASSIN, Set.of(SNIPER, SIEGE, SUPPORT));
-        COUNTERS.put(SNIPER,   Set.of(TANK));
-        COUNTERS.put(TANK,     Set.of(ASSAULT));
-        COUNTERS.put(ASSAULT,  Set.of(ASSASSIN));
-        COUNTERS.put(NAVAL_RAM, Set.of(NAVAL_FIRE));
+    private static Map<UnitRole, Set<UnitRole>> getCounters() {
+        if (counters == null) {
+            counters = RoleConfigLoader.getCounters();
+        }
+        return counters;
     }
 
     public boolean counters(UnitRole other) {
-        return COUNTERS.getOrDefault(this, Set.of()).contains(other);
+        return getCounters().getOrDefault(this, Set.of()).contains(other);
     }
 
     public int getAttackBonus(UnitRole target) {
         return counters(target) ? 2 : 0;
     }
 }
-

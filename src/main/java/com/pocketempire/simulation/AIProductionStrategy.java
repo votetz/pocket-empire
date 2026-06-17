@@ -27,7 +27,7 @@ public class AIProductionStrategy {
 
         long heavyCount = countUnitsByType(faction, UnitType.HEAVY) + countUnitsByType(faction, UnitType.GUARDIAN);
         long lightCount = countUnitsByType(faction, UnitType.LIGHT);
-        long rangedCount = countUnitsByType(faction, UnitType.ARCHER) + countUnitsByType(faction, UnitType.MAGE) + countUnitsByType(faction, UnitType.SIEGE);
+        long rangedCount = countUnitsByType(faction, UnitType.ARCHER) + countUnitsByType(faction, UnitType.MAGE) + countUnitsByType(faction, UnitType.CATAPULT);
 
         long combatTotal = heavyCount + lightCount + rangedCount;
 
@@ -105,7 +105,7 @@ public class AIProductionStrategy {
 
         if (totalNeed <= 0) {
             UnitType[] combat = {UnitType.LIGHT, UnitType.ARCHER, UnitType.HEAVY,
-                    UnitType.MAGE, UnitType.SIEGE, UnitType.GUARDIAN};
+                    UnitType.MAGE, UnitType.CATAPULT, UnitType.GUARDIAN};
             city.setCurrentProductionType(combat[rng.nextInt(combat.length)]);
             return;
         }
@@ -117,7 +117,7 @@ public class AIProductionStrategy {
         } else if (roll < frontlineNeed + lightNeed) {
             city.setCurrentProductionType(UnitType.LIGHT);
         } else {
-            UnitType[] ranged = {UnitType.ARCHER, UnitType.MAGE, UnitType.SIEGE};
+            UnitType[] ranged = {UnitType.ARCHER, UnitType.MAGE, UnitType.CATAPULT};
             city.setCurrentProductionType(ranged[rng.nextInt(ranged.length)]);
         }
     }
@@ -144,7 +144,7 @@ public class AIProductionStrategy {
             case HEAVY, GUARDIAN -> rng.nextBoolean() ? UnitType.MAGE : UnitType.ARCHER;
             case LIGHT, SCOUT -> rng.nextBoolean() ? UnitType.HEAVY : UnitType.GUARDIAN;
             case ARCHER, MAGE -> rng.nextBoolean() ? UnitType.LIGHT : UnitType.SCOUT;
-            case SIEGE -> UnitType.LIGHT;
+            case CATAPULT -> UnitType.LIGHT;
             case TRIREME -> UnitType.DROMON;
             case SETTLER, WORKER -> UnitType.LIGHT;
             case DROMON -> UnitType.TRIREME;

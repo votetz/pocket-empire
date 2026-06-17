@@ -5,7 +5,7 @@ public enum UnitType {
     ARCHER,
     HEAVY,
     MAGE,
-    SIEGE,
+    CATAPULT,
     GUARDIAN,
     SETTLER,
     WORKER,

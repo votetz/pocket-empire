@@ -90,7 +90,7 @@ public class ConsoleRender {
             case ARCHER -> "A";
             case HEAVY  -> "H";
             case MAGE   -> "M";
-            case SIEGE  -> "S";
+            case CATAPULT -> "S";
             case GUARDIAN -> "G";
             case SETTLER -> "T";
             case WORKER -> "W";

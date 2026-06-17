@@ -17,7 +17,7 @@ public class AttackState implements State {
 
     @Override
     public void update(Unit unit, World world) {
-        if (unit.getUnitType() == UnitType.SIEGE) {
+        if (unit.getUnitType() == UnitType.CATAPULT) {
             City targetCity = world.findNearestEnemyCity(unit);
             if (targetCity != null) {
                 int dist = HexUtils.getDistance(

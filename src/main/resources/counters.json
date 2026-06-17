@@ -1,0 +1,6 @@
+{
+  "ASSASSIN": ["SNIPER", "SIEGE", "SUPPORT"],
+  "SNIPER": ["TANK"],
+  "TANK": ["ASSAULT"],
+  "ASSAULT": ["ASSASSIN"]
+}
