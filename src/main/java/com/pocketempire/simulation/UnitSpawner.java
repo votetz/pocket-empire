@@ -143,6 +143,8 @@ public class UnitSpawner {
         BuildingConfig forge = BuildingConfigLoader.getConfig("Forge");
         if (!city.hasBuilding("Forge") && techTree.isBuildingUnlocked(forge.getRequiredTech(), researched)) return forge;
         if (city.hasBuilding("Forge") && !city.hasBuilding("Workshop")) return BuildingConfigLoader.getConfig("Workshop");
+        BuildingConfig library = BuildingConfigLoader.getConfig("Library");
+        if (!city.hasBuilding("Library") && techTree.isBuildingUnlocked(library.getRequiredTech(), researched)) return library;
         BuildingConfig granary = BuildingConfigLoader.getConfig("Granary");
         if (!city.hasBuilding("Granary") && techTree.isBuildingUnlocked(granary.getRequiredTech(), researched)) return granary;
         BuildingConfig barracks = BuildingConfigLoader.getConfig("Barracks");

@@ -78,6 +78,10 @@ public class City extends Entity {
         return buildings.stream().mapToInt(BuildingConfig::getHealBonus).sum();
     }
 
+    public int getResearchBonus() {
+        return buildings.stream().mapToInt(BuildingConfig::getResearchBonus).sum();
+    }
+
     public int getEffectiveProduction() {
         return production + getProductionBonus();
     }

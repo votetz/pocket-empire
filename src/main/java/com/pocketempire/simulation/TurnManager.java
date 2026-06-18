@@ -142,6 +142,9 @@ public class TurnManager {
 
     private void processResearch(Faction faction) {
         int researchYield = faction.getCityCount();
+        for (City city : faction.getCities()) {
+            researchYield += city.getResearchBonus();
+        }
         faction.addResearchPoints(researchYield);
 
         if (faction.getCurrentResearch() != null) {

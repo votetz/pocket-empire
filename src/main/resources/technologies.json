@@ -4,21 +4,21 @@
     "name": "Military Training",
     "cost": 20,
     "prerequisites": [],
-    "unlocks": ["ARCHER", "HEAVY", "BARRACKS"],
+    "unlocks": ["ARCHER", "HEAVY", "GUARDIAN", "BARRACKS"],
     "category": "MILITARY"
   },
   {
     "id": "SIEGE_ENGINEERING",
     "name": "Siege Engineering",
-    "cost": 30,
+    "cost": 15,
     "prerequisites": ["MILITARY_TRAINING"],
-    "unlocks": ["CATAPULT", "GUARDIAN"],
+    "unlocks": ["CATAPULT"],
     "category": "MILITARY"
   },
   {
     "id": "ARCANE_STUDIES",
     "name": "Arcane Studies",
-    "cost": 25,
+    "cost": 30,
     "prerequisites": [],
     "unlocks": ["MAGE"],
     "category": "MILITARY"
