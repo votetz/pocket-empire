@@ -241,15 +241,18 @@ public static class Builder {
     }
 
     public void addXp(int amount) {
-        xp += amount;
-        while (xp >= xpToNextLevel) {
-            xp -= xpToNextLevel;
-            level++;
-            attack += 1;
-            maxHp += 2;
-            hp += 2;
-            xpToNextLevel = (int)(xpToNextLevel * 1.5);
-            GameEventBus.getInstance().publish(new GameEvent.UnitLevelUp(this, level));
+        if (amount <= 0) return;
+
+        this.xp += amount;
+        while (this.xp >= this.xpToNextLevel) {
+            this.xp -= this.xpToNextLevel;
+            this.level++;
+            this.attack += 1;
+            this.maxHp += 2;
+            this.hp = Math.min(this.maxHp, this.hp + 2);
+            this.xpToNextLevel = (int) (this.xpToNextLevel * 1.5);
+
+            GameEventBus.getInstance().publish(new GameEvent.UnitLevelUp(this, this.level));
         }
     }
 }
