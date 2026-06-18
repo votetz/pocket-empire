@@ -36,6 +36,9 @@ public class Unit extends Entity {
     private final int blinkRange;
     @Setter private UnitRole unitRole;
     private final double effectChance;
+    private int xp;
+    private int level;
+    private int xpToNextLevel;
 
     protected Unit(Builder builder) {
         super(builder.id, builder.q, builder.r, builder.hp, builder.maxHp);
@@ -56,6 +59,9 @@ public class Unit extends Entity {
         this.blinkRange = (builder.abilityType == AbilityType.TELEPORT) ? 3 : 0;
         this.unitRole = builder.unitRole;
         this.effectChance = builder.effectChance;
+        this.xp = 0;
+        this.level = builder.level;
+        this.xpToNextLevel = builder.xpToNextLevel;
     }
 
 public static class Builder {
@@ -73,6 +79,8 @@ public static class Builder {
     private int range = 1;
     private int sightRange;
     private int cost = 1;
+    private int level = 1;
+    private int xpToNextLevel = 100;
     private UnitType unitType;
     private MovementType movementType;
     private UnitState unitState = UnitState.IDLE;
@@ -230,5 +238,18 @@ public static class Builder {
 
     public boolean hasEffect(String effectName) {
         return activeEffects.keySet().stream().anyMatch(e -> e.getName().equals(effectName));
+    }
+
+    public void addXp(int amount) {
+        xp += amount;
+        while (xp >= xpToNextLevel) {
+            xp -= xpToNextLevel;
+            level++;
+            attack += 1;
+            maxHp += 2;
+            hp += 2;
+            xpToNextLevel = (int)(xpToNextLevel * 1.5);
+            GameEventBus.getInstance().publish(new GameEvent.UnitLevelUp(this, level));
+        }
     }
 }

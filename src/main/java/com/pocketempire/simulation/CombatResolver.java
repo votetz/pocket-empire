@@ -92,9 +92,11 @@ public class CombatResolver {
         }
 
         if (!defender.isAlive()) {
+            attacker.addXp(defender.getCost() / 2);
             bus.publish(new GameEvent.UnitDied(defender, attacker));
         }
         if (!attacker.isAlive()) {
+            defender.addXp(attacker.getCost() / 2);
             bus.publish(new GameEvent.UnitDied(attacker, defender));
         }
     }
