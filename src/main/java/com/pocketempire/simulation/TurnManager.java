@@ -1,6 +1,9 @@
 package com.pocketempire.simulation;
 
 import com.pocketempire.config.StatusEffectConfig;
+import com.pocketempire.tech.TechTree;
+import com.pocketempire.tech.TechConfigLoader;
+import com.pocketempire.tech.TechnologyConfig;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.entities.City;
@@ -30,6 +33,7 @@ public class TurnManager {
     private final UnitMover unitMover = new UnitMover();
     private final AIProductionStrategy aiProductionStrategy = new AIProductionStrategy();
     private final UnitSpawner unitSpawner;
+    private final TechTree techTree = new TechTree();
 
     public TurnManager(List<Faction> factions, World world, Map<Integer, FogMap> fogMaps) {
         this.factions = factions;
@@ -60,6 +64,8 @@ public class TurnManager {
         GameEventBus.getInstance().publish(new GameEvent.TurnStarted(currentTurn, faction));
 
         economyManager.processFactionEconomy(faction, world);
+
+        processResearch(faction);
 
         World aiWorld = faction.isAI()
                 ? new VisibleWorld(world, fogMaps.get(faction.getId()), String.valueOf(faction.getId()))
@@ -132,5 +138,28 @@ public class TurnManager {
 
     public List<Faction> getRankedFactions() {
         return victoryManager.getRankedFactions();
+    }
+
+    private void processResearch(Faction faction) {
+        int researchYield = faction.getCityCount();
+        faction.addResearchPoints(researchYield);
+
+        if (faction.getCurrentResearch() != null) {
+            TechnologyConfig tech = TechConfigLoader.getConfig(faction.getCurrentResearch());
+            if (tech != null && faction.getResearchProgress() >= tech.getCost()) {
+                faction.getResearchedTechs().add(faction.getCurrentResearch());
+                GameEventBus.getInstance().publish(new GameEvent.ResearchCompleted(faction, tech));
+                faction.setCurrentResearch(null);
+                faction.setResearchProgress(0);
+            }
+        }
+
+        if (faction.isAI() && faction.getCurrentResearch() == null) {
+            String next = aiProductionStrategy.chooseTech(faction, techTree);
+            if (next != null) {
+                faction.setCurrentResearch(next);
+                faction.setResearchProgress(0);
+            }
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.pocketempire.simulation;
 
+import com.pocketempire.tech.TechTree;
+import com.pocketempire.tech.TechnologyConfig;
 import com.pocketempire.config.UnitConfigLoader;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
@@ -171,5 +173,11 @@ public class AIProductionStrategy {
     public AbilityType chooseAbilityType(Random rng) {
         AbilityType[] types = AbilityType.values();
         return types[rng.nextInt(types.length)];
+    }
+
+    public String chooseTech(Faction faction, TechTree techTree) {
+        var available = techTree.getAvailable(faction.getResearchedTechs());
+        if (available.isEmpty()) return null;
+        return available.get(new Random().nextInt(available.size())).getId();
     }
 }

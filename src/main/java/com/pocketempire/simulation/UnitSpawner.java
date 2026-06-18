@@ -9,6 +9,7 @@ import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.events.GameEvent;
 import com.pocketempire.events.GameEventBus;
+import com.pocketempire.tech.TechTree;
 import com.pocketempire.tiles.TileType;
 import com.pocketempire.units.MovementType;
 import com.pocketempire.units.UnitFactory;
@@ -27,6 +28,7 @@ public class UnitSpawner {
     private final World world;
     private final Map<Integer, FogMap> fogMaps;
     private final AIProductionStrategy aiProductionStrategy;
+    private final TechTree techTree = new TechTree();
     private int unitCounter;
 
     public UnitSpawner(World world, Map<Integer, FogMap> fogMaps, AIProductionStrategy aiProductionStrategy) {
@@ -37,7 +39,7 @@ public class UnitSpawner {
     }
 
     public void trySpawnUnit(City city, Faction faction, int currentTurn) {
-        BuildingConfig buildingChoice = chooseBuildingForCity(city);
+        BuildingConfig buildingChoice = chooseBuildingForCity(city, faction);
         if (buildingChoice != null && city.getAccumulatedProduction() >= buildingChoice.getProductionCost()) {
             city.addBuilding(buildingChoice);
             city.setAccumulatedProduction(city.getAccumulatedProduction() - buildingChoice.getProductionCost());
@@ -56,7 +58,14 @@ public class UnitSpawner {
             if (city.getCurrentProductionType() == null) return;
         }
 
-        int cost = UnitConfigLoader.getConfig(city.getCurrentProductionType().name()).getCost();
+        UnitStats unitStats = UnitConfigLoader.getConfig(city.getCurrentProductionType().name());
+        String requiredTech = unitStats.getRequiredTech();
+        if (requiredTech != null && !faction.getResearchedTechs().contains(requiredTech)) {
+            city.setCurrentProductionType(null);
+            return;
+        }
+
+        int cost = unitStats.getCost();
         boolean spawned = false;
 
         while (city.getAccumulatedProduction() >= cost && faction.getGold() >= cost) {
@@ -125,14 +134,21 @@ public class UnitSpawner {
         return null;
     }
 
-    private BuildingConfig chooseBuildingForCity(City city) {
-        if (!city.hasBuilding("Walls")) return BuildingConfigLoader.getConfig("Walls");
-        if (!city.hasBuilding("Market")) return BuildingConfigLoader.getConfig("Market");
-        if (!city.hasBuilding("Forge")) return BuildingConfigLoader.getConfig("Forge");
+    private BuildingConfig chooseBuildingForCity(City city, Faction faction) {
+        var researched = faction.getResearchedTechs();
+        BuildingConfig walls = BuildingConfigLoader.getConfig("Walls");
+        if (!city.hasBuilding("Walls") && techTree.isBuildingUnlocked(walls.getRequiredTech(), researched)) return walls;
+        BuildingConfig market = BuildingConfigLoader.getConfig("Market");
+        if (!city.hasBuilding("Market") && techTree.isBuildingUnlocked(market.getRequiredTech(), researched)) return market;
+        BuildingConfig forge = BuildingConfigLoader.getConfig("Forge");
+        if (!city.hasBuilding("Forge") && techTree.isBuildingUnlocked(forge.getRequiredTech(), researched)) return forge;
         if (city.hasBuilding("Forge") && !city.hasBuilding("Workshop")) return BuildingConfigLoader.getConfig("Workshop");
-        if (!city.hasBuilding("Granary")) return BuildingConfigLoader.getConfig("Granary");
-        if (!city.hasBuilding("Barracks")) return BuildingConfigLoader.getConfig("Barracks");
-        if (!city.hasBuilding("Temple")) return BuildingConfigLoader.getConfig("Temple");
+        BuildingConfig granary = BuildingConfigLoader.getConfig("Granary");
+        if (!city.hasBuilding("Granary") && techTree.isBuildingUnlocked(granary.getRequiredTech(), researched)) return granary;
+        BuildingConfig barracks = BuildingConfigLoader.getConfig("Barracks");
+        if (!city.hasBuilding("Barracks") && techTree.isBuildingUnlocked(barracks.getRequiredTech(), researched)) return barracks;
+        BuildingConfig temple = BuildingConfigLoader.getConfig("Temple");
+        if (!city.hasBuilding("Temple") && techTree.isBuildingUnlocked(temple.getRequiredTech(), researched)) return temple;
         return null;
     }
 }

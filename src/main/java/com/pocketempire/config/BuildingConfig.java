@@ -19,4 +19,5 @@ public class BuildingConfig {
     private int attackBonus;
     private int improvedTileGoldBonus;
     private int healBonus;
+    private String requiredTech;
 }

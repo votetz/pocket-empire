@@ -2,6 +2,7 @@ package com.pocketempire.events;
 
 import com.pocketempire.config.BuildingConfig;
 import com.pocketempire.config.StatusEffectConfig;
+import com.pocketempire.tech.TechnologyConfig;
 import com.pocketempire.entities.*;
 
 import java.util.List;
@@ -28,4 +29,5 @@ public sealed interface GameEvent {
     record TriremeRam(Unit attacker, Unit defender, int bonusDamage, int selfDamage) implements GameEvent {}
     record CityCaptured(City city, Unit captor, String oldFactionId) implements GameEvent {}
     record UnitLevelUp(Unit unit, int level) implements GameEvent {}
+    record ResearchCompleted(Faction faction, TechnologyConfig tech) implements GameEvent {}
 }

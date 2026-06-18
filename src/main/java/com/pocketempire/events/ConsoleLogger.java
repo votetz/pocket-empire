@@ -78,6 +78,9 @@ public class ConsoleLogger {
                 case GameEvent.UnitLevelUp(var unit, var level) ->
                     System.out.printf("\u2B50 %s level up to %d (ATK: %d, HP: %d/%d)%n",
                             unit.getName(), level, unit.getAttack(), unit.getHp(), unit.getMaxHp());
+
+                case GameEvent.ResearchCompleted(var faction, var tech) ->
+                    System.out.printf("\uD83D\uDD2C %s researched %s%n", faction.getName(), tech.getName());
             }
         });
     }

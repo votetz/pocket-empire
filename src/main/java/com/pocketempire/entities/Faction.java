@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 public class Faction {
@@ -16,6 +18,9 @@ public class Faction {
     @Setter private boolean isAI;
     @Setter private int gold;
     @Setter private int victoryPoints;
+    @Setter private Set<String> researchedTechs = new HashSet<>();
+    @Setter private String currentResearch;
+    @Setter private int researchProgress;
 
     public Faction(int id, String name, int color) {
         this.id = id;
@@ -63,5 +68,13 @@ public class Faction {
 
     public int getCityCount() {
         return cities.size();
+    }
+
+    public boolean hasTech(String techId) {
+        return researchedTechs != null && researchedTechs.contains(techId);
+    }
+
+    public void addResearchPoints(int points) {
+        researchProgress += points;
     }
 }

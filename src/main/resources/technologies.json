@@ -1,0 +1,34 @@
+[
+  {
+    "id": "MILITARY_TRAINING",
+    "name": "Military Training",
+    "cost": 20,
+    "prerequisites": [],
+    "unlocks": ["ARCHER", "HEAVY", "BARRACKS"],
+    "category": "MILITARY"
+  },
+  {
+    "id": "SIEGE_ENGINEERING",
+    "name": "Siege Engineering",
+    "cost": 30,
+    "prerequisites": ["MILITARY_TRAINING"],
+    "unlocks": ["CATAPULT", "GUARDIAN"],
+    "category": "MILITARY"
+  },
+  {
+    "id": "ARCANE_STUDIES",
+    "name": "Arcane Studies",
+    "cost": 25,
+    "prerequisites": [],
+    "unlocks": ["MAGE"],
+    "category": "MILITARY"
+  },
+  {
+    "id": "NAVAL_TACTICS",
+    "name": "Naval Tactics",
+    "cost": 25,
+    "prerequisites": [],
+    "unlocks": ["TRIREME", "DROMON"],
+    "category": "NAVAL"
+  }
+]
