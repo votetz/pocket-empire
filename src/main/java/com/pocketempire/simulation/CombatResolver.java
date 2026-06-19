@@ -4,6 +4,9 @@ import com.pocketempire.config.StatusEffectConfig;
 import com.pocketempire.config.StatusEffectConfigLoader;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.entities.City;
+import com.pocketempire.entities.Faction;
+import com.pocketempire.tech.TechConfigLoader;
+import com.pocketempire.tech.TechnologyConfig;
 import com.pocketempire.units.AbilityType;
 import com.pocketempire.units.UnitRole;
 import com.pocketempire.units.UnitType;
@@ -18,7 +21,7 @@ public class CombatResolver {
     private static final GameEventBus bus = GameEventBus.getInstance();
     private static final Random rng = new Random();
 
-    public static void resolveCombat(Unit attacker, Unit defender, int terrainBonus, int attackerTerrainModifier) {
+    public static void resolveCombat(Unit attacker, Unit defender, int terrainBonus, int attackerTerrainModifier, Faction attackerFaction) {
         if (attacker.hasEffect("STUNNED")) return;
 
         StatusEffectConfig frozen = StatusEffectConfigLoader.getConfig("FROZEN");
@@ -36,7 +39,17 @@ public class CombatResolver {
             ramBonus = Math.min(hexesMoved, 2);
         }
 
-        int damageToDefender = calculateDamage(attacker.getAttack() + attackMod + ramBonus + attackerTerrainModifier, defender.getDefense()
+        int mageAtkBonus = 0;
+        double mageEffectChanceBonus = 0.0;
+        if (attacker.getUnitType() == UnitType.MAGE && attackerFaction != null && attackerFaction.hasTech("ELEMENTAL_MASTERY")) {
+            TechnologyConfig tech = TechConfigLoader.getConfig("ELEMENTAL_MASTERY");
+            if (tech != null) {
+                mageAtkBonus = tech.getMageAtkBonus() != null ? tech.getMageAtkBonus() : 0;
+                mageEffectChanceBonus = tech.getMageEffectChanceBonus() != null ? tech.getMageEffectChanceBonus() : 0.0;
+            }
+        }
+
+        int damageToDefender = calculateDamage(attacker.getAttack() + attackMod + ramBonus + attackerTerrainModifier + mageAtkBonus, defender.getDefense()
                 + defender.getDefenseModifier() + defenseMod + terrainBonus,
                 attacker.getUnitRole(), defender.getUnitRole());
         defender.takeDamage(damageToDefender);
@@ -47,14 +60,16 @@ public class CombatResolver {
             bus.publish(new GameEvent.TriremeRam(attacker, defender, ramBonus, ramBonus));
         }
 
-        if (attacker.getUnitType() == UnitType.DROMON && defender.isAlive() && defender instanceof Unit u && rng.nextDouble() < attacker.getEffectChance()) {
+        double effectiveEffectChance = attacker.getEffectChance() + mageEffectChanceBonus;
+
+        if (attacker.getUnitType() == UnitType.DROMON && defender.isAlive() && defender instanceof Unit u && rng.nextDouble() < effectiveEffectChance) {
             u.applyEffect(burning, burning.getDefaultDuration());
             bus.publish(new GameEvent.StatusApplied(u, burning, burning.getDefaultDuration()));
         }
 
         if (attacker.getUnitType() == UnitType.MAGE && defender.isAlive() && defender instanceof Unit u2) {
             AbilityType mt = attacker.getAbilityType();
-            if (mt != null && rng.nextDouble() < attacker.getEffectChance()) {
+            if (mt != null && rng.nextDouble() < effectiveEffectChance) {
                 StatusEffectConfig effect = switch (mt) {
                     case FIRE -> burning;
                     case ICE -> frozen;

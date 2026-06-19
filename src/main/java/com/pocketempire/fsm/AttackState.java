@@ -1,6 +1,7 @@
 package com.pocketempire.fsm;
 
 import com.pocketempire.entities.City;
+import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.events.GameEvent;
 import com.pocketempire.events.GameEventBus;
@@ -10,6 +11,8 @@ import com.pocketempire.world.World;
 import com.pocketempire.world.Tile;
 import com.pocketempire.simulation.CombatResolver;
 import com.pocketempire.pathfinding.Pathfinder;
+
+import java.util.Optional;
 
 public class AttackState implements State {
     @Override
@@ -38,9 +41,13 @@ public class AttackState implements State {
             int dist = HexUtils.getDistance(
                     unit.getQ(), unit.getR(), enemy.getQ(), enemy.getR());
             if (dist <= unit.getRange()) {
+                Optional<Faction> attackerFaction = world.getFactions().stream()
+                        .filter(f -> String.valueOf(f.getId()).equals(unit.getFactionId()))
+                        .findFirst();
                 CombatResolver.resolveCombat(unit, enemy,
                         world.getMap().getTile(enemy.getQ(), enemy.getR()).getType().getDefendBonus(),
-                        world.getMap().getTile(unit.getQ(), unit.getR()).getType().getAttackModifier());
+                        world.getMap().getTile(unit.getQ(), unit.getR()).getType().getAttackModifier(),
+                        attackerFaction.orElse(null));
 
                 if (unit.getBlinkRange() > 0 && unit.getRemainingOD() > 0) {
                     blinkAwayFrom(unit, enemy, world);

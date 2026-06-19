@@ -15,10 +15,14 @@ import java.util.List;
 
 public class SettleState implements State {
     private static final int MIN_CITY_DISTANCE = 3;
+    private static final int STUCK_THRESHOLD = 5;
     private int targetQ = -1, targetR = -1;
+    private int stuckTurns = 0;
 
     @Override
-    public void enter(Unit unit) {}
+    public void enter(Unit unit) {
+        stuckTurns = 0;
+    }
 
     @Override
     public void update(Unit unit, World world) {
@@ -28,8 +32,17 @@ public class SettleState implements State {
         }
 
         if (targetQ < 0 || !isValidSite(targetQ, targetR, unit, world)) {
+            targetQ = -1;
+            targetR = -1;
             int[] site = findNearestValidSite(unit, world);
-            if (site == null) return;
+            if (site == null) {
+                stuckTurns++;
+                if (stuckTurns >= STUCK_THRESHOLD) {
+                    unit.takeDamage(unit.getHp() + 1);
+                    GameEventBus.getInstance().publish(new GameEvent.UnitDied(unit, null));
+                }
+                return;
+            }
             targetQ = site[0];
             targetR = site[1];
         }
@@ -47,6 +60,19 @@ public class SettleState implements State {
                 unit.spendOD(cost);
                 unit.move(next.getQ() - fromQ, next.getR() - fromR);
                 GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR, unit.getQ(), unit.getR()));
+                stuckTurns = 0;
+            } else {
+                stuckTurns++;
+                if (stuckTurns >= STUCK_THRESHOLD) {
+                    unit.takeDamage(unit.getHp() + 1);
+                    GameEventBus.getInstance().publish(new GameEvent.UnitDied(unit, null));
+                }
+            }
+        } else {
+            stuckTurns++;
+            if (stuckTurns >= STUCK_THRESHOLD) {
+                unit.takeDamage(unit.getHp() + 1);
+                GameEventBus.getInstance().publish(new GameEvent.UnitDied(unit, null));
             }
         }
     }
@@ -85,7 +111,7 @@ public class SettleState implements State {
 
     private int[] findNearestValidSite(Unit unit, World world) {
         int bestQ = -1, bestR = -1, bestDist = Integer.MAX_VALUE;
-        int radius = 8;
+        int radius = 20;
         for (int dq = -radius; dq <= radius; dq++) {
             for (int dr = -radius; dr <= radius; dr++) {
                 int q = unit.getQ() + dq, r = unit.getR() + dr;
