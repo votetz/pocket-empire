@@ -108,8 +108,10 @@ public class GameSetup {
                     int q = centerQ + (int) Math.round(Math.cos(angle) * radius);
                     int r = centerR + (int) Math.round(Math.sin(angle) * radius);
 
-                    q = Math.max(1, Math.min(mapWidth - 2, q));
+                    int col = q + (r - (r & 1)) / 2;
+                    col = Math.max(1, Math.min(mapWidth - 2, col));
                     r = Math.max(1, Math.min(mapHeight - 2, r));
+                    q = col - (r - (r & 1)) / 2;
 
                     if (!isvalidCityTile(q, r)) continue;
                     if (!hasEnoughFreeNeighbours(q, r, 3)) continue;
@@ -149,16 +151,17 @@ public class GameSetup {
 
     private int[][] generateFallbackPositions(int count) {
         int[][] fallback = new int[count][2];
-        fallback[0] = findValidCityTile(2, 2);
-        if (count > 1) fallback[1] = findValidCityTile(mapWidth / 2, mapHeight / 2);
-        if (count > 2) fallback[2] = findValidCityTile(mapWidth - 3, mapHeight - 3);
-        for (int i = 3; i < count; i++) {
-            int q = (mapWidth / (count - 1)) * i;
-            int r = (mapHeight / (count - 1)) * i;
-            fallback[i] = findValidCityTile(
-                Math.min(q, mapWidth - 2),
-                Math.min(r, mapHeight - 2)
-            );
+        int centerCol = mapWidth / 2;
+        int centerRow = mapHeight / 2;
+        int spacing = Math.max(5, Math.min(mapWidth, mapHeight) / (count + 1));
+        for (int i = 0; i < count; i++) {
+            int col = centerCol + (int) Math.round(Math.cos(2 * Math.PI * i / count) * spacing);
+            int row = centerRow + (int) Math.round(Math.sin(2 * Math.PI * i / count) * spacing);
+            col = Math.max(1, Math.min(mapWidth - 2, col));
+            row = Math.max(1, Math.min(mapHeight - 2, row));
+            int q = col - (row - (row & 1)) / 2;
+            int r = row;
+            fallback[i] = findValidCityTile(q, r);
         }
         return fallback;
     }
@@ -178,7 +181,7 @@ public class GameSetup {
             return new int[]{preferQ, preferR};
         }
 
-        for (int radius = 1; radius <= 10; radius++) {
+        for (int radius = 1; radius <= 20; radius++) {
             for (int dq = -radius; dq <= radius; dq++) {
                 for (int dr = Math.max(-radius, -dq - radius); dr <= Math.min(radius, -dq + radius); dr++) {
                     if (dq == 0 && dr == 0) continue;
