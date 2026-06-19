@@ -30,5 +30,15 @@
     "prerequisites": [],
     "unlocks": ["TRIREME", "DROMON"],
     "category": "NAVAL"
+  },
+  {
+    "id": "ELEMENTAL_MASTERY",
+    "name": "Elemental Mastery",
+    "cost": 35,
+    "prerequisites": ["ARCANE_STUDIES"],
+    "unlocks": [],
+    "category": "ARCANE",
+    "mageAtkBonus": 1,
+    "mageEffectChanceBonus": 0.2
   }
 ]

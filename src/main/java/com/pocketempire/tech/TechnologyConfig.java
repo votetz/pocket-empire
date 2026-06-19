@@ -18,4 +18,6 @@ public class TechnologyConfig {
     private List<String> prerequisites;
     private List<String> unlocks;
     private TechCategory category;
+    private Integer mageAtkBonus;
+    private Integer mageEffectChanceBonus;
 }
