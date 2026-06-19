@@ -41,10 +41,28 @@ public class GameSetup {
         for (TileType type : TileType.values()) {
             type.loadBonuses();
         }
-        map = MapGenerator.generateRandomMap(mapWidth, mapHeight);
+
+        int maxMapAttempts = 10;
+        for (int i = 0; i < maxMapAttempts; i++) {
+            map = MapGenerator.generateRandomMap(mapWidth, mapHeight);
+            if (isMapPlayable(40)) break;
+        }
+
         createFactions();
         world = new World(map, factions);
         createFogMaps();
+    }
+
+    private boolean isMapPlayable(int minPassablePercent) {
+        int total = mapWidth * mapHeight;
+        int passable = 0;
+        for (int q = 0; q < mapWidth; q++) {
+            for (int r = 0; r < mapHeight; r++) {
+                if (isvalidCityTile(q, r)) passable++;
+            }
+        }
+        int percent = (passable * 100) / total;
+        return percent >= minPassablePercent;
     }
 
     private void createFactions() {
@@ -69,21 +87,32 @@ public class GameSetup {
     }
 
     private int[][] generateStartPositions(int count, int minDist) {
+        int centerQ = mapWidth / 2;
+        int centerR = mapHeight / 2;
+        int radius = Math.min(mapWidth, mapHeight) / 3;
         ThreadLocalRandom rng = ThreadLocalRandom.current();
-        int maxAttempts = 500;
 
-        for (int attempt = 0; attempt < maxAttempts; attempt++) {
+        for (int attempt = 0; attempt < 500; attempt++) {
             int[][] positions = new int[count][2];
             boolean valid = true;
 
+            double angleOffset = rng.nextDouble(0, 2 * Math.PI);
+
             for (int i = 0; i < count; i++) {
                 boolean placed = false;
+                double baseAngle = angleOffset + (2 * Math.PI / count) * i;
 
                 for (int try_ = 0; try_ < 100; try_++) {
-                    int q = rng.nextInt(1, mapWidth - 1);
-                    int r = rng.nextInt(1, mapHeight - 1);
+                    double jitter = rng.nextDouble(-0.3, 0.3);
+                    double angle = baseAngle + jitter;
+                    int q = centerQ + (int) Math.round(Math.cos(angle) * radius);
+                    int r = centerR + (int) Math.round(Math.sin(angle) * radius);
+
+                    q = Math.max(1, Math.min(mapWidth - 2, q));
+                    r = Math.max(1, Math.min(mapHeight - 2, r));
 
                     if (!isvalidCityTile(q, r)) continue;
+                    if (!hasEnoughFreeNeighbours(q, r, 3)) continue;
 
                     boolean tooClose = false;
                     for (int j = 0; j < i; j++) {
@@ -92,20 +121,30 @@ public class GameSetup {
                             break;
                         }
                     }
+
                     if (!tooClose) {
                         positions[i] = new int[]{q, r};
                         placed = true;
                         break;
                     }
                 }
-                if (!placed) {
-                    valid = false;
-                    break;
-                }
+
+                if (!placed) { valid = false; break; }
             }
+
             if (valid) return positions;
+            radius = Math.max(3, radius - 1);
         }
+
         return generateFallbackPositions(count);
+    }
+
+    private boolean hasEnoughFreeNeighbours(int q, int r, int minFree) {
+        int free = 0;
+        for (int[] n : HexUtils.getNeighbors(q, r)) {
+            if (isvalidCityTile(n[0], n[1])) free++;
+        }
+        return free >= minFree;
     }
 
     private int[][] generateFallbackPositions(int count) {
