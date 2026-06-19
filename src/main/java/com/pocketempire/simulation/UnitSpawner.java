@@ -47,6 +47,25 @@ public class UnitSpawner {
             return;
         }
 
+        int armyCap = calculateArmyCap(faction);
+        boolean isCombatUnit = city.getCurrentProductionType() != UnitType.SETTLER && city.getCurrentProductionType() != UnitType.WORKER;
+        if (isCombatUnit) {
+            long combatCount = faction.getUnits().stream()
+                .filter(u -> u.getUnitType() != UnitType.SETTLER && u.getUnitType() != UnitType.WORKER)
+                .count();
+            if (combatCount >= armyCap) {
+                long settlerCount = faction.getUnits().stream()
+                    .filter(u -> u.isAlive() && u.getUnitType() == UnitType.SETTLER)
+                    .count();
+                if (faction.getCities().size() < 5 && settlerCount < 2) {
+                    city.setCurrentProductionType(UnitType.SETTLER);
+                } else {
+                    city.setCurrentProductionType(UnitType.WORKER);
+                }
+                return;
+            }
+        }
+
         if (city.getCurrentProductionType() == null) {
             if (faction.isAI()) {
                 FogMap fogMap = fogMaps.get(faction.getId());
@@ -95,6 +114,7 @@ public class UnitSpawner {
             city.setAccumulatedProduction(city.getAccumulatedProduction() - cost);
             GameEventBus.getInstance().publish(new GameEvent.UnitSpawned(unit));
             spawned = true;
+            break;
         }
 
         if (spawned) {
@@ -152,5 +172,14 @@ public class UnitSpawner {
         BuildingConfig temple = BuildingConfigLoader.getConfig("Temple");
         if (!city.hasBuilding("Temple") && techTree.isBuildingUnlocked(temple.getRequiredTech(), researched)) return temple;
         return null;
+    }
+
+    private int calculateArmyCap(Faction faction) {
+        int cities = faction.getCities().size();
+        int totalBuildings = 0;
+        for (City city : faction.getCities()) {
+            totalBuildings += city.getBuildings().size();
+        }
+        return Math.max(6, (cities * 5) + (totalBuildings / 3));
     }
 }
