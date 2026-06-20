@@ -1,5 +1,6 @@
 package com.pocketempire.pathfinding;
 
+import com.pocketempire.diplomacy.DiplomacyManager;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.tiles.TileFactory;
@@ -30,7 +31,9 @@ public class PathfinderTest {
         }
         Map map = new Map(width, height, tiles);
         Faction faction = new Faction(1, "Test", 0xFF0000);
-        return new World(map, List.of(faction));
+        DiplomacyManager dm = new DiplomacyManager();
+        dm.init(List.of(faction));
+        return new World(map, List.of(faction), dm);
     }
 
     private Unit createUnit(World world, int q, int r, UnitType type) {

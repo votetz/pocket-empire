@@ -1,6 +1,7 @@
 package com.pocketempire.simulation;
 
 import com.pocketempire.config.StatusEffectConfig;
+import com.pocketempire.diplomacy.DiplomacyManager;
 import com.pocketempire.tech.TechTree;
 import com.pocketempire.tech.TechConfigLoader;
 import com.pocketempire.tech.TechnologyConfig;
@@ -20,6 +21,7 @@ import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class TurnManager {
     @Getter private int currentTurn;
@@ -33,8 +35,10 @@ public class TurnManager {
     private final AIProductionStrategy aiProductionStrategy = new AIProductionStrategy();
     private final UnitSpawner unitSpawner;
     private final TechTree techTree = new TechTree();
+    private final DiplomacyManager diplomacyManager;
+    private final Random rng = new Random();
 
-    public TurnManager(List<Faction> factions, World world, Map<Integer, FogMap> fogMaps) {
+    public TurnManager(List<Faction> factions, World world, Map<Integer, FogMap> fogMaps, DiplomacyManager diplomacyManager) {
         this.factions = factions;
         this.world = world;
         this.fogMaps = fogMaps;
@@ -42,6 +46,7 @@ public class TurnManager {
         this.currentFactionIndex = 0;
         this.victoryManager = new VictoryManager(factions);
         this.unitSpawner = new UnitSpawner(world, fogMaps, aiProductionStrategy);
+        this.diplomacyManager = diplomacyManager;
     }
 
     public void nextTurn() {
@@ -56,7 +61,76 @@ public class TurnManager {
             currentFactionIndex = 0;
             currentTurn++;
             victoryManager.checkTimerVictory(currentTurn);
+            diplomacyManager.tickCooldowns();
+            evaluateWarDeclarations();
+            evaluatePeace();
         }
+    }
+
+    private void evaluateWarDeclarations() {
+        for (Faction a : factions) {
+            if (!a.isAlive() || !a.isAI()) continue;
+            for (Faction b : factions) {
+                if (!b.isAlive() || a.getId() == b.getId()) continue;
+                if (diplomacyManager.isHostile(a.getId(), b.getId())) continue;
+
+                String key = Math.min(a.getId(), b.getId()) + "-" + Math.max(a.getId(), b.getId());
+                if (diplomacyManager.getReputation(a.getId(), b.getId()) > -20) {
+                    int proximity = findMinCityDistance(a, b);
+                    int myPower = calculateMilitaryPower(a);
+                    int enemyPower = calculateMilitaryPower(b);
+
+                    if (proximity < 15 && myPower > enemyPower * 1.5 && rng.nextDouble() < 0.1) {
+                        diplomacyManager.declareWar(a, b, currentTurn);
+                    }
+                }
+            }
+        }
+    }
+
+    private void evaluatePeace() {
+        for (Faction a : factions) {
+            if (!a.isAlive() || !a.isAI()) continue;
+            for (Faction b : factions) {
+                if (!b.isAlive() || a.getId() == b.getId()) continue;
+                if (!diplomacyManager.isHostile(a.getId(), b.getId())) continue;
+
+                int myPower = calculateMilitaryPower(a);
+                int enemyPower = calculateMilitaryPower(b);
+                int warDuration = diplomacyManager.getWarDuration(a.getId(), b.getId(), currentTurn);
+                int citiesLost = diplomacyManager.getCitiesLostInWar(a.getId(), b.getId(), a.getCityCount());
+                int reputation = diplomacyManager.getReputation(a.getId(), b.getId());
+
+                boolean armyDestroyed = myPower < enemyPower * 0.2;
+                boolean lostCities = citiesLost >= 2;
+                boolean warExhaustion = warDuration > 15 && reputation > -30;
+
+                if (armyDestroyed || lostCities || warExhaustion) {
+                    diplomacyManager.makePeace(a, b);
+                }
+            }
+        }
+    }
+
+    private int findMinCityDistance(Faction a, Faction b) {
+        int minDist = Integer.MAX_VALUE;
+        for (City ca : a.getCities()) {
+            for (City cb : b.getCities()) {
+                if (!ca.isAlive() || !cb.isAlive()) continue;
+                int dist = com.pocketempire.world.HexUtils.getDistance(ca.getQ(), ca.getR(), cb.getQ(), cb.getR());
+                if (dist < minDist) minDist = dist;
+            }
+        }
+        return minDist;
+    }
+
+    private int calculateMilitaryPower(Faction faction) {
+        int power = 0;
+        for (Unit unit : faction.getUnits()) {
+            if (!unit.isAlive()) continue;
+            power += unit.getAttack() + unit.getDefense() + unit.getHp();
+        }
+        return power;
     }
 
     private void startFactionTurn(Faction faction) {
@@ -137,6 +211,10 @@ public class TurnManager {
 
     public List<Faction> getRankedFactions() {
         return victoryManager.getRankedFactions();
+    }
+
+    public DiplomacyManager getDiplomacyManager() {
+        return diplomacyManager;
     }
 
     private void processResearch(Faction faction) {

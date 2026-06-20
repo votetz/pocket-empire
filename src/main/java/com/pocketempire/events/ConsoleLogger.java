@@ -81,6 +81,12 @@ public class ConsoleLogger {
 
                 case GameEvent.ResearchCompleted(var faction, var tech) ->
                     System.out.printf("\uD83D\uDD2C %s researched %s%n", faction.getName(), tech.getName());
+
+                case GameEvent.WarDeclared(var aggressor, var target) ->
+                    System.out.printf("\u2694\uFE0F %s declared war on %s!%n", aggressor.getName(), target.getName());
+
+                case GameEvent.PeaceDeclared(var a, var b) ->
+                    System.out.printf("\uD83D\uDD4A\uFE0F %s and %s made peace%n", a.getName(), b.getName());
             }
         });
     }
