@@ -1,5 +1,7 @@
 package com.pocketempire.simulation;
 
+import com.pocketempire.diplomacy.DiplomacyManager;
+import com.pocketempire.diplomacy.DiplomaticStatus;
 import com.pocketempire.display.ConsoleRender;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
@@ -19,7 +21,7 @@ public class GameRunner {
 
     public GameRunner(GameSetup setup) {
         this.setup = setup;
-        this.turnManager = new TurnManager(setup.getFactions(), setup.getWorld(), setup.getFogMaps());
+        this.turnManager = new TurnManager(setup.getFactions(), setup.getWorld(), setup.getFogMaps(), setup.getDiplomacyManager());
         this.allUnits = new ArrayList<>();
         this.allCities = new ArrayList<>();
         this.renderer = new ConsoleRender(setup.getMap(), allUnits, allCities);
@@ -60,6 +62,7 @@ public class GameRunner {
 
             if (turnManager.isGameOver()) {
                 printRankings();
+                printDiplomacy();
                 break;
             }
         }
@@ -87,6 +90,28 @@ public class GameRunner {
             System.out.println("  " + place + ". " + f.getName() + " — " + f.getVictoryPoints() + " VP"
                     + (f == turnManager.getWinner() ? " (winner)" : ""));
             place++;
+        }
+    }
+
+    private void printDiplomacy() {
+        DiplomacyManager dm = turnManager.getDiplomacyManager();
+        List<Faction> factions = setup.getFactions();
+        System.out.println("\nDiplomatic Relations:");
+
+        for (int i = 0; i < factions.size(); i++) {
+            for (int j = i + 1; j < factions.size(); j++) {
+                Faction a = factions.get(i);
+                Faction b = factions.get(j);
+                DiplomaticStatus status = dm.getStatus(a.getId(), b.getId());
+                int rep = dm.getReputation(a.getId(), b.getId());
+                String icon = switch (status) {
+                    case WAR -> "\u2694\uFE0F";
+                    case NEUTRAL -> "\uD83D\uDD4A\uFE0F";
+                    case ALLIED -> "\uD83E\uDD1D";
+                    case DEVOTED -> "\u2764\uFE0F";
+                };
+                System.out.println("  " + icon + " " + a.getName() + " <-> " + b.getName() + ": " + status + " (" + rep + ")");
+            }
         }
     }
 }

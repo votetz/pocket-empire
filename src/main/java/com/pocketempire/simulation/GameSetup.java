@@ -13,10 +13,10 @@ import com.pocketempire.world.Map;
 import com.pocketempire.world.MapGenerator;
 import com.pocketempire.world.Tile;
 import com.pocketempire.world.World;
+import com.pocketempire.diplomacy.DiplomacyManager;
 
 import lombok.Getter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -29,12 +29,14 @@ public class GameSetup {
     @Getter private World world;
     @Getter private List<Faction> factions;
     @Getter private java.util.Map<Integer, FogMap> fogMaps;
+    @Getter private DiplomacyManager diplomacyManager;
 
     public GameSetup(int mapWidth, int mapHeight) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.factions = new ArrayList<>();
         this.fogMaps = new HashMap<>();
+        this.diplomacyManager = new DiplomacyManager();
     }
 
     public void setup() {
@@ -49,7 +51,8 @@ public class GameSetup {
         }
 
         createFactions();
-        world = new World(map, factions);
+        diplomacyManager.init(factions);
+        world = new World(map, factions, diplomacyManager);
         createFogMaps();
     }
 
@@ -114,7 +117,7 @@ public class GameSetup {
                     q = col - (r - (r & 1)) / 2;
 
                     if (!isvalidCityTile(q, r)) continue;
-                    if (!hasEnoughFreeNeighbours(q, r, 3)) continue;
+                    if (!hasEnoughExpansionRoom(q, r, 15)) continue;
 
                     boolean tooClose = false;
                     for (int j = 0; j < i; j++) {
@@ -147,6 +150,17 @@ public class GameSetup {
             if (isvalidCityTile(n[0], n[1])) free++;
         }
         return free >= minFree;
+    }
+
+    private boolean hasEnoughExpansionRoom(int q, int r, int minTiles) {
+        int count = 0;
+        for (int dq = -7; dq <= 7; dq++) {
+            for (int dr = -7; dr <= 7; dr++) {
+                if (dq == 0 && dr == 0) continue;
+                if (isvalidCityTile(q + dq, r + dr)) count++;
+            }
+        }
+        return count >= minTiles;
     }
 
     private int[][] generateFallbackPositions(int count) {

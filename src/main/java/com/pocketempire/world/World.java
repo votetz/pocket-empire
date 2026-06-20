@@ -1,5 +1,6 @@
 package com.pocketempire.world;
 
+import com.pocketempire.diplomacy.DiplomacyManager;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.entities.Faction;
@@ -10,19 +11,21 @@ import java.util.Comparator;
 public class World {
     private final Map map;
     private List<Faction> factions;
+    private final DiplomacyManager diplomacyManager;
 
-    public World(Map map, List<Faction> factions) {
+    public World(Map map, List<Faction> factions, DiplomacyManager diplomacyManager) {
         this.map = map;
         this.factions = factions;
+        this.diplomacyManager = diplomacyManager;
     }
 
-    public Map getMap() {
-        return map;
+    public DiplomacyManager getDiplomacyManager() {
+        return diplomacyManager;
     }
 
-    public List<Faction> getFactions() {
-        return factions;
-    }
+    public Map getMap() { return map; }
+
+    public List<Faction> getFactions() { return factions; }
 
     public List<Unit> getAllUnits() {
         List<Unit> units = new ArrayList<>();
@@ -31,19 +34,24 @@ public class World {
         }
         return units;
     }
+
     public Unit findNearestEnemy(Unit unit) {
+        int myFactionId = Integer.parseInt(unit.getFactionId());
         return getAllUnits().stream()
                 .filter(u -> !u.getFactionId().equals(unit.getFactionId()))
+                .filter(u -> diplomacyManager.isHostile(myFactionId, Integer.parseInt(u.getFactionId())))
                 .filter(Unit::isAlive)
                 .min(Comparator.comparingInt(u -> HexUtils.getDistance(unit.getQ(), unit.getR(), u.getQ(), u.getR())))
                 .orElse(null);
     }
 
     public City findNearestEnemyCity(Unit unit) {
+        int myFactionId = Integer.parseInt(unit.getFactionId());
         City nearest = null;
         int minDist = Integer.MAX_VALUE;
         for (var faction : factions) {
             if (String.valueOf(faction.getId()).equals(unit.getFactionId())) continue;
+            if (!diplomacyManager.isHostile(myFactionId, faction.getId())) continue;
             for (City city : faction.getCities()) {
                 if (!city.isAlive()) continue;
                 int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), city.getQ(), city.getR());

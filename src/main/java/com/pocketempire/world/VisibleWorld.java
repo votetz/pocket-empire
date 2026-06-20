@@ -1,5 +1,6 @@
 package com.pocketempire.world;
 
+import com.pocketempire.diplomacy.DiplomacyManager;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
@@ -13,7 +14,7 @@ public class VisibleWorld extends World {
     private final String factionId;
 
     public VisibleWorld(World world, FogMap fogMap, String factionId) {
-        super(world.getMap(), world.getFactions());
+        super(world.getMap(), world.getFactions(), world.getDiplomacyManager());
         this.fogMap = fogMap;
         this.factionId = factionId;
     }
@@ -34,8 +35,10 @@ public class VisibleWorld extends World {
 
     @Override
     public Unit findNearestEnemy(Unit unit) {
+        int myFactionId = Integer.parseInt(unit.getFactionId());
         return getAllUnits().stream()
                 .filter(u -> !u.getFactionId().equals(unit.getFactionId()))
+                .filter(u -> getDiplomacyManager().isHostile(myFactionId, Integer.parseInt(u.getFactionId())))
                 .filter(Unit::isAlive)
                 .min(Comparator.comparingInt(u -> HexUtils.getDistance(unit.getQ(), unit.getR(), u.getQ(), u.getR())))
                 .orElse(null);
@@ -43,10 +46,12 @@ public class VisibleWorld extends World {
 
     @Override
     public City findNearestEnemyCity(Unit unit) {
+        int myFactionId = Integer.parseInt(unit.getFactionId());
         City nearest = null;
         int minDist = Integer.MAX_VALUE;
         for (var faction : getFactions()) {
             if (String.valueOf(faction.getId()).equals(unit.getFactionId())) continue;
+            if (!getDiplomacyManager().isHostile(myFactionId, faction.getId())) continue;
             for (City city : faction.getCities()) {
                 if (!city.isAlive()) continue;
                 int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), city.getQ(), city.getR());
