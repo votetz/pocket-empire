@@ -56,7 +56,7 @@ public class DiplomacyManager {
         setReputation(factionB, factionA, newVal);
     }
 
-    public void declareWar(Faction aggressor, Faction target, int currentTurn) {
+    public void declareWar(Faction aggressor, Faction target, int currentTurn, String reason) {
         if (isHostile(aggressor.getId(), target.getId())) return;
 
         String key = cooldownKey(aggressor.getId(), target.getId());
@@ -70,7 +70,7 @@ public class DiplomacyManager {
                 target.getId(), target.getCityCount()
         ));
 
-        GameEventBus.getInstance().publish(new GameEvent.WarDeclared(aggressor, target));
+        GameEventBus.getInstance().publish(new GameEvent.WarDeclared(aggressor, target, reason));
     }
 
     public void makePeace(Faction a, Faction b) {
@@ -110,5 +110,12 @@ public class DiplomacyManager {
 
     private String cooldownKey(int a, int b) {
         return Math.min(a, b) + "-" + Math.max(a, b);
+    }
+
+    public void formAlliance(Faction a, Faction b) {
+        if (isHostile(a.getId(), b.getId())) return;
+        setReputation(a.getId(), b.getId(), 45);
+        setReputation(b.getId(), a.getId(), 45);
+        GameEventBus.getInstance().publish(new GameEvent.AllianceFormed(a, b));
     }
 }

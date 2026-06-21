@@ -30,6 +30,7 @@ public sealed interface GameEvent {
     record CityCaptured(City city, Unit captor, String oldFactionId) implements GameEvent {}
     record UnitLevelUp(Unit unit, int level) implements GameEvent {}
     record ResearchCompleted(Faction faction, TechnologyConfig tech) implements GameEvent {}
-    record WarDeclared(Faction aggressor, Faction target) implements GameEvent {}
+    record WarDeclared(Faction aggressor, Faction target, String reason) implements GameEvent {}
     record PeaceDeclared(Faction a, Faction b) implements GameEvent {}
+    record AllianceFormed(Faction a, Faction b) implements GameEvent {}
 }
