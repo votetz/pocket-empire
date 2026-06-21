@@ -13,10 +13,10 @@ public class CasusBelliManager {
     private final List<CasusBelli> orderedReasons = new ArrayList<>();
 
     public CasusBelliManager() {
-        register(new com.pocketempire.diplomacy.impl.BorderIncursion());
-        register(new com.pocketempire.diplomacy.impl.TerritorialDispute());
-        register(new com.pocketempire.diplomacy.impl.WeakNeighbor());
-        register(new com.pocketempire.diplomacy.impl.MilitaryDominance());
+        register(new BorderIncursion());
+        register(new TerritorialDispute());
+        register(new WeakNeighbor());
+        register(new MilitaryDominance());
     }
 
     private void register(CasusBelli cb) {
