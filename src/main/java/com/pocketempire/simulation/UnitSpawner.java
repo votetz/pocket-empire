@@ -54,14 +54,6 @@ public class UnitSpawner {
                 .filter(u -> u.getUnitType() != UnitType.SETTLER && u.getUnitType() != UnitType.WORKER)
                 .count();
             if (combatCount >= armyCap) {
-                long settlerCount = faction.getUnits().stream()
-                    .filter(u -> u.isAlive() && u.getUnitType() == UnitType.SETTLER)
-                    .count();
-                if (faction.getCities().size() < 5 && settlerCount < 2) {
-                    city.setCurrentProductionType(UnitType.SETTLER);
-                } else {
-                    city.setCurrentProductionType(UnitType.WORKER);
-                }
                 return;
             }
         }
@@ -86,8 +78,9 @@ public class UnitSpawner {
 
         int cost = unitStats.getCost();
         boolean spawned = false;
+        boolean isCiv = city.getCurrentProductionType() == UnitType.SETTLER || city.getCurrentProductionType() == UnitType.WORKER;
 
-        while (city.getAccumulatedProduction() >= cost && faction.getGold() >= cost) {
+        while (city.getAccumulatedProduction() >= cost && (isCiv || faction.getGold() >= cost)) {
             int[] spawn = findSpawnTile(city, city.getCurrentProductionType());
             if (spawn == null) {
                 city.setCurrentProductionType(null);
@@ -175,11 +168,13 @@ public class UnitSpawner {
     }
 
     private int calculateArmyCap(Faction faction) {
-        int cities = faction.getCities().size();
+        int cities = faction.getCityCount();
         int totalBuildings = 0;
         for (City city : faction.getCities()) {
-            totalBuildings += city.getBuildings().size();
+            if (city.isAlive()) {
+                totalBuildings += city.getBuildings().size();
+            }
         }
-        return Math.max(6, (cities * 5) + (totalBuildings / 3));
+        return Math.max(4, (cities * 5) + (totalBuildings / 3));
     }
 }
