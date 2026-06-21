@@ -1,0 +1,6 @@
+[
+  { "id": "BORDER_INCURSION", "description": "Border Incursion", "cooldown": 5 },
+  { "id": "TERRITORIAL_DISPUTE", "description": "Territorial Dispute", "cooldown": 20 },
+  { "id": "WEAK_NEIGHBOR", "description": "Weak Neighbor", "cooldown": 15 },
+  { "id": "MILITARY_DOMINANCE", "description": "Military Dominance", "cooldown": 10 }
+]

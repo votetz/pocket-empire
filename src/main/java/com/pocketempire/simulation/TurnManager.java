@@ -1,6 +1,8 @@
 package com.pocketempire.simulation;
 
 import com.pocketempire.config.StatusEffectConfig;
+import com.pocketempire.diplomacy.CasusBelli;
+import com.pocketempire.diplomacy.CasusBelliManager;
 import com.pocketempire.diplomacy.DiplomacyManager;
 import com.pocketempire.tech.TechTree;
 import com.pocketempire.tech.TechConfigLoader;
@@ -36,6 +38,7 @@ public class TurnManager {
     private final UnitSpawner unitSpawner;
     private final TechTree techTree = new TechTree();
     private final DiplomacyManager diplomacyManager;
+    private final CasusBelliManager casusBelliManager;
     private final Random rng = new Random();
 
     public TurnManager(List<Faction> factions, World world, Map<Integer, FogMap> fogMaps, DiplomacyManager diplomacyManager) {
@@ -47,6 +50,7 @@ public class TurnManager {
         this.victoryManager = new VictoryManager(factions);
         this.unitSpawner = new UnitSpawner(world, fogMaps, aiProductionStrategy);
         this.diplomacyManager = diplomacyManager;
+        this.casusBelliManager = new CasusBelliManager();
     }
 
     public void nextTurn() {
@@ -62,6 +66,7 @@ public class TurnManager {
             currentTurn++;
             victoryManager.checkTimerVictory(currentTurn);
             diplomacyManager.tickCooldowns();
+            casusBelliManager.tickCooldowns(currentTurn);
             evaluateWarDeclarations();
             evaluatePeace();
         }
@@ -74,15 +79,10 @@ public class TurnManager {
                 if (!b.isAlive() || a.getId() == b.getId()) continue;
                 if (diplomacyManager.isHostile(a.getId(), b.getId())) continue;
 
-                String key = Math.min(a.getId(), b.getId()) + "-" + Math.max(a.getId(), b.getId());
-                if (diplomacyManager.getReputation(a.getId(), b.getId()) > -20) {
-                    int proximity = findMinCityDistance(a, b);
-                    int myPower = calculateMilitaryPower(a);
-                    int enemyPower = calculateMilitaryPower(b);
-
-                    if (proximity < 15 && myPower > enemyPower * 1.5 && rng.nextDouble() < 0.1) {
-                        diplomacyManager.declareWar(a, b, currentTurn);
-                    }
+                CasusBelli reason = casusBelliManager.findReason(a, b, world);
+                if (reason != null) {
+                    diplomacyManager.declareWar(a, b, currentTurn, reason.getId());
+                    casusBelliManager.onWarDeclared(reason.getId(), a, b, currentTurn);
                 }
             }
         }
