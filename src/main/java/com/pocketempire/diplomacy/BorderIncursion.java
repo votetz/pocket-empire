@@ -1,6 +1,5 @@
-package com.pocketempire.diplomacy.impl;
+package com.pocketempire.diplomacy;
 
-import com.pocketempire.diplomacy.CasusBelli;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.world.HexUtils;
