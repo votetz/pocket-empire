@@ -112,9 +112,16 @@ public class VictoryManager {
     }
 
     private List<Faction> getSortedByVP() {
-        return factionsById.values().stream()
+        List<Faction> alive = factionsById.values().stream()
+                .filter(Faction::isAlive)
                 .sorted(Comparator.comparingInt(Faction::getVictoryPoints).reversed())
                 .collect(Collectors.toList());
+        if (alive.isEmpty()) {
+            return factionsById.values().stream()
+                    .sorted(Comparator.comparingInt(Faction::getVictoryPoints).reversed())
+                    .collect(Collectors.toList());
+        }
+        return alive;
     }
 
     private void endGame(Faction winner, String reason) {

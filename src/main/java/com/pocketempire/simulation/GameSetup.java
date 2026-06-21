@@ -155,7 +155,7 @@ public class GameSetup {
     private boolean hasEnoughExpansionRoom(int q, int r, int minTiles) {
         int count = 0;
         for (int dq = -7; dq <= 7; dq++) {
-            for (int dr = -7; dr <= 7; dr++) {
+            for (int dr = Math.max(-7, -dq - 7); dr <= Math.min(7, -dq + 7); dr++) {
                 if (dq == 0 && dr == 0) continue;
                 if (isvalidCityTile(q + dq, r + dr)) count++;
             }
@@ -175,7 +175,21 @@ public class GameSetup {
             row = Math.max(1, Math.min(mapHeight - 2, row));
             int q = col - (row - (row & 1)) / 2;
             int r = row;
-            fallback[i] = findValidCityTile(q, r);
+            int[] pos = findValidCityTile(q, r);
+            if (!hasEnoughExpansionRoom(pos[0], pos[1], 15)) {
+                for (int dq = -10; dq <= 10; dq++) {
+                    for (int dr = Math.max(-10, -dq - 10); dr <= Math.min(10, -dq + 10); dr++) {
+                        if (dq == 0 && dr == 0) continue;
+                        int nq = q + dq, nr = r + dr;
+                        if (isvalidCityTile(nq, nr) && hasEnoughExpansionRoom(nq, nr, 15)) {
+                            pos = new int[]{nq, nr};
+                            break;
+                        }
+                    }
+                    if (hasEnoughExpansionRoom(pos[0], pos[1], 15)) break;
+                }
+            }
+            fallback[i] = pos;
         }
         return fallback;
     }
@@ -191,7 +205,7 @@ public class GameSetup {
     }
 
     private int[] findValidCityTile(int preferQ, int preferR) {
-        if (isvalidCityTile(preferQ, preferR)) {
+        if (isvalidCityTile(preferQ, preferR) && hasEnoughExpansionRoom(preferQ, preferR, 15)) {
             return new int[]{preferQ, preferR};
         }
 
@@ -201,7 +215,7 @@ public class GameSetup {
                     if (dq == 0 && dr == 0) continue;
                     int nq = preferQ + dq;
                     int nr = preferR + dr;
-                    if (isvalidCityTile(nq, nr)) {
+                    if (isvalidCityTile(nq, nr) && hasEnoughExpansionRoom(nq, nr, 15)) {
                         return new int[]{nq, nr};
                     }
                 }

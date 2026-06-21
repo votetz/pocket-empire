@@ -67,7 +67,7 @@ public class Faction {
     }
 
     public int getCityCount() {
-        return cities.size();
+        return (int) cities.stream().filter(City::isAlive).count();
     }
 
     public boolean hasTech(String techId) {

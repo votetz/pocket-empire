@@ -136,6 +136,11 @@ public class CombatResolver {
                 bus.publish(new GameEvent.CityCaptured(city, attacker, oldFactionId));
             } else {
                 city.takeDamage(damageToCity);
+                for (var faction : world.getFactions()) {
+                    if (String.valueOf(faction.getId()).equals(city.getFactionId())) {
+                        faction.removeCity(city);
+                    }
+                }
                 bus.publish(new GameEvent.CityDestroyed(city, attacker));
             }
         } else {

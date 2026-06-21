@@ -14,7 +14,7 @@ import com.pocketempire.world.World;
 import java.util.List;
 
 public class SettleState implements State {
-    private static final int MIN_CITY_DISTANCE = 3;
+    private static final int MIN_CITY_DISTANCE = 2;
     private static final int STUCK_THRESHOLD = 5;
     private int targetQ = -1, targetR = -1;
     private int stuckTurns = 0;
@@ -26,15 +26,19 @@ public class SettleState implements State {
 
     @Override
     public void update(Unit unit, World world) {
-        if (isValidSite(unit.getQ(), unit.getR(), unit, world)) {
+        if (isBasicValidSite(unit.getQ(), unit.getR(), unit, world)) {
             settle(unit, world);
             return;
         }
 
-        if (targetQ < 0 || !isValidSite(targetQ, targetR, unit, world)) {
+        if (targetQ < 0 || !isBasicValidSite(targetQ, targetR, unit, world)) {
             targetQ = -1;
             targetR = -1;
-            int[] site = findNearestValidSite(unit, world);
+            boolean preferExpansion = stuckTurns < 3;
+            int[] site = findNearestValidSite(unit, world, preferExpansion);
+            if (site == null && preferExpansion) {
+                site = findNearestValidSite(unit, world, false);
+            }
             if (site == null) {
                 stuckTurns++;
                 if (stuckTurns >= STUCK_THRESHOLD) {
@@ -62,6 +66,8 @@ public class SettleState implements State {
                 GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR, unit.getQ(), unit.getR()));
                 stuckTurns = 0;
             } else {
+                targetQ = -1;
+                targetR = -1;
                 stuckTurns++;
                 if (stuckTurns >= STUCK_THRESHOLD) {
                     unit.takeDamage(unit.getHp() + 1);
@@ -69,6 +75,8 @@ public class SettleState implements State {
                 }
             }
         } else {
+            targetQ = -1;
+            targetR = -1;
             stuckTurns++;
             if (stuckTurns >= STUCK_THRESHOLD) {
                 unit.takeDamage(unit.getHp() + 1);
@@ -93,7 +101,7 @@ public class SettleState implements State {
         GameEventBus.getInstance().publish(new GameEvent.CityFounded(city, unit));
     }
 
-    private boolean isValidSite(int q, int r, Unit unit, World world) {
+    private boolean isBasicValidSite(int q, int r, Unit unit, World world) {
         if (!world.getMap().isInBounds(q, r)) return false;
         Tile tile = world.getMap().getTile(q, r);
         if (tile == null || tile.getType().isBlocksMovement()) return false;
@@ -109,14 +117,31 @@ public class SettleState implements State {
         return true;
     }
 
-    private int[] findNearestValidSite(Unit unit, World world) {
+    private boolean hasEnoughExpansionRoom(int centerQ, int centerR, World world) {
+        int radius = 4;
+        int passableCount = 0;
+        for (int dq = -radius; dq <= radius; dq++) {
+            for (int dr = Math.max(-radius, -dq - radius); dr <= Math.min(radius, -dq + radius); dr++) {
+                int q = centerQ + dq, r = centerR + dr;
+                if (!world.getMap().isInBounds(q, r)) continue;
+                Tile tile = world.getMap().getTile(q, r);
+                if (tile != null && !tile.getType().isBlocksMovement()) {
+                    passableCount++;
+                }
+            }
+        }
+        return passableCount >= 8;
+    }
+
+    private int[] findNearestValidSite(Unit unit, World world, boolean requireExpansion) {
         int bestQ = -1, bestR = -1, bestDist = Integer.MAX_VALUE;
         int radius = 20;
         for (int dq = -radius; dq <= radius; dq++) {
             for (int dr = -radius; dr <= radius; dr++) {
                 int q = unit.getQ() + dq, r = unit.getR() + dr;
-                if (!isValidSite(q, r, unit, world)) continue;
-                int dist = Math.abs(dq) + Math.abs(dr);
+                if (!isBasicValidSite(q, r, unit, world)) continue;
+                if (requireExpansion && !hasEnoughExpansionRoom(q, r, world)) continue;
+                int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), q, r);
                 if (dist < bestDist) {
                     bestDist = dist;
                     bestQ = q;

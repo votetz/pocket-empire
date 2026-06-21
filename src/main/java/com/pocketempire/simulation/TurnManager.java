@@ -176,6 +176,7 @@ public class TurnManager {
     private void cleanDeadUnits() {
         for (Faction faction : factions) {
             faction.getUnits().removeIf(unit -> !unit.isAlive());
+            faction.getCities().removeIf(city -> !city.isAlive());
             if (faction.getCityCount() == 0) {
                 faction.setAlive(false);
             }

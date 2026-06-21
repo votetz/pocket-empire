@@ -31,7 +31,7 @@ public class AIProductionStrategy {
         long combatTotal = heavyCount + lightCount + rangedCount;
 
         int settlerCost = UnitConfigLoader.getConfig(UnitType.SETTLER.name()).getCost();
-        if (faction.getCityCount() == 1 && currentTurn >= 10 && settlerCount == 0 && faction.getGold() >= settlerCost) {
+        if (faction.getCityCount() == 1 && currentTurn >= 5 && settlerCount == 0) {
             city.setCurrentProductionType(UnitType.SETTLER);
             return;
         }
@@ -46,12 +46,12 @@ public class AIProductionStrategy {
             return;
         }
 
-        if (faction.getCityCount() < 5 && settlerCount < 2 && combatTotal >= 1 && rng.nextDouble() < 0.4) {
+        if (faction.getCityCount() < 5 && settlerCount < 2 && combatTotal >= 1 && rng.nextDouble() < 0.5) {
             city.setCurrentProductionType(UnitType.SETTLER);
             return;
         }
 
-        if (workerCount < faction.getCityCount() && rng.nextDouble() < 0.35) {
+        if (workerCount < faction.getCityCount() && workerCount < 3 && rng.nextDouble() < 0.15) {
             city.setCurrentProductionType(UnitType.WORKER);
             return;
         }
