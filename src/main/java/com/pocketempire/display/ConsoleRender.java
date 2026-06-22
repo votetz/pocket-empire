@@ -70,8 +70,8 @@ public class ConsoleRender {
 
     private String colorizeCity(City city) {
         String color = switch (city.getFactionId()) {
-            case "1" -> AnsiColor.BRIGHT_RED;
-            case "2" -> AnsiColor.PURPLE;
+            case "1" -> AnsiColor.YELLOW;
+            case "2" -> AnsiColor.BRIGHT_RED;
             case "3" -> AnsiColor.ORANGE;
             default  -> AnsiColor.WHITE;
         };
@@ -80,8 +80,8 @@ public class ConsoleRender {
 
     private String colorizeUnit(Unit unit) {
         String color = switch (unit.getFactionId()) {
-            case "1" -> AnsiColor.BRIGHT_RED;
-            case "2" -> AnsiColor.PURPLE;
+            case "1" -> AnsiColor.YELLOW;
+            case "2" -> AnsiColor.BRIGHT_RED;
             case "3" -> AnsiColor.ORANGE;
             default  -> AnsiColor.WHITE;
         };
