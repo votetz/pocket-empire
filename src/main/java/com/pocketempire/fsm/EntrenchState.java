@@ -13,8 +13,11 @@ public class EntrenchState implements State {
 
     @Override
     public void update(Unit unit, World world) {
-        Unit nearest = world.findNearestEnemy(unit);
-        if (nearest == null) return;
+        Unit nearest = world.findNearestHostile(unit);
+        if (nearest == null) {
+            unit.changeState(new IdleState(), UnitState.IDLE);
+            return;
+        }
 
         int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), nearest.getQ(), nearest.getR());
 
@@ -22,6 +25,8 @@ public class EntrenchState implements State {
             unit.changeState(new AttackState(), UnitState.ATTACKING);
         } else if (dist <= 5) {
             unit.changeState(new SkirmishState(), UnitState.SKIRMISH);
+        } else if (dist > 8) {
+            unit.changeState(new IdleState(), UnitState.IDLE);
         }
     }
 

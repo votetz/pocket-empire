@@ -5,6 +5,7 @@ import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.events.GameEvent;
 import com.pocketempire.events.GameEventBus;
+import com.pocketempire.tiles.TileType;
 import com.pocketempire.units.UnitType;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
@@ -36,7 +37,7 @@ public class AttackState implements State {
             }
         }
 
-        Unit enemy = world.findNearestEnemy(unit);
+        Unit enemy = world.findNearestHostile(unit);
         if (enemy != null) {
             int dist = HexUtils.getDistance(
                     unit.getQ(), unit.getR(), enemy.getQ(), enemy.getR());
@@ -44,10 +45,19 @@ public class AttackState implements State {
                 Optional<Faction> attackerFaction = world.getFactions().stream()
                         .filter(f -> String.valueOf(f.getId()).equals(unit.getFactionId()))
                         .findFirst();
+                Optional<Faction> defenderFaction = world.getFactions().stream()
+                        .filter(f -> String.valueOf(f.getId()).equals(enemy.getFactionId()))
+                        .findFirst();
+                int defTerrainBonus = world.getMap().getTile(enemy.getQ(), enemy.getR()).getType().getDefendBonus();
+                if (defenderFaction.isPresent() && defenderFaction.get().getConfig() != null
+                        && defenderFaction.get().getConfig().getForestDefBonus() != 0
+                        && world.getMap().getTile(enemy.getQ(), enemy.getR()).getType() == TileType.FOREST) {
+                    defTerrainBonus += defenderFaction.get().getConfig().getForestDefBonus();
+                }
                 CombatResolver.resolveCombat(unit, enemy,
-                        world.getMap().getTile(enemy.getQ(), enemy.getR()).getType().getDefendBonus(),
+                        defTerrainBonus,
                         world.getMap().getTile(unit.getQ(), unit.getR()).getType().getAttackModifier(),
-                        attackerFaction.orElse(null));
+                        attackerFaction.orElse(null), defenderFaction.orElse(null));
 
                 if (unit.getBlinkRange() > 0 && unit.getRemainingOD() > 0) {
                     blinkAwayFrom(unit, enemy, world);

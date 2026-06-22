@@ -19,7 +19,7 @@ public class ChaseState implements State {
             return;
         }
 
-        Unit target = world.findNearestEnemy(unit);
+        Unit target = world.findNearestHostile(unit);
 
         if (target != null) {
             int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), target.getQ(), target.getR());

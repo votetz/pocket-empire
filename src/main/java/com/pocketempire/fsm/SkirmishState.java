@@ -6,6 +6,7 @@ import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.pathfinding.Pathfinder;
 import com.pocketempire.simulation.CombatResolver;
+import com.pocketempire.tiles.TileType;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.Tile;
 import com.pocketempire.world.World;
@@ -24,7 +25,7 @@ public class SkirmishState implements State {
             return;
         }
 
-        Unit target = world.findNearestEnemy(unit);
+        Unit target = world.findNearestHostile(unit);
 
         if (target == null) {
             unit.changeState(new IdleState(), UnitState.IDLE);
@@ -38,10 +39,19 @@ public class SkirmishState implements State {
             Optional<Faction> attackerFaction = world.getFactions().stream()
                     .filter(f -> String.valueOf(f.getId()).equals(unit.getFactionId()))
                     .findFirst();
+            Optional<Faction> defenderFaction = world.getFactions().stream()
+                    .filter(f -> String.valueOf(f.getId()).equals(target.getFactionId()))
+                    .findFirst();
+            int defTerrainBonus = world.getMap().getTile(target.getQ(), target.getR()).getType().getDefendBonus();
+            if (defenderFaction.isPresent() && defenderFaction.get().getConfig() != null
+                    && defenderFaction.get().getConfig().getForestDefBonus() != 0
+                    && world.getMap().getTile(target.getQ(), target.getR()).getType() == TileType.FOREST) {
+                defTerrainBonus += defenderFaction.get().getConfig().getForestDefBonus();
+            }
             CombatResolver.resolveCombat(unit, target,
-                    world.getMap().getTile(target.getQ(), target.getR()).getType().getDefendBonus(),
+                    defTerrainBonus,
                     world.getMap().getTile(unit.getQ(), unit.getR()).getType().getAttackModifier(),
-                    attackerFaction.orElse(null));
+                    attackerFaction.orElse(null), defenderFaction.orElse(null));
 
             if (unit.getBlinkRange() > 0 && unit.getRemainingOD() > 0) {
                 blinkAwayFrom(unit, target, world);
@@ -86,10 +96,19 @@ public class SkirmishState implements State {
                     Optional<Faction> attackerFaction = world.getFactions().stream()
                             .filter(f -> String.valueOf(f.getId()).equals(unit.getFactionId()))
                             .findFirst();
+                    Optional<Faction> defenderFaction = world.getFactions().stream()
+                            .filter(f -> String.valueOf(f.getId()).equals(target.getFactionId()))
+                            .findFirst();
+                    int defTerrainBonus = world.getMap().getTile(target.getQ(), target.getR()).getType().getDefendBonus();
+                    if (defenderFaction.isPresent() && defenderFaction.get().getConfig() != null
+                            && defenderFaction.get().getConfig().getForestDefBonus() != 0
+                            && world.getMap().getTile(target.getQ(), target.getR()).getType() == TileType.FOREST) {
+                        defTerrainBonus += defenderFaction.get().getConfig().getForestDefBonus();
+                    }
                     CombatResolver.resolveCombat(unit, target,
-                            world.getMap().getTile(target.getQ(), target.getR()).getType().getDefendBonus(),
+                            defTerrainBonus,
                             world.getMap().getTile(unit.getQ(), unit.getR()).getType().getAttackModifier(),
-                            attackerFaction.orElse(null));
+                            attackerFaction.orElse(null), defenderFaction.orElse(null));
                 }
             }
         }

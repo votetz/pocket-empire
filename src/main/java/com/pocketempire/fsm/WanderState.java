@@ -8,22 +8,36 @@ import com.pocketempire.world.Tile;
 import com.pocketempire.world.World;
 
 public class WanderState implements State {
+    private int wanderTurns = 0;
+
     @Override
     public void enter(Unit unit) {}
 
     @Override
     public void update(Unit unit, World world) {
-        Unit nearest = world.findNearestEnemy(unit);
-        if (nearest != null) {
-            int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), nearest.getQ(), nearest.getR());
+        Unit nearestForeign = world.findNearestForeign(unit);
+        if (nearestForeign != null) {
+            int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), nearestForeign.getQ(), nearestForeign.getR());
             if (dist <= unit.getRange()) {
-                unit.changeState(new AttackState(), UnitState.ATTACKING);
-                return;
+                Unit nearestHostile = world.findNearestHostile(unit);
+                if (nearestHostile != null && HexUtils.getDistance(unit.getQ(), unit.getR(), nearestHostile.getQ(), nearestHostile.getR()) <= unit.getRange()) {
+                    unit.changeState(new AttackState(), UnitState.ATTACKING);
+                    return;
+                }
             }
             if (dist <= 5) {
-                unit.changeState(new EntrenchState(), UnitState.ENTRENCH);
-                return;
+                Unit nearestHostile = world.findNearestHostile(unit);
+                if (nearestHostile != null) {
+                    unit.changeState(new EntrenchState(), UnitState.ENTRENCH);
+                    return;
+                }
             }
+        }
+
+        wanderTurns++;
+        if (wanderTurns > 6 && (nearestForeign == null || HexUtils.getDistance(unit.getQ(), unit.getR(), nearestForeign.getQ(), nearestForeign.getR()) > 10)) {
+            unit.changeState(new IdleState(), UnitState.IDLE);
+            return;
         }
 
         if (unit.getRemainingOD() <= 0) return;

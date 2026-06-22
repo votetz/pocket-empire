@@ -55,8 +55,8 @@ public class IdleState implements State {
             }
         }
 
-        Unit enemy = world.findNearestEnemy(unit);
-        if (enemy == null) {
+        Unit foreign = world.findNearestForeign(unit);
+        if (foreign == null) {
             unit.changeState(new WanderState(), UnitState.WANDER);
             return;
         }
@@ -67,6 +67,16 @@ public class IdleState implements State {
                 unit.changeState(new GatheringState(), UnitState.GATHERING);
                 return;
             }
+        }
+
+        Unit enemy = world.findNearestHostile(unit);
+        if (enemy == null) {
+            int distToForeign = HexUtils.getDistance(unit.getQ(), unit.getR(), foreign.getQ(), foreign.getR());
+            if (distToForeign > ENTRENCH_RANGE) {
+                unit.changeState(new WanderState(), UnitState.WANDER);
+                return;
+            }
+            return;
         }
 
         int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), enemy.getQ(), enemy.getR());

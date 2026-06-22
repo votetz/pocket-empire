@@ -35,7 +35,7 @@ public class World {
         return units;
     }
 
-    public Unit findNearestEnemy(Unit unit) {
+    public Unit findNearestHostile(Unit unit) {
         int myFactionId = Integer.parseInt(unit.getFactionId());
         return getAllUnits().stream()
                 .filter(u -> !u.getFactionId().equals(unit.getFactionId()))
@@ -43,6 +43,18 @@ public class World {
                 .filter(Unit::isAlive)
                 .min(Comparator.comparingInt(u -> HexUtils.getDistance(unit.getQ(), unit.getR(), u.getQ(), u.getR())))
                 .orElse(null);
+    }
+
+    public Unit findNearestForeign(Unit unit) {
+        return getAllUnits().stream()
+                .filter(u -> !u.getFactionId().equals(unit.getFactionId()))
+                .filter(Unit::isAlive)
+                .min(Comparator.comparingInt(u -> HexUtils.getDistance(unit.getQ(), unit.getR(), u.getQ(), u.getR())))
+                .orElse(null);
+    }
+
+    public Unit findNearestEnemy(Unit unit) {
+        return findNearestHostile(unit);
     }
 
     public City findNearestEnemyCity(Unit unit) {
