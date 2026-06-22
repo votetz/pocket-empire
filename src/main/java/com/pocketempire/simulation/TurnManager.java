@@ -73,16 +73,53 @@ public class TurnManager {
     }
 
     private void evaluateWarDeclarations() {
+        evaluateReputationDecay();
+
         for (Faction a : factions) {
             if (!a.isAlive() || !a.isAI()) continue;
             for (Faction b : factions) {
                 if (!b.isAlive() || a.getId() == b.getId()) continue;
                 if (diplomacyManager.isHostile(a.getId(), b.getId())) continue;
 
-                CasusBelli reason = casusBelliManager.findReason(a, b, world);
+                CasusBelli reason = casusBelliManager.findReason(a, b, world, diplomacyManager, currentTurn);
                 if (reason != null) {
                     diplomacyManager.declareWar(a, b, currentTurn, reason.getId());
                     casusBelliManager.onWarDeclared(reason.getId(), a, b, currentTurn);
+                }
+            }
+        }
+    }
+
+    private void evaluateReputationDecay() {
+        for (Faction a : factions) {
+            if (!a.isAlive()) continue;
+            for (Faction b : factions) {
+                if (!b.isAlive() || a.getId() == b.getId()) continue;
+                if (diplomacyManager.isHostile(a.getId(), b.getId())) continue;
+
+                int delta = 0;
+
+                for (var unit : a.getUnits()) {
+                    if (!unit.isAlive()) continue;
+                    for (City cb : b.getCities()) {
+                        if (!cb.isAlive()) continue;
+                        int dist = com.pocketempire.world.HexUtils.getDistance(unit.getQ(), unit.getR(), cb.getQ(), cb.getR());
+                        if (dist <= 5) { delta -= 2; break; }
+                        if (dist <= 8) { delta -= 1; break; }
+                    }
+                }
+
+                for (City ca : a.getCities()) {
+                    if (!ca.isAlive()) continue;
+                    for (City cb : b.getCities()) {
+                        if (!cb.isAlive()) continue;
+                        int dist = com.pocketempire.world.HexUtils.getDistance(ca.getQ(), ca.getR(), cb.getQ(), cb.getR());
+                        if (dist <= 6) delta -= 3;
+                    }
+                }
+
+                if (delta != 0) {
+                    diplomacyManager.modifyReputation(a.getId(), b.getId(), delta);
                 }
             }
         }

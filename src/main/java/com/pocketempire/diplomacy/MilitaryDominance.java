@@ -11,7 +11,7 @@ public class MilitaryDominance implements CasusBelli {
     public String getId() { return "MILITARY_DOMINANCE"; }
 
     @Override
-    public boolean check(Faction aggressor, Faction defender, World world) {
+    public boolean check(Faction aggressor, Faction defender, World world, int currentTurn) {
         int myPower = calculatePower(aggressor);
         int enemyPower = calculatePower(defender);
         return myPower > enemyPower * DOMINANCE_MULTIPLIER;

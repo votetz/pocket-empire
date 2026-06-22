@@ -12,7 +12,7 @@ public class BorderIncursion implements CasusBelli {
     public String getId() { return "BORDER_INCURSION"; }
 
     @Override
-    public boolean check(Faction aggressor, Faction defender, World world) {
+    public boolean check(Faction aggressor, Faction defender, World world, int currentTurn) {
         for (City city : aggressor.getCities()) {
             if (!city.isAlive()) continue;
             for (var unit : world.getAllUnits()) {

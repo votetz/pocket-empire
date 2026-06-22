@@ -8,6 +8,9 @@ import com.pocketempire.world.World;
 import java.util.*;
 
 public class CasusBelliManager {
+    private static final int PEACE_PERIOD = 20;
+    private static final int REPUTATION_THRESHOLD = -30;
+
     private final Map<String, CasusBelli> reasons = new HashMap<>();
     private final Map<String, Integer> cooldowns = new HashMap<>();
     private final List<CasusBelli> orderedReasons = new ArrayList<>();
@@ -24,10 +27,13 @@ public class CasusBelliManager {
         orderedReasons.add(cb);
     }
 
-    public CasusBelli findReason(Faction a, Faction b, World world) {
+    public CasusBelli findReason(Faction a, Faction b, World world, DiplomacyManager dm, int currentTurn) {
+        if (currentTurn < PEACE_PERIOD) return null;
+        if (dm.getReputation(a.getId(), b.getId()) > REPUTATION_THRESHOLD) return null;
+
         for (CasusBelli cb : orderedReasons) {
             if (isOnCooldown(cb.getId(), a.getId(), b.getId())) continue;
-            if (cb.check(a, b, world)) return cb;
+            if (cb.check(a, b, world, currentTurn)) return cb;
         }
         return null;
     }
@@ -41,7 +47,7 @@ public class CasusBelliManager {
     private boolean isOnCooldown(String reasonId, int factionA, int factionB) {
         String key = cooldownKey(factionA, factionB, reasonId);
         Integer expiresAt = cooldowns.get(key);
-        return expiresAt != null; // turn check happens externally
+        return expiresAt != null;
     }
 
     public void tickCooldowns(int currentTurn) {
