@@ -40,11 +40,18 @@ public class UnitSpawner {
 
     public void trySpawnUnit(City city, Faction faction, int currentTurn) {
         BuildingConfig buildingChoice = chooseBuildingForCity(city, faction);
-        if (buildingChoice != null && city.getAccumulatedProduction() >= buildingChoice.getProductionCost()) {
-            city.addBuilding(buildingChoice);
-            city.setAccumulatedProduction(city.getAccumulatedProduction() - buildingChoice.getProductionCost());
-            GameEventBus.getInstance().publish(new GameEvent.BuildingBuilt(city, buildingChoice));
-            return;
+        if (buildingChoice != null) {
+            int buildingCost = buildingChoice.getProductionCost();
+            if (faction.getConfig() != null && "Walls".equals(buildingChoice.getName())
+                    && faction.getConfig().getWallCostReductionPercent() > 0) {
+                buildingCost = buildingCost * (100 - faction.getConfig().getWallCostReductionPercent()) / 100;
+            }
+            if (city.getAccumulatedProduction() >= buildingCost) {
+                city.addBuilding(buildingChoice);
+                city.setAccumulatedProduction(city.getAccumulatedProduction() - buildingCost);
+                GameEventBus.getInstance().publish(new GameEvent.BuildingBuilt(city, buildingChoice));
+                return;
+            }
         }
 
         int armyCap = calculateArmyCap(faction);
@@ -77,6 +84,14 @@ public class UnitSpawner {
         }
 
         int cost = unitStats.getCost();
+        if (faction.getConfig() != null) {
+            if (city.getCurrentProductionType() == UnitType.LIGHT) {
+                cost = Math.max(1, cost - faction.getConfig().getLightUnitCostReduction());
+            }
+            if (city.getCurrentProductionType() == UnitType.CATAPULT) {
+                cost = Math.max(1, cost - faction.getConfig().getCatapultCostReduction());
+            }
+        }
         boolean spawned = false;
         boolean isCiv = city.getCurrentProductionType() == UnitType.SETTLER || city.getCurrentProductionType() == UnitType.WORKER;
 
@@ -90,6 +105,9 @@ public class UnitSpawner {
             String unitId = city.getCurrentProductionType().name().toLowerCase()
                     + "_" + (++unitCounter);
             Unit unit = UnitFactory.create(city.getCurrentProductionType(), unitId, UnitNamesLoader.getRandomName(), spawn[0], spawn[1], city.getFactionId());
+            if (faction.getConfig() != null && faction.getConfig().getMovementBonus() != 0) {
+                unit.setMovementBonus(faction.getConfig().getMovementBonus());
+            }
             if (city.getCurrentProductionType() == UnitType.MAGE) {
                 unit.setAbilityType(aiProductionStrategy.chooseAbilityType(new Random()));
                 switch (unit.getAbilityType()) {

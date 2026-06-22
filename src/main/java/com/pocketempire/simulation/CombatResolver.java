@@ -1,5 +1,6 @@
 package com.pocketempire.simulation;
 
+import com.pocketempire.config.FactionConfig;
 import com.pocketempire.config.StatusEffectConfig;
 import com.pocketempire.config.StatusEffectConfigLoader;
 import com.pocketempire.entities.Unit;
@@ -21,7 +22,7 @@ public class CombatResolver {
     private static final GameEventBus bus = GameEventBus.getInstance();
     private static final Random rng = new Random();
 
-    public static void resolveCombat(Unit attacker, Unit defender, int terrainBonus, int attackerTerrainModifier, Faction attackerFaction) {
+    public static void resolveCombat(Unit attacker, Unit defender, int terrainBonus, int attackerTerrainModifier, Faction attackerFaction, Faction defenderFaction) {
         if (attacker.hasEffect("STUNNED")) return;
 
         StatusEffectConfig frozen = StatusEffectConfigLoader.getConfig("FROZEN");
@@ -49,18 +50,23 @@ public class CombatResolver {
             }
         }
 
-        int damageToDefender = calculateDamage(attacker.getAttack() + attackMod + ramBonus + attackerTerrainModifier + mageAtkBonus, defender.getDefense()
-                + defender.getDefenseModifier() + defenseMod + terrainBonus,
+        int factionAtkBonus = (attackerFaction != null && attackerFaction.getConfig() != null)
+                ? attackerFaction.getConfig().getAtkBonus() : 0;
+
+        int damageToDefender = calculateDamage(attacker.getAttack() + attackMod + ramBonus
+                + attackerTerrainModifier + mageAtkBonus + factionAtkBonus,
+                defender.getDefense() + defender.getDefenseModifier() + defenseMod + terrainBonus,
                 attacker.getUnitRole(), defender.getUnitRole());
         defender.takeDamage(damageToDefender);
         bus.publish(new GameEvent.UnitAttacked(attacker, defender, damageToDefender));
-
         if (ramBonus > 0 && attacker.isAlive()) {
             attacker.takeDamage(ramBonus);
             bus.publish(new GameEvent.TriremeRam(attacker, defender, ramBonus, ramBonus));
         }
 
-        double effectiveEffectChance = attacker.getEffectChance() + mageEffectChanceBonus;
+        double factionEffectChanceBonus = (attackerFaction != null && attackerFaction.getConfig() != null)
+                ? attackerFaction.getConfig().getEffectChanceBonus() : 0.0;
+        double effectiveEffectChance = attacker.getEffectChance() + mageEffectChanceBonus + factionEffectChanceBonus;
 
         if (attacker.getUnitType() == UnitType.DROMON && defender.isAlive() && defender instanceof Unit u && rng.nextDouble() < effectiveEffectChance) {
             u.applyEffect(burning, burning.getDefaultDuration());
@@ -90,7 +96,9 @@ public class CombatResolver {
 
             boolean isGuardianCounter = defender.getUnitType() == UnitType.GUARDIAN;
             boolean isEntrenched = isGuardianCounter && defender.getUnitState() == com.pocketempire.fsm.UnitState.ENTRENCH;
-            int guardianAttackBonus = isGuardianCounter ? (isEntrenched ? 2 : 1) : 0;
+            int factionEntrench = (defenderFaction != null && defenderFaction.getConfig() != null && isEntrenched)
+                    ? defenderFaction.getConfig().getEntrenchBonus() : 0;
+            int guardianAttackBonus = isGuardianCounter ? (isEntrenched ? 2 + factionEntrench : 1) : 0;
             double guardianStunChance = isGuardianCounter ? (isEntrenched ? 0.22 : 0.15) : 0;
 
             int damageToAttacker = calculateDamage(defender.getAttack() + counterAttackMod + guardianAttackBonus,

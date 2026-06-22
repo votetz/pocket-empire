@@ -99,13 +99,18 @@ public class TurnManager {
 
                 int delta = 0;
 
+                int factionRepDrain = 0;
+                if (a.getConfig() != null) {
+                    factionRepDrain = a.getConfig().getBorderContactRepDrain();
+                }
+
                 for (var unit : a.getUnits()) {
                     if (!unit.isAlive()) continue;
                     for (City cb : b.getCities()) {
                         if (!cb.isAlive()) continue;
                         int dist = com.pocketempire.world.HexUtils.getDistance(unit.getQ(), unit.getR(), cb.getQ(), cb.getR());
-                        if (dist <= 5) { delta -= 2; break; }
-                        if (dist <= 8) { delta -= 1; break; }
+                        if (dist <= 5) { delta -= (2 + factionRepDrain); break; }
+                        if (dist <= 8) { delta -= (1 + factionRepDrain); break; }
                     }
                 }
 
@@ -259,6 +264,9 @@ public class TurnManager {
         int researchYield = faction.getCityCount();
         for (City city : faction.getCities()) {
             researchYield += city.getResearchBonus();
+        }
+        if (faction.getConfig() != null) {
+            researchYield = (int) (researchYield * faction.getConfig().getResearchMultiplier());
         }
         faction.addResearchPoints(researchYield);
 

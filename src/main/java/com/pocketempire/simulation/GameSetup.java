@@ -1,5 +1,7 @@
 package com.pocketempire.simulation;
 
+import com.pocketempire.config.FactionConfig;
+import com.pocketempire.config.FactionConfigLoader;
 import com.pocketempire.config.UnitNamesLoader;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
@@ -17,6 +19,7 @@ import com.pocketempire.diplomacy.DiplomacyManager;
 
 import lombok.Getter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -69,24 +72,25 @@ public class GameSetup {
     }
 
     private void createFactions() {
-        Faction faction1 = new Faction(1, "Red Tribe", 0xFF0000);
-        faction1.setAI(true);
+        List<String> allIds = FactionConfigLoader.getAll().stream()
+                .map(FactionConfig::getId)
+                .collect(java.util.stream.Collectors.toList());
+        Collections.shuffle(allIds);
+        String[] factionIds = allIds.subList(0, Math.min(3, allIds.size())).toArray(new String[0]);
 
-        Faction faction2 = new Faction(2, "Purple Tribe", 0x0000FF);
-        faction2.setAI(true);
+        int[][] positions = generateStartPositions(factionIds.length, 12);
 
-        Faction faction3 = new Faction(3, "Orange Kingdom", 0x00FF00);
-        faction3.setAI(true);
+        for (int i = 0; i < factionIds.length; i++) {
+            FactionConfig cfg = FactionConfigLoader.getConfig(factionIds[i]);
+            int colorInt = Integer.parseInt(cfg.getColor().replace("#", ""), 16);
+            Faction faction = new Faction(i + 1, cfg.getName(), colorInt);
+            faction.setAI(true);
+            faction.setConfig(cfg);
+            faction.setGold(10 + cfg.getStartingGold());
 
-        int[][] positions = generateStartPositions(3, 12);
-
-        createInitialUnitsAndCities(faction1, "1", positions[0][0], positions[0][1]);
-        createInitialUnitsAndCities(faction2, "2", positions[1][0], positions[1][1]);
-        createInitialUnitsAndCities(faction3, "3", positions[2][0], positions[2][1]);
-
-        factions.add(faction1);
-        factions.add(faction2);
-        factions.add(faction3);
+            createInitialUnitsAndCities(faction, String.valueOf(i + 1), positions[i][0], positions[i][1]);
+            factions.add(faction);
+        }
     }
 
     private int[][] generateStartPositions(int count, int minDist) {
@@ -198,6 +202,9 @@ public class GameSetup {
         int[] cityPos = findValidCityTile(preferQ, preferR);
 
         Unit scout = UnitFactory.create(UnitType.SCOUT, "scout_" + factionId, UnitNamesLoader.getRandomName(), cityPos[0], cityPos[1], factionId);
+        if (faction.getConfig() != null && faction.getConfig().getMovementBonus() != 0) {
+            scout.setMovementBonus(faction.getConfig().getMovementBonus());
+        }
         faction.addUnit(scout);
 
         City city = new City("city" + factionId, cityPos[0], cityPos[1], faction.getName() + " Capital", 50, 50, 5, 10, factionId, "leader" + factionId, 3);

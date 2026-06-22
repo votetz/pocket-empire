@@ -39,6 +39,7 @@ public class Unit extends Entity {
     private int xp;
     private int level;
     private int xpToNextLevel;
+    @Setter private int movementBonus;
 
     protected Unit(Builder builder) {
         super(builder.id, builder.q, builder.r, builder.hp, builder.maxHp);
@@ -186,7 +187,7 @@ public static class Builder {
 }
 
     public void resetOD() {
-        this.remainingOD = movement;
+        this.remainingOD = getMovement();
     }
 
     public boolean spendOD(int cost) {
@@ -195,6 +196,9 @@ public static class Builder {
         return true;
     }
 
+    public int getMovement() {
+        return movement + movementBonus;
+    }
 
     public void updateAI(World world) {
         if (currentState != null) {

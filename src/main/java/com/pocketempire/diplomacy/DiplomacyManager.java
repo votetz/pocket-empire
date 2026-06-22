@@ -23,7 +23,14 @@ public class DiplomacyManager {
         for (Faction a : factions) {
             for (Faction b : factions) {
                 if (a.getId() != b.getId()) {
-                    setReputation(a.getId(), b.getId(), 0);
+                    int baseRep = 0;
+                    if (a.getConfig() != null) {
+                        baseRep += a.getConfig().getStartingReputation();
+                    }
+                    if (b.getConfig() != null) {
+                        baseRep += b.getConfig().getStartingReputation();
+                    }
+                    setReputation(a.getId(), b.getId(), baseRep);
                 }
             }
         }

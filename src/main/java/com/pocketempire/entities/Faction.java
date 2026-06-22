@@ -1,5 +1,6 @@
 package com.pocketempire.entities;
 
+import com.pocketempire.config.FactionConfig;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +22,7 @@ public class Faction {
     @Setter private Set<String> researchedTechs = new HashSet<>();
     @Setter private String currentResearch;
     @Setter private int researchProgress;
+    @Setter private FactionConfig config;
 
     public Faction(int id, String name, int color) {
         this.id = id;
