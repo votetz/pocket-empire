@@ -31,9 +31,12 @@ public class FactionConfig {
     private int entrenchBonus;
     private double effectChanceBonus;
     private int forestDefBonus;
+    private int heavyHpBonus;
+    private int sightBonus;
 
     private int lightUnitCostReduction;
     private int catapultCostReduction;
+    private int mageCostReduction;
     private double researchMultiplier;
     private int wallCostReductionPercent;
 
@@ -41,6 +44,9 @@ public class FactionConfig {
     private int startingGold;
     private int borderContactRepDrain;
     private int betrayalThreshold;
+
+    private int warAtkBonusPerWar;
+    private double goldDividendPercent;
 
     private List<String> preferredUnits;
     private String aiPersonality;

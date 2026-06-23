@@ -180,6 +180,12 @@ public class TurnManager {
 
         economyManager.processFactionEconomy(faction, world);
 
+        if (currentTurn % 10 == 0 && faction.getConfig() != null && faction.getConfig().getGoldDividendPercent() > 0) {
+            int dividend = (int) (faction.getGoldEarnedSinceLastDividend() * faction.getConfig().getGoldDividendPercent() / 100.0);
+            if (dividend > 0) faction.addGold(dividend);
+            faction.setGoldEarnedSinceLastDividend(0);
+        }
+
         processResearch(faction);
 
         World aiWorld = faction.isAI()

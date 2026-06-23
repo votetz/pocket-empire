@@ -27,6 +27,9 @@ public class EconomyManager {
 
         int netProfit = income - maintenance + improvedTileBonus + buildingBonus + granaryBonus;
         faction.addGold(netProfit);
+        if (netProfit > 0) {
+            faction.setGoldEarnedSinceLastDividend(faction.getGoldEarnedSinceLastDividend() + netProfit);
+        }
     }
 
     private int countImprovedTilesNearCities(com.pocketempire.entities.Faction faction, Map map) {

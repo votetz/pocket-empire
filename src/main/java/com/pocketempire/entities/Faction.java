@@ -18,6 +18,8 @@ public class Faction {
     @Setter private boolean isAlive;
     @Setter private boolean isAI;
     @Setter private int gold;
+    @Setter private int goldEarnedSinceLastDividend;
+    @Setter private int activeWarCount;
     @Setter private int victoryPoints;
     @Setter private Set<String> researchedTechs = new HashSet<>();
     @Setter private String currentResearch;
