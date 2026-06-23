@@ -91,6 +91,9 @@ public class UnitSpawner {
             if (city.getCurrentProductionType() == UnitType.CATAPULT) {
                 cost = Math.max(1, cost - faction.getConfig().getCatapultCostReduction());
             }
+            if (city.getCurrentProductionType() == UnitType.MAGE) {
+                cost = Math.max(1, cost - faction.getConfig().getMageCostReduction());
+            }
         }
         boolean spawned = false;
         boolean isCiv = city.getCurrentProductionType() == UnitType.SETTLER || city.getCurrentProductionType() == UnitType.WORKER;
@@ -107,6 +110,12 @@ public class UnitSpawner {
             Unit unit = UnitFactory.create(city.getCurrentProductionType(), unitId, UnitNamesLoader.getRandomName(), spawn[0], spawn[1], city.getFactionId());
             if (faction.getConfig() != null && faction.getConfig().getMovementBonus() != 0) {
                 unit.setMovementBonus(faction.getConfig().getMovementBonus());
+            }
+            if (city.getCurrentProductionType() == UnitType.HEAVY
+                    && faction.getConfig() != null
+                    && faction.getConfig().getHeavyHpBonus() != 0) {
+                unit.setHp(unit.getHp() + faction.getConfig().getHeavyHpBonus());
+                unit.setMaxHp(unit.getMaxHp() + faction.getConfig().getHeavyHpBonus());
             }
             if (city.getCurrentProductionType() == UnitType.MAGE) {
                 unit.setAbilityType(aiProductionStrategy.chooseAbilityType(new Random()));
