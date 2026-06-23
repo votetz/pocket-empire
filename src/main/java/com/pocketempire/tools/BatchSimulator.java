@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BatchSimulator {
-    private static final int GAMES = 20;
+    private static final int GAMES = 100;
     private static final int TURNS_PER_GAME = 150;
 
     public static void main(String[] args) {
