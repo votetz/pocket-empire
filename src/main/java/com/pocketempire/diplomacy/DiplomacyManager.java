@@ -77,6 +77,9 @@ public class DiplomacyManager {
                 target.getId(), target.getCityCount()
         ));
 
+        aggressor.setActiveWarCount(aggressor.getActiveWarCount() + 1);
+        target.setActiveWarCount(target.getActiveWarCount() + 1);
+
         GameEventBus.getInstance().publish(new GameEvent.WarDeclared(aggressor, target, reason));
     }
 
@@ -89,6 +92,9 @@ public class DiplomacyManager {
 
         setReputation(a.getId(), b.getId(), 0);
         setReputation(b.getId(), a.getId(), 0);
+
+        a.setActiveWarCount(Math.max(0, a.getActiveWarCount() - 1));
+        b.setActiveWarCount(Math.max(0, b.getActiveWarCount() - 1));
 
         GameEventBus.getInstance().publish(new GameEvent.PeaceDeclared(a, b));
     }

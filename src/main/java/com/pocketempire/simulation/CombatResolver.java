@@ -53,8 +53,14 @@ public class CombatResolver {
         int factionAtkBonus = (attackerFaction != null && attackerFaction.getConfig() != null)
                 ? attackerFaction.getConfig().getAtkBonus() : 0;
 
+        int warBonus = 0;
+        if (attackerFaction != null && attackerFaction.getConfig() != null
+                && attackerFaction.getConfig().getWarAtkBonusPerWar() > 0) {
+            warBonus = attackerFaction.getConfig().getWarAtkBonusPerWar() * attackerFaction.getActiveWarCount();
+        }
+
         int damageToDefender = calculateDamage(attacker.getAttack() + attackMod + ramBonus
-                + attackerTerrainModifier + mageAtkBonus + factionAtkBonus,
+                + attackerTerrainModifier + mageAtkBonus + factionAtkBonus + warBonus,
                 defender.getDefense() + defender.getDefenseModifier() + defenseMod + terrainBonus,
                 attacker.getUnitRole(), defender.getUnitRole());
         defender.takeDamage(damageToDefender);
