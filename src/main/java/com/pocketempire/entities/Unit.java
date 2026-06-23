@@ -197,6 +197,9 @@ public static class Builder {
     }
 
     public int getMovement() {
+        if (unitType == UnitType.SETTLER || unitType == UnitType.WORKER) {
+            return movement;
+        }
         return movement + movementBonus;
     }
 
