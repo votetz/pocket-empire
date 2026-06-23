@@ -3,6 +3,7 @@ package com.pocketempire.pathfinding;
 import com.pocketempire.tiles.TileType;
 import com.pocketempire.units.MovementType;
 import com.pocketempire.world.HexUtils;
+import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.world.Tile;
 import com.pocketempire.world.World;
@@ -35,6 +36,15 @@ public class Pathfinder {
     }
 
     public static List<Node> findPath(World world, int startQ, int startR, int targetQ, int targetR, Unit unit) {
+        return findPath(world, startQ, startR, targetQ, targetR, unit, null);
+    }
+
+    public static List<Node> findPath(World world, int startQ, int startR, int targetQ, int targetR, Unit unit, Faction faction) {
+        if (faction == null && unit != null) {
+            faction = world.getFactions().stream()
+                    .filter(f -> String.valueOf(f.getId()).equals(unit.getFactionId()))
+                    .findFirst().orElse(null);
+        }
         PriorityQueue<Node> openSet = new PriorityQueue<>();
         Set<Point> closedSet = new HashSet<>();
 
@@ -66,9 +76,9 @@ public class Pathfinder {
                 Tile tile = world.getMap().getTile(nq, nr);
                 if (tile == null) continue;
                 if (tile.getType().isBlocksMovement()) {
-                    if (unit.getMovementType() != MovementType.TRANSPORTABLE || !tile.getType().isWater()) continue;
+                    continue;
                 }
-                if (!canEnterTile(unit, tile)) continue;
+                if (!canEnterTile(unit, tile, faction)) continue;
 
                 if (world.isTileOccupied(nq, nr, unit)) continue;
 
@@ -86,11 +96,15 @@ public class Pathfinder {
         return Collections.emptyList();
     }
 
-    private static boolean canEnterTile(Unit unit, Tile tile) {
+    private static boolean canEnterTile(Unit unit, Tile tile, Faction faction) {
         MovementType moveType = unit.getMovementType();
         if (moveType == null) return true;
 
         boolean waterTile = tile.getType().isWater();
+
+        if (waterTile && moveType == MovementType.GROUND) {
+            return faction != null && faction.hasTech("NAVIGATION");
+        }
 
         return switch (moveType) {
             case GROUND -> !waterTile;

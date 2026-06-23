@@ -40,6 +40,7 @@ public class Unit extends Entity {
     private int level;
     private int xpToNextLevel;
     @Setter private int movementBonus;
+    @Setter private boolean embarked;
 
     protected Unit(Builder builder) {
         super(builder.id, builder.q, builder.r, builder.hp, builder.maxHp);
@@ -200,7 +201,15 @@ public static class Builder {
         if (unitType == UnitType.SETTLER || unitType == UnitType.WORKER) {
             return movement;
         }
-        return movement + movementBonus;
+        int base = movement + movementBonus;
+        if (embarked) {
+            base = Math.min(base, 3);
+        }
+        return base;
+    }
+
+    public int getDefenseModifier() {
+        return embarked ? -2 : 0;
     }
 
     public void updateAI(World world) {

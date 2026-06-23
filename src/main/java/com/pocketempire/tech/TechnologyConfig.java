@@ -14,6 +14,7 @@ import java.util.List;
 public class TechnologyConfig {
     private String id;
     private String name;
+    private String description;
     private int cost;
     private List<String> prerequisites;
     private List<String> unlocks;

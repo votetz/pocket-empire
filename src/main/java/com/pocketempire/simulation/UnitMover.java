@@ -6,6 +6,7 @@ import com.pocketempire.entities.Unit;
 import com.pocketempire.events.GameEvent;
 import com.pocketempire.events.GameEventBus;
 import com.pocketempire.pathfinding.Pathfinder;
+import com.pocketempire.tiles.TileType;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.Tile;
 import com.pocketempire.world.World;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class UnitMover {
 
-    public void moveUnitAlongPath(Unit unit, World world, int targetQ, int targetR) {
+    public void moveUnitAlongPath(Unit unit, World world, int targetQ, int targetR, Faction faction) {
         if (unit.getBlinkRange() > 0) {
             blinkToward(unit, world, targetQ, targetR);
             return;
@@ -25,7 +26,7 @@ public class UnitMover {
                     world,
                     unit.getQ(), unit.getR(),
                     targetQ, targetR,
-                    unit
+                    unit, faction
             );
 
             if (path.size() <= 1) break;
@@ -43,6 +44,7 @@ public class UnitMover {
             int fromR = unit.getR();
             unit.spendOD(cost);
             unit.move(dq, dr);
+            unit.setEmbarked(tile.getType().isWater());
             GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR, unit.getQ(), unit.getR()));
         }
     }
@@ -89,7 +91,7 @@ public class UnitMover {
     public void moveUnitTowardEnemy(Unit unit, Faction faction, World aiWorld) {
         Unit target = aiWorld.findNearestEnemy(unit);
         if (target == null) return;
-        moveUnitAlongPath(unit, aiWorld, target.getQ(), target.getR());
+        moveUnitAlongPath(unit, aiWorld, target.getQ(), target.getR(), faction);
     }
 
     public void moveUnitTowardCity(Unit unit, Faction faction, World aiWorld) {
@@ -106,6 +108,6 @@ public class UnitMover {
         }
 
         if (target == null || minDist <= 1) return;
-        moveUnitAlongPath(unit, aiWorld, target.getQ(), target.getR());
+        moveUnitAlongPath(unit, aiWorld, target.getQ(), target.getR(), faction);
     }
 }
