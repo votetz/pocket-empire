@@ -31,7 +31,11 @@ public class FogMap {
 
         for (Unit u : faction.getUnits()) {
             if (u.isAlive()) {
-                reveal(u.getQ(), u.getR(), u.getSightRange());
+                int range = u.getSightRange();
+                if (faction.getConfig() != null) {
+                    range += faction.getConfig().getSightBonus();
+                }
+                reveal(u.getQ(), u.getR(), range);
             }
         }
         for (City c : faction.getCities()) {
