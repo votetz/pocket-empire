@@ -12,8 +12,9 @@ public class MapGenerator {
         Tile[][] tiles = new Tile[width][height];
         PerlinNoise elevNoise = new PerlinNoise((int) seed);
         PerlinNoise moistNoise = new PerlinNoise((int) (seed + 1));
+        PerlinNoise riverNoise = new PerlinNoise((int) (seed + 2));
 
-        double freq = 0.04;
+        double freq = 0.05;
 
         for (int col = 0; col < width; col++) {
             for (int row = 0; row < height; row++) {
@@ -22,27 +23,28 @@ public class MapGenerator {
 
                 double elev = (elevNoise.noise(q * freq, r * freq) + 1) / 2;
                 double moist = (moistNoise.noise(q * freq + 10, r * freq + 10) + 1) / 2;
+                double river = (riverNoise.noise(q * 0.12, r * 0.12) + 1) / 2;
 
-                TileType type = resolveTile(elev, moist);
+                TileType type = resolveTile(elev, moist, river);
                 tiles[col][row] = TileFactory.create(q, r, type);
             }
         }
         return new Map(width, height, tiles);
     }
 
-    private static TileType resolveTile(double elev, double moist) {
-        if (elev < 0.25) return TileType.OCEAN;
-        if (elev < 0.30) return TileType.SHALLOWS;
-        if (elev < 0.35) return TileType.DESERT;
-        if (elev < 0.55) return moist < 0.2 ? TileType.DESERT
-                : moist < 0.4 ? TileType.SAVANNA
-                  : moist < 0.7 ? TileType.GRASS
-                    : TileType.FOREST;
-        if (elev < 0.70) return moist < 0.3 ? TileType.PLAINS
-                : moist < 0.6 ? TileType.FOREST
-                  : TileType.SWAMPS;
-        if (elev < 0.80) return moist < 0.4 ? TileType.TUNDRA
-                : TileType.TAIGA; return moist < 0.5 ? TileType.MOUNTAIN
-                  : TileType.CAVES;
+    private static TileType resolveTile(double elev, double moist, double river) {
+        if (elev < 0.20 && river > 0.55) return TileType.SHALLOWS;
+        if (elev < 0.30) return TileType.DESERT;
+        if (elev < 0.45) return moist < 0.25 ? TileType.DESERT
+                : moist < 0.5 ? TileType.PLAINS
+                : moist < 0.75 ? TileType.GRASS
+                : TileType.FOREST;
+        if (elev < 0.60) return moist < 0.3 ? TileType.PLAINS
+                : moist < 0.6 ? TileType.GRASS
+                : TileType.FOREST;
+        if (elev < 0.72) return moist < 0.4 ? TileType.FOREST
+                : TileType.SWAMPS;
+        if (elev < 0.82) return TileType.MOUNTAIN;
+        return TileType.MOUNTAIN;
     }
 }
