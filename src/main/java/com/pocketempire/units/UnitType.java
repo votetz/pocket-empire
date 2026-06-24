@@ -10,6 +10,5 @@ public enum UnitType {
     SETTLER,
     WORKER,
     SCOUT,
-    TRIREME,
-    DROMON
+    KNIGHT
 }

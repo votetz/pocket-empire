@@ -1,7 +1,5 @@
 package com.pocketempire.pathfinding;
 
-import com.pocketempire.tiles.TileType;
-import com.pocketempire.units.MovementType;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
@@ -97,21 +95,7 @@ public class Pathfinder {
     }
 
     private static boolean canEnterTile(Unit unit, Tile tile, Faction faction) {
-        MovementType moveType = unit.getMovementType();
-        if (moveType == null) return true;
-
-        boolean waterTile = tile.getType().isWater();
-
-        if (waterTile && moveType == MovementType.GROUND) {
-            return faction != null && faction.hasTech("NAVIGATION");
-        }
-
-        return switch (moveType) {
-            case GROUND -> !waterTile;
-            case WATER -> waterTile;
-            case TRANSPORTABLE -> true;
-            case AIR -> true;
-        };
+        return !tile.getType().isWater();
     }
 
     private static List<Node> buildPath(Node end) {

@@ -44,7 +44,6 @@ public class UnitMover {
             int fromR = unit.getR();
             unit.spendOD(cost);
             unit.move(dq, dr);
-            unit.setEmbarked(tile.getType().isWater());
             GameEventBus.getInstance().publish(new GameEvent.UnitMoved(unit, fromQ, fromR, unit.getQ(), unit.getR()));
         }
     }

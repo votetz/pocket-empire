@@ -5,7 +5,6 @@ import lombok.Getter;
 public enum TechCategory {
     MILITARY(0),
     ECONOMIC(1),
-    NAVAL(2),
     ARCANE(3);
 
     @Getter

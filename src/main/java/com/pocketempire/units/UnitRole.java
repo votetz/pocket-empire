@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 public enum UnitRole {
-    ASSAULT, TANK, ASSASSIN, SNIPER, SIEGE, SUPPORT, CIVILIAN, NAVAL_RAM, NAVAL_FIRE;
+    ASSAULT, TANK, ASSASSIN, SNIPER, SIEGE, SUPPORT, CIVILIAN;
 
     private static Map<UnitRole, Set<UnitRole>> counters;
 

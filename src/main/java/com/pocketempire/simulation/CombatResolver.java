@@ -34,12 +34,6 @@ public class CombatResolver {
         if (defender.hasEffect(burning)) defenseMod -= 1;
         if (defender.hasEffect(frozen)) defenseMod -= 1;
 
-        int ramBonus = 0;
-        if (attacker.getUnitType() == UnitType.TRIREME) {
-            int hexesMoved = attacker.getMovement() - attacker.getRemainingOD();
-            ramBonus = Math.min(hexesMoved, 2);
-        }
-
         int mageAtkBonus = 0;
         double mageEffectChanceBonus = 0.0;
         if (attacker.getUnitType() == UnitType.MAGE && attackerFaction != null && attackerFaction.hasTech("ELEMENTAL_MASTERY")) {
@@ -59,25 +53,16 @@ public class CombatResolver {
             warBonus = attackerFaction.getConfig().getWarAtkBonusPerWar() * attackerFaction.getActiveWarCount();
         }
 
-        int damageToDefender = calculateDamage(attacker.getAttack() + attackMod + ramBonus
+        int damageToDefender = calculateDamage(attacker.getAttack() + attackMod
                 + attackerTerrainModifier + mageAtkBonus + factionAtkBonus + warBonus,
                 defender.getDefense() + defender.getDefenseModifier() + defenseMod + terrainBonus,
                 attacker.getUnitRole(), defender.getUnitRole());
         defender.takeDamage(damageToDefender);
         bus.publish(new GameEvent.UnitAttacked(attacker, defender, damageToDefender));
-        if (ramBonus > 0 && attacker.isAlive()) {
-            attacker.takeDamage(ramBonus);
-            bus.publish(new GameEvent.TriremeRam(attacker, defender, ramBonus, ramBonus));
-        }
 
         double factionEffectChanceBonus = (attackerFaction != null && attackerFaction.getConfig() != null)
                 ? attackerFaction.getConfig().getEffectChanceBonus() : 0.0;
         double effectiveEffectChance = attacker.getEffectChance() + mageEffectChanceBonus + factionEffectChanceBonus;
-
-        if (attacker.getUnitType() == UnitType.DROMON && defender.isAlive() && defender instanceof Unit u && rng.nextDouble() < effectiveEffectChance) {
-            u.applyEffect(burning, burning.getDefaultDuration());
-            bus.publish(new GameEvent.StatusApplied(u, burning, burning.getDefaultDuration()));
-        }
 
         if (attacker.getUnitType() == UnitType.MAGE && defender.isAlive() && defender instanceof Unit u2) {
             AbilityType mt = attacker.getAbilityType();

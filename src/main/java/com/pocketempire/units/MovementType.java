@@ -3,7 +3,6 @@ package com.pocketempire.units;
 public enum MovementType {
     GROUND,
     AIR,
-    WATER,
     TRANSPORTABLE
 }
 

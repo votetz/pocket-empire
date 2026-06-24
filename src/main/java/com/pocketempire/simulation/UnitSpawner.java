@@ -119,11 +119,10 @@ public class UnitSpawner {
             }
             if (city.getCurrentProductionType() == UnitType.MAGE) {
                 unit.setAbilityType(aiProductionStrategy.chooseAbilityType(new Random()));
-                switch (unit.getAbilityType()) {
-                    case FIRE -> unit.setUnitRole(UnitRole.SNIPER);
-                    case ICE -> unit.setUnitRole(UnitRole.SUPPORT);
-                    case POISON -> unit.setUnitRole(UnitRole.SNIPER);
-                    case TELEPORT -> unit.setUnitRole(UnitRole.ASSASSIN);
+                var stats = UnitConfigLoader.getConfig(UnitType.MAGE.name());
+                if (stats != null && stats.getRoleByAbility() != null) {
+                    UnitRole mappedRole = stats.getRoleByAbility().get(unit.getAbilityType().name());
+                    if (mappedRole != null) unit.setUnitRole(mappedRole);
                 }
             }
             if (city.getAttackBonus() > 0) {
@@ -163,7 +162,6 @@ public class UnitSpawner {
                 if (world.isTileOccupied(nq, nr)) continue;
                 TileType type = tile.getType();
                 boolean canSpawn = switch (movementType) {
-                    case WATER -> type.isWater();
                     case GROUND -> !type.isWater() && !type.isBlocksMovement();
                     default -> !type.isBlocksMovement();
                 };

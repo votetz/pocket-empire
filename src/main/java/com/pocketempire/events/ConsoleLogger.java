@@ -71,10 +71,6 @@ public class ConsoleLogger {
                     System.out.printf("\u2728 %s blinks (%d,%d) \u2192 (%d,%d)%n",
                             unit.getName(), fromQ, fromR, toQ, toR);
 
-                case GameEvent.TriremeRam(Unit attacker, Unit defender, int bonusDamage, int selfDamage) ->
-                    System.out.printf("\uD83D\uDC0A %s rams %s (+%d bonus, -%d self) (%d/%d HP)%n",
-                            attacker.getName(), defender.getName(), bonusDamage, selfDamage,
-                            attacker.getHp(), attacker.getMaxHp());
                 case GameEvent.UnitLevelUp(var unit, var level) ->
                     System.out.printf("\u2B50 %s level up to %d (ATK: %d, HP: %d/%d)%n",
                             unit.getName(), level, unit.getAttack(), unit.getHp(), unit.getMaxHp());

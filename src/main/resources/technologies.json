@@ -24,16 +24,7 @@
     "cost": 30,
     "prerequisites": [],
     "unlocks": ["MAGE"],
-    "category": "MILITARY"
-  },
-  {
-    "id": "NAVAL_TACTICS",
-    "name": "Naval Tactics",
-    "description": "Warships are not just transport. The trireme rams and dromon fire ships turn the sea into a battlefield. Unlocks war vessels.",
-    "cost": 25,
-    "prerequisites": [],
-    "unlocks": ["TRIREME", "DROMON"],
-    "category": "NAVAL"
+    "category": "ARCANE"
   },
   {
     "id": "ELEMENTAL_MASTERY",
@@ -47,12 +38,12 @@
     "mageEffectChanceBonus": 0.2
   },
   {
-    "id": "NAVIGATION",
-    "name": "Navigation",
-    "description": "Stars, currents, and coastlines mapped. Your armies can now cross shallow waters, opening new routes and islands beyond the shore.",
-    "cost": 15,
-    "prerequisites": [],
-    "unlocks": [],
-    "category": "NAVAL"
+    "id": "CAVALRY",
+    "name": "Cavalry",
+    "description": "The art of mounted warfare. Unlocks the Knight — a devastating charge unit that deals bonus damage after moving.",
+    "cost": 25,
+    "prerequisites": ["MILITARY_TRAINING"],
+    "unlocks": ["KNIGHT"],
+    "category": "MILITARY"
   }
 ]

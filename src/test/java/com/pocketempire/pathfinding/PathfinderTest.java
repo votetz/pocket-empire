@@ -138,7 +138,7 @@ public class PathfinderTest {
     }
 
     @Test
-    void findPath_groundUnitBlockedByWater_withoutNavigation() {
+    void findPath_groundUnitBlockedByWater() {
         TileType[][] grid = {
             {TileType.GRASS, TileType.GRASS, TileType.GRASS},
             {TileType.WATER, TileType.WATER, TileType.WATER},
@@ -153,25 +153,7 @@ public class PathfinderTest {
     }
 
     @Test
-    void findPath_groundUnitCrossesWater_withNavigation() {
-        TileType[][] grid = {
-            {TileType.GRASS, TileType.GRASS, TileType.GRASS},
-            {TileType.WATER, TileType.WATER, TileType.WATER},
-            {TileType.GRASS, TileType.GRASS, TileType.GRASS},
-        };
-        World world = createWorld(grid);
-        Unit unit = createUnit(world, 1, 0, UnitType.LIGHT);
-        world.getFactions().get(0).getResearchedTechs().add("NAVIGATION");
-
-        List<Pathfinder.Node> path = Pathfinder.findPath(world, 1, 0, 1, 2, unit);
-
-        assertFalse(path.isEmpty());
-        assertEquals(1, path.get(path.size() - 1).getQ());
-        assertEquals(2, path.get(path.size() - 1).getR());
-    }
-
-    @Test
-    void findPath_oceanAlwaysBlocks_evenWithNavigation() {
+    void findPath_oceanAlwaysBlocks() {
         TileType[][] grid = {
             {TileType.GRASS, TileType.GRASS, TileType.GRASS},
             {TileType.OCEAN, TileType.OCEAN, TileType.OCEAN},
@@ -179,7 +161,6 @@ public class PathfinderTest {
         };
         World world = createWorld(grid);
         Unit unit = createUnit(world, 1, 0, UnitType.LIGHT);
-        world.getFactions().get(0).getResearchedTechs().add("NAVIGATION");
 
         List<Pathfinder.Node> path = Pathfinder.findPath(world, 1, 0, 1, 2, unit);
 

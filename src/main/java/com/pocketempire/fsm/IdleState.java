@@ -132,7 +132,7 @@ public class IdleState implements State {
 
     private boolean isCombatUnit(UnitType type) {
         return switch (type) {
-            case LIGHT, HEAVY, GUARDIAN, ARCHER, MAGE, CATAPULT, DROMON, TRIREME -> true;
+            case LIGHT, HEAVY, GUARDIAN, ARCHER, MAGE, CATAPULT, KNIGHT -> true;
             default -> false;
         };
     }
