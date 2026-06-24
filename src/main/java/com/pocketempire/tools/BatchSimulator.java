@@ -12,8 +12,8 @@ public class BatchSimulator {
     private static final int TURNS_PER_GAME = 150;
 
     public static void main(String[] args) {
+        long startTime = System.currentTimeMillis();
         Map<String, int[]> stats = new HashMap<>();
-        Map<String, int[]> placementCount = new HashMap<>();
 
         for (int game = 1; game <= GAMES; game++) {
             GameSetup setup = new GameSetup(35, 35);
@@ -29,31 +29,22 @@ public class BatchSimulator {
             }
 
             var ranked = tm.getRankedFactions();
-            for (int i = 0; i < ranked.size(); i++) {
-                Faction f = ranked.get(i);
-                String name = f.getName();
-                stats.computeIfAbsent(name, k -> new int[2])[0]++;
-                stats.get(name)[1] += f.getVictoryPoints();
-                if (i < 2) placementCount.computeIfAbsent(name, k -> new int[2])[i]++;
+            Faction winner = ranked.isEmpty() ? null : ranked.get(0);
+            if (winner != null) {
+                stats.computeIfAbsent(winner.getName(), k -> new int[1])[0]++;
             }
-
-            System.out.printf("Game %2d: %s %d VP | %s %d VP%n",
-                    game,
-                    ranked.get(0).getName(), ranked.get(0).getVictoryPoints(),
-                    ranked.get(1).getName(), ranked.get(1).getVictoryPoints());
         }
 
-        System.out.printf("%-16s %5s %7s %6s %6s%n", "Faction", "Games", "Avg VP", "1st", "2nd");
+        long elapsed = System.currentTimeMillis() - startTime;
+        
+        System.out.printf("Games: %d | Turns: %d | Map: 35x35%n", GAMES, TURNS_PER_GAME);
+        System.out.printf("Time: %.1fs (%dms per game)%n", elapsed / 1000.0, elapsed / GAMES);
+
         stats.entrySet().stream()
                 .sorted((a, b) -> b.getValue()[0] - a.getValue()[0])
                 .forEach(e -> {
-                    String name = e.getKey();
-                    int games = e.getValue()[0];
-                    int totalVP = e.getValue()[1];
-                    int[] places = placementCount.getOrDefault(name, new int[2]);
-                    System.out.printf("%-16s %5d %7.1f %6d %6d%n",
-                            name, games, (double) totalVP / GAMES,
-                            places[0], places[1]);
+                    double pct = e.getValue()[0] * 100.0 / GAMES;
+                    System.out.printf("%-16s %4d (%.1f%%)%n", e.getKey(), e.getValue()[0], pct);
                 });
     }
 }

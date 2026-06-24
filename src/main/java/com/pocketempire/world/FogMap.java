@@ -4,10 +4,8 @@ import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Set;
 
 public class FogMap {
     private final int width;
@@ -15,6 +13,7 @@ public class FogMap {
     private final Map map;
     private final boolean[][] visible;
     private final boolean[][] explored;
+    private final boolean[] visited;
 
     public FogMap(Map map) {
         this.width = map.getWidth();
@@ -22,6 +21,7 @@ public class FogMap {
         this.map = map;
         this.visible = new boolean[width][height];
         this.explored = new boolean[width][height];
+        this.visited = new boolean[width * height];
     }
 
     public void update(Faction faction) {
@@ -46,8 +46,9 @@ public class FogMap {
     }
 
     private void reveal(int q, int r, int range) {
+        java.util.Arrays.fill(visited, false);
+
         Queue<int[]> queue = new LinkedList<>();
-        boolean[] visited = new boolean[width * height];
         queue.add(new int[]{q, r, 0});
 
         int startCol = q + (r - (r & 1)) / 2;

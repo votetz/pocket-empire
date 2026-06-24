@@ -39,9 +39,13 @@ public class Pathfinder {
 
     public static List<Node> findPath(World world, int startQ, int startR, int targetQ, int targetR, Unit unit, Faction faction) {
         if (faction == null && unit != null) {
-            faction = world.getFactions().stream()
-                    .filter(f -> String.valueOf(f.getId()).equals(unit.getFactionId()))
-                    .findFirst().orElse(null);
+            String fid = unit.getFactionId();
+            for (Faction f : world.getFactions()) {
+                if (String.valueOf(f.getId()).equals(fid)) {
+                    faction = f;
+                    break;
+                }
+            }
         }
         PriorityQueue<Node> openSet = new PriorityQueue<>();
         Set<Point> closedSet = new HashSet<>();

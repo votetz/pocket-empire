@@ -6,7 +6,6 @@ import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class VisibleWorld extends World {
@@ -36,21 +35,41 @@ public class VisibleWorld extends World {
     @Override
     public Unit findNearestHostile(Unit unit) {
         int myFactionId = Integer.parseInt(unit.getFactionId());
-        return getAllUnits().stream()
-                .filter(u -> !u.getFactionId().equals(unit.getFactionId()))
-                .filter(u -> getDiplomacyManager().isHostile(myFactionId, Integer.parseInt(u.getFactionId())))
-                .filter(Unit::isAlive)
-                .min(Comparator.comparingInt(u -> HexUtils.getDistance(unit.getQ(), unit.getR(), u.getQ(), u.getR())))
-                .orElse(null);
+        Unit nearest = null;
+        int minDist = Integer.MAX_VALUE;
+        for (Unit u : getAllUnits()) {
+            if (u == unit) continue;
+            if (!u.isAlive()) continue;
+            if (u.getFactionId().equals(unit.getFactionId())) continue;
+            int otherId;
+            try {
+                otherId = Integer.parseInt(u.getFactionId());
+            } catch (NumberFormatException e) { continue; }
+            if (!getDiplomacyManager().isHostile(myFactionId, otherId)) continue;
+            int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), u.getQ(), u.getR());
+            if (dist < minDist) {
+                minDist = dist;
+                nearest = u;
+            }
+        }
+        return nearest;
     }
 
     @Override
     public Unit findNearestForeign(Unit unit) {
-        return getAllUnits().stream()
-                .filter(u -> !u.getFactionId().equals(unit.getFactionId()))
-                .filter(Unit::isAlive)
-                .min(Comparator.comparingInt(u -> HexUtils.getDistance(unit.getQ(), unit.getR(), u.getQ(), u.getR())))
-                .orElse(null);
+        Unit nearest = null;
+        int minDist = Integer.MAX_VALUE;
+        for (Unit u : getAllUnits()) {
+            if (u == unit) continue;
+            if (!u.isAlive()) continue;
+            if (u.getFactionId().equals(unit.getFactionId())) continue;
+            int dist = HexUtils.getDistance(unit.getQ(), unit.getR(), u.getQ(), u.getR());
+            if (dist < minDist) {
+                minDist = dist;
+                nearest = u;
+            }
+        }
+        return nearest;
     }
 
     @Override
