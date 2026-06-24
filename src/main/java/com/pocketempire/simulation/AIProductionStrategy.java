@@ -24,7 +24,7 @@ public class AIProductionStrategy {
         long settlerCount = countUnitsByType(faction, UnitType.SETTLER);
         long scoutCount = countUnitsByType(faction, UnitType.SCOUT);
 
-        long heavyCount = countUnitsByType(faction, UnitType.HEAVY) + countUnitsByType(faction, UnitType.GUARDIAN);
+        long heavyCount = countUnitsByType(faction, UnitType.HEAVY) + countUnitsByType(faction, UnitType.GUARDIAN) + countUnitsByType(faction, UnitType.KNIGHT);
         long lightCount = countUnitsByType(faction, UnitType.LIGHT);
         long rangedCount = countUnitsByType(faction, UnitType.ARCHER) + countUnitsByType(faction, UnitType.MAGE) + countUnitsByType(faction, UnitType.CATAPULT);
 
@@ -61,12 +61,6 @@ public class AIProductionStrategy {
             return;
         }
 
-        long triremeCount = countUnitsByType(faction, UnitType.TRIREME);
-        if (isNearWater(city, aiWorld) && triremeCount < 3 && rng.nextDouble() < 0.15) {
-            city.setCurrentProductionType(UnitType.TRIREME);
-            return;
-        }
-
         Unit nearest = null;
         int minDist = Integer.MAX_VALUE;
         for (Unit enemy : aiWorld.getAllUnits()) {
@@ -74,6 +68,11 @@ public class AIProductionStrategy {
             if (!enemy.isAlive()) continue;
             int dist = HexUtils.getDistance(city.getQ(), city.getR(), enemy.getQ(), enemy.getR());
             if (dist < minDist) { minDist = dist; nearest = enemy; }
+        }
+
+        if (nearest != null && minDist <= 10 && faction.hasTech("CAVALRY") && rng.nextDouble() < 0.3) {
+            city.setCurrentProductionType(UnitType.KNIGHT);
+            return;
         }
 
         if (nearest != null && minDist <= 10) {
@@ -104,7 +103,7 @@ public class AIProductionStrategy {
 
         if (totalNeed <= 0) {
             UnitType[] combat = {UnitType.LIGHT, UnitType.ARCHER, UnitType.HEAVY,
-                    UnitType.MAGE, UnitType.CATAPULT, UnitType.GUARDIAN};
+                    UnitType.MAGE, UnitType.CATAPULT, UnitType.GUARDIAN, UnitType.KNIGHT};
             city.setCurrentProductionType(combat[rng.nextInt(combat.length)]);
             return;
         }
@@ -121,32 +120,13 @@ public class AIProductionStrategy {
         }
     }
 
-    private boolean isNearWater(City city, World world) {
-        for (int dq = -2; dq <= 2; dq++) {
-            for (int dr = Math.max(-2, -dq - 2); dr <= Math.min(2, -dq + 2); dr++) {
-                if (dq == 0 && dr == 0) continue;
-                int nq = city.getQ() + dq;
-                int nr = city.getR() + dr;
-                if (world.getMap().isInBounds(nq, nr)) {
-                    var tile = world.getMap().getTile(nq, nr);
-                    if (tile != null && tile.getType().isWater()) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
     public UnitType getCounterUnit(UnitType enemyType, Random rng) {
         return switch (enemyType) {
-            case HEAVY, GUARDIAN -> rng.nextBoolean() ? UnitType.MAGE : UnitType.ARCHER;
-            case LIGHT, SCOUT -> rng.nextBoolean() ? UnitType.HEAVY : UnitType.GUARDIAN;
-            case ARCHER, MAGE -> rng.nextBoolean() ? UnitType.LIGHT : UnitType.SCOUT;
+            case HEAVY, GUARDIAN, KNIGHT -> rng.nextBoolean() ? UnitType.MAGE : UnitType.ARCHER;
+            case LIGHT, SCOUT -> rng.nextInt(3) == 0 ? UnitType.KNIGHT : (rng.nextBoolean() ? UnitType.HEAVY : UnitType.GUARDIAN);
+            case ARCHER, MAGE -> rng.nextInt(3) == 0 ? UnitType.KNIGHT : (rng.nextBoolean() ? UnitType.LIGHT : UnitType.SCOUT);
             case CATAPULT -> UnitType.LIGHT;
-            case TRIREME -> UnitType.DROMON;
             case SETTLER, WORKER -> UnitType.LIGHT;
-            case DROMON -> UnitType.TRIREME;
         };
     }
 

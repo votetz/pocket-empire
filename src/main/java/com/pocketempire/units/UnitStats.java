@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -21,4 +23,5 @@ public class UnitStats {
     @com.fasterxml.jackson.annotation.JsonProperty("role") private UnitRole unitRole;
     private double effectChance;
     private String requiredTech;
+    private Map<String, UnitRole> roleByAbility;
 }

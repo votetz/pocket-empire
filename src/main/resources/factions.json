@@ -169,7 +169,7 @@
     "startingGold": 0,
     "borderContactRepDrain": 0,
     "betrayalThreshold": 50,
-    "preferredUnits": ["HEAVY", "SCOUT", "LIGHT"],
+    "preferredUnits": ["KNIGHT", "SCOUT", "LIGHT"],
     "aiPersonality": "HORDE"
   }
 ]
