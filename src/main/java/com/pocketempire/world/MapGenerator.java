@@ -32,7 +32,7 @@ public class MapGenerator {
 
     private static TileType resolveTile(double elev, double moist) {
         if (elev < 0.25) return TileType.OCEAN;
-        if (elev < 0.30) return TileType.WATER;
+        if (elev < 0.30) return TileType.SHALLOWS;
         if (elev < 0.35) return TileType.DESERT;
         if (elev < 0.55) return moist < 0.2 ? TileType.DESERT
                 : moist < 0.4 ? TileType.SAVANNA

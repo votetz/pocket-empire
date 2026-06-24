@@ -9,7 +9,7 @@
   "TUNDRA":   {"defendBonus": 1, "attackModifier": 0},
   "MOUNTAIN": {"defendBonus": 0, "attackModifier": 0},
   "CAVES":    {"defendBonus": 2, "attackModifier": 0},
-  "WATER":    {"defendBonus": 0, "attackModifier": 0},
+  "SHALLOWS": {"defendBonus": 0, "attackModifier": 0},
   "OCEAN":    {"defendBonus": 0, "attackModifier": 0},
   "SWAMPS":   {"defendBonus": 0, "attackModifier": -1}
 }

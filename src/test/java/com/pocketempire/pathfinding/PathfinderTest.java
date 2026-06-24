@@ -141,7 +141,7 @@ public class PathfinderTest {
     void findPath_groundUnitBlockedByWater() {
         TileType[][] grid = {
             {TileType.GRASS, TileType.GRASS, TileType.GRASS},
-            {TileType.WATER, TileType.WATER, TileType.WATER},
+            {TileType.SHALLOWS, TileType.SHALLOWS, TileType.SHALLOWS},
             {TileType.GRASS, TileType.GRASS, TileType.GRASS},
         };
         World world = createWorld(grid);

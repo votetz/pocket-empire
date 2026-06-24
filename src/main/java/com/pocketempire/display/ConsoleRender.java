@@ -104,7 +104,7 @@ public class ConsoleRender {
         String color = switch (tile.getType()) {
             case GRASS, PLAINS         -> AnsiColor.GREEN;
             case FOREST, JUNGLE, TAIGA -> AnsiColor.DARK_GREEN;
-            case WATER, SWAMPS         -> AnsiColor.BLUE;
+            case SHALLOWS, SWAMPS        -> AnsiColor.BLUE;
             case OCEAN                 -> AnsiColor.CYAN;
             case DESERT, SAVANNA       -> AnsiColor.YELLOW;
             case MOUNTAIN, CAVES       -> AnsiColor.GRAY;

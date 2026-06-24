@@ -15,7 +15,7 @@ public enum TileType {
     TUNDRA  ('*', 2, false),
     MOUNTAIN('^', 3, true),
     CAVES   ('#', 2, false),
-    WATER   ('≈', 2, false),
+    SHALLOWS('≈', 2, false),
     OCEAN   ('=', 3, true),
     SWAMPS  ('§', 2, false);
 
@@ -37,6 +37,6 @@ public enum TileType {
     }
 
     public boolean isWater() {
-        return this == WATER || this == OCEAN;
+        return this == SHALLOWS || this == OCEAN;
     }
 }
