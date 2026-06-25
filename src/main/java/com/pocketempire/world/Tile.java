@@ -10,21 +10,13 @@ import com.pocketempire.tiles.TileType;
 public class Tile {
     private int q;
     private int r;
-    private TileType type;
+    @Setter private TileType type;
     @Setter private boolean improved;
     private boolean visible;
     private boolean explored;
+    @Setter private int burningTurns = 0;
+    @Setter private int recoverTurns = 0;
 
-    // Cube coordinates for 3D rendering
-    public int cubeX() {
-        return q;
-    }
-
-    public int cubeY() {
-        return -q - r;
-    }
-
-    public int cubeZ() {
-        return r;
-    }
+    public boolean isBurning() { return burningTurns > 0; }
+    public boolean isScorched() { return getType() == TileType.SCORCHED_EARTH; }
 }

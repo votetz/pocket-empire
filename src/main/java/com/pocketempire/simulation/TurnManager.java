@@ -10,6 +10,7 @@ import com.pocketempire.tech.TechnologyConfig;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
 import com.pocketempire.entities.City;
+import com.pocketempire.events.EventManager;
 import com.pocketempire.events.GameEvent;
 import com.pocketempire.events.GameEventBus;
 import com.pocketempire.world.World;
@@ -39,6 +40,7 @@ public class TurnManager {
     private final TechTree techTree = new TechTree();
     private final DiplomacyManager diplomacyManager;
     private final CasusBelliManager casusBelliManager;
+    private final EventManager eventManager;
     private final Random rng = new Random();
 
     public TurnManager(List<Faction> factions, World world, Map<Integer, FogMap> fogMaps, DiplomacyManager diplomacyManager) {
@@ -51,6 +53,7 @@ public class TurnManager {
         this.unitSpawner = new UnitSpawner(world, fogMaps, aiProductionStrategy);
         this.diplomacyManager = diplomacyManager;
         this.casusBelliManager = new CasusBelliManager();
+        this.eventManager = new EventManager(world);
     }
 
     public void nextTurn() {
@@ -177,6 +180,8 @@ public class TurnManager {
 
     private void startFactionTurn(Faction faction) {
         GameEventBus.getInstance().publish(new GameEvent.TurnStarted(currentTurn, faction));
+
+        eventManager.processEvents(faction);
 
         economyManager.processFactionEconomy(faction, world);
 

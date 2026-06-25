@@ -32,4 +32,9 @@ public sealed interface GameEvent {
     record WarDeclared(Faction aggressor, Faction target, String reason) implements GameEvent {}
     record PeaceDeclared(Faction a, Faction b) implements GameEvent {}
     record AllianceFormed(Faction a, Faction b) implements GameEvent {}
+    record ForestFireStarted(int q, int r) implements GameEvent {}
+    record ForestFireSpread(int q, int r) implements GameEvent {}
+    record ForestFireDamage(Unit unit, int damage) implements GameEvent {}
+    record ForestBurnt(int q, int r) implements GameEvent {}
+    record ForestRecovered(int q, int r) implements GameEvent {}
 }

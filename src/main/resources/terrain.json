@@ -11,5 +11,6 @@
   "CAVES":    {"defendBonus": 2, "attackModifier": 0},
   "SHALLOWS": {"defendBonus": 0, "attackModifier": 0},
   "OCEAN":    {"defendBonus": 0, "attackModifier": 0},
-  "SWAMPS":   {"defendBonus": 0, "attackModifier": -1}
+  "SWAMPS":   {"defendBonus": 0, "attackModifier": -1},
+  "SCORCHED_EARTH": {"defendBonus": 0, "attackModifier": 0}
 }

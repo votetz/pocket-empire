@@ -109,6 +109,7 @@ public class ConsoleRender {
             case DESERT, SAVANNA       -> AnsiColor.YELLOW;
             case MOUNTAIN, CAVES       -> AnsiColor.GRAY;
             case TUNDRA                -> AnsiColor.WHITE;
+            case SCORCHED_EARTH        -> AnsiColor.ORANGE;
         };
         return color + tile.getType().getSymbol() + AnsiColor.RESET;
     }

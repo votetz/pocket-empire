@@ -86,6 +86,22 @@ public class ConsoleLogger {
 
                 case GameEvent.AllianceFormed(var a, var b) ->
                     System.out.printf("\uD83E\uDD1D %s formed an alliance with %s%n", a.getName(), b.getName());
+
+                case GameEvent.ForestFireStarted(var q, var r) ->
+                    System.out.printf("\uD83D\uDD25 Forest fire started at (%d,%d)%n", q, r);
+
+                case GameEvent.ForestFireSpread(var q, var r) ->
+                    System.out.printf("\uD83D\uDD25 Fire spreads to (%d,%d)%n", q, r);
+
+                case GameEvent.ForestFireDamage(var unit, var damage) ->
+                    System.out.printf("\uD83D\uDD25 %s takes %d fire damage (%d/%d HP)%n",
+                            unit.getName(), damage, unit.getHp(), unit.getMaxHp());
+
+                case GameEvent.ForestBurnt(var q, var r) ->
+                    System.out.printf("\u2744\uFE0F Forest at (%d,%d) burned to scorched earth%n", q, r);
+
+                case GameEvent.ForestRecovered(var q, var r) ->
+                    System.out.printf("\uD83C\uDF31 Scorched earth at (%d,%d) recovered to forest%n", q, r);
             }
         });
     }

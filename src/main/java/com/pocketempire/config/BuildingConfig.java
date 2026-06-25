@@ -21,4 +21,6 @@ public class BuildingConfig {
     private int healBonus;
     private String requiredTech;
     private int researchBonus;
+    private int priority;
+    private String requiresBuilding;
 }

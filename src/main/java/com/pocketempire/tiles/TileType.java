@@ -17,7 +17,8 @@ public enum TileType {
     CAVES   ('#', 2, false),
     SHALLOWS('≈', 2, false),
     OCEAN   ('=', 3, true),
-    SWAMPS  ('§', 2, false);
+    SWAMPS  ('§', 2, false),
+    SCORCHED_EARTH('&', 1, false);
 
     private final char symbol;
     private final int movementCost;

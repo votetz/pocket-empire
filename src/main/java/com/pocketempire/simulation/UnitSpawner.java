@@ -174,22 +174,16 @@ public class UnitSpawner {
 
     private BuildingConfig chooseBuildingForCity(City city, Faction faction) {
         var researched = faction.getResearchedTechs();
-        BuildingConfig walls = BuildingConfigLoader.getConfig("Walls");
-        if (!city.hasBuilding("Walls") && techTree.isBuildingUnlocked(walls.getRequiredTech(), researched)) return walls;
-        BuildingConfig market = BuildingConfigLoader.getConfig("Market");
-        if (!city.hasBuilding("Market") && techTree.isBuildingUnlocked(market.getRequiredTech(), researched)) return market;
-        BuildingConfig forge = BuildingConfigLoader.getConfig("Forge");
-        if (!city.hasBuilding("Forge") && techTree.isBuildingUnlocked(forge.getRequiredTech(), researched)) return forge;
-        if (city.hasBuilding("Forge") && !city.hasBuilding("Workshop")) return BuildingConfigLoader.getConfig("Workshop");
-        BuildingConfig library = BuildingConfigLoader.getConfig("Library");
-        if (!city.hasBuilding("Library") && techTree.isBuildingUnlocked(library.getRequiredTech(), researched)) return library;
-        BuildingConfig granary = BuildingConfigLoader.getConfig("Granary");
-        if (!city.hasBuilding("Granary") && techTree.isBuildingUnlocked(granary.getRequiredTech(), researched)) return granary;
-        BuildingConfig barracks = BuildingConfigLoader.getConfig("Barracks");
-        if (!city.hasBuilding("Barracks") && techTree.isBuildingUnlocked(barracks.getRequiredTech(), researched)) return barracks;
-        BuildingConfig temple = BuildingConfigLoader.getConfig("Temple");
-        if (!city.hasBuilding("Temple") && techTree.isBuildingUnlocked(temple.getRequiredTech(), researched)) return temple;
-        return null;
+        BuildingConfig best = null;
+        for (BuildingConfig building : BuildingConfigLoader.getAll()) {
+            if (city.hasBuilding(building.getName())) continue;
+            if (!techTree.isBuildingUnlocked(building.getRequiredTech(), researched)) continue;
+            if (building.getRequiresBuilding() != null && !city.hasBuilding(building.getRequiresBuilding())) continue;
+            if (best == null || building.getPriority() < best.getPriority()) {
+                best = building;
+            }
+        }
+        return best;
     }
 
     private int calculateArmyCap(Faction faction) {
