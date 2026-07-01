@@ -4,6 +4,7 @@ import com.pocketempire.config.StatusEffectConfig;
 import com.pocketempire.diplomacy.CasusBelli;
 import com.pocketempire.diplomacy.CasusBelliManager;
 import com.pocketempire.diplomacy.DiplomacyManager;
+import com.pocketempire.player.PlayerController;
 import com.pocketempire.tech.TechTree;
 import com.pocketempire.tech.TechConfigLoader;
 import com.pocketempire.tech.TechnologyConfig;
@@ -56,7 +57,8 @@ public class TurnManager {
         this.diplomacyManager = diplomacyManager;
         this.casusBelliManager = new CasusBelliManager();
         this.eventManager = new EventManager(world);
-        this.playerController = new PlayerController(world, fogMaps);
+        this.playerController = new com.pocketempire.player.PlayerController(world, fogMaps);
+        this.playerController.setDiplomacyManager(diplomacyManager);
     }
 
     public void nextTurn() {

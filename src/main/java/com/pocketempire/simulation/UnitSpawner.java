@@ -66,14 +66,26 @@ public class UnitSpawner {
         }
 
         if (city.getCurrentProductionType() == null) {
-            if (faction.isAI()) {
-                FogMap fogMap = fogMaps.get(faction.getId());
-                if (fogMap != null) {
-                    World aiWorld = new VisibleWorld(world, fogMap, String.valueOf(faction.getId()));
-                    aiProductionStrategy.chooseProductionForAI(city, faction, aiWorld, currentTurn);
+            UnitType queued = city.pollNextFromQueue();
+            if (queued != null) {
+                UnitStats queuedStats = UnitConfigLoader.getConfig(queued.name());
+                if (queuedStats != null) {
+                    String reqTech = queuedStats.getRequiredTech();
+                    if (reqTech == null || faction.getResearchedTechs().contains(reqTech)) {
+                        city.setCurrentProductionType(queued);
+                    }
                 }
             }
-            if (city.getCurrentProductionType() == null) return;
+            if (city.getCurrentProductionType() == null) {
+                if (faction.isAI()) {
+                    FogMap fogMap = fogMaps.get(faction.getId());
+                    if (fogMap != null) {
+                        World aiWorld = new VisibleWorld(world, fogMap, String.valueOf(faction.getId()));
+                        aiProductionStrategy.chooseProductionForAI(city, faction, aiWorld, currentTurn);
+                    }
+                }
+                if (city.getCurrentProductionType() == null) return;
+            }
         }
 
         UnitStats unitStats = UnitConfigLoader.getConfig(city.getCurrentProductionType().name());

@@ -5,8 +5,7 @@ import com.pocketempire.units.UnitType;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Getter
 public class City extends Entity {
@@ -20,6 +19,7 @@ public class City extends Entity {
     @Setter private UnitType currentProductionType;
     private final int borderRadius;
     private final List<BuildingConfig> buildings;
+    private final Deque<UnitType> productionQueue = new ArrayDeque<>();
 
     public City(String id, int q, int r, String name, int hp, int maxHp, int population, int maxPopulation, String factionId, String leaderId, int production) {
         super(id, q, r, hp, maxHp);
@@ -91,7 +91,31 @@ public class City extends Entity {
         setHp(getMaxHp() / 2);
         setAccumulatedProduction(0);
         setCurrentProductionType(null);
+        productionQueue.clear();
+    }
 
+    public void enqueueProduction(UnitType type) {
+        productionQueue.addLast(type);
+    }
+
+    public boolean removeFromQueue(int index) {
+        if (index < 0 || index >= productionQueue.size()) return false;
+        Iterator<UnitType> it = productionQueue.iterator();
+        for (int i = 0; i < index; i++) it.next();
+        it.remove();
+        return true;
+    }
+
+    public void clearQueue() {
+        productionQueue.clear();
+    }
+
+    public List<UnitType> getQueueSnapshot() {
+        return new ArrayList<>(productionQueue);
+    }
+
+    public UnitType pollNextFromQueue() {
+        return productionQueue.pollFirst();
     }
 
     @Override
