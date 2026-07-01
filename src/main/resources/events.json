@@ -1,9 +1,9 @@
 {
   "forestFire": {
-    "chance": 0.05,
-    "spreadChance": 0.3,
-    "burnDuration": 7,
-    "recoverDuration": 20,
-    "damagePerTurn": 3
+    "chance": 0.002,
+    "spreadChance": 0.15,
+    "burnDuration": 5,
+    "recoverDuration": 15,
+    "damagePerTurn": 2
   }
 }
