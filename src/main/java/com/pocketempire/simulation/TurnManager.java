@@ -42,6 +42,8 @@ public class TurnManager {
     private final CasusBelliManager casusBelliManager;
     private final EventManager eventManager;
     private final Random rng = new Random();
+    private final PlayerController playerController;
+    private final java.util.Scanner scanner = new java.util.Scanner(System.in);
 
     public TurnManager(List<Faction> factions, World world, Map<Integer, FogMap> fogMaps, DiplomacyManager diplomacyManager) {
         this.factions = factions;
@@ -54,6 +56,7 @@ public class TurnManager {
         this.diplomacyManager = diplomacyManager;
         this.casusBelliManager = new CasusBelliManager();
         this.eventManager = new EventManager(world);
+        this.playerController = new PlayerController(world, fogMaps);
     }
 
     public void nextTurn() {
@@ -204,15 +207,19 @@ public class TurnManager {
 
             if (faction.isAI()) {
                 unit.updateAI(aiWorld);
-            }
 
-            if (!unit.isAlive()) continue;
+                if (!unit.isAlive()) continue;
 
-            if (unit.getUnitState() == UnitState.FLEEING) {
-                unitMover.moveUnitTowardCity(unit, faction, aiWorld);
-            } else if (unit.getRange() == 1 && unit.getUnitState() != UnitState.WANDER && unit.getUnitState() != UnitState.GATHERING) {
-                unitMover.moveUnitTowardEnemy(unit, faction, aiWorld);
+                if (unit.getUnitState() == UnitState.FLEEING) {
+                    unitMover.moveUnitTowardCity(unit, faction, aiWorld);
+                } else if (unit.getRange() == 1 && unit.getUnitState() != UnitState.WANDER && unit.getUnitState() != UnitState.GATHERING) {
+                    unitMover.moveUnitTowardEnemy(unit, faction, aiWorld);
+                }
             }
+        }
+
+        if (!faction.isAI()) {
+            playerController.takeTurn(faction, scanner);
         }
 
         cleanDeadUnits();

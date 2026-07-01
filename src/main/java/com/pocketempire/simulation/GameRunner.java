@@ -21,6 +21,7 @@ public class GameRunner {
 
     public GameRunner(GameSetup setup) {
         this.setup = setup;
+        setup.getFactions().get(0).setAI(false);
         this.turnManager = new TurnManager(setup.getFactions(), setup.getWorld(), setup.getFogMaps(), setup.getDiplomacyManager());
         this.allUnits = new ArrayList<>();
         this.allCities = new ArrayList<>();
@@ -37,7 +38,8 @@ public class GameRunner {
     private void printFactions() {
         System.out.println("Factions created:");
         for (Faction faction : setup.getFactions()) {
-            System.out.println("  " + faction.getName() + " - Units: " + faction.getUnitCount() + ", Cities: " + faction.getCityCount());
+            System.out.println("  " + faction.getName() + " - Units: " + faction.getUnitCount() + ", Cities: " + faction.getCityCount()
+                    + (faction.isAI() ? "" : " (YOU)"));
         }
         System.out.println();
     }

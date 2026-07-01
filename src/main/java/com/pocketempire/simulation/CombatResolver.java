@@ -166,4 +166,18 @@ public class CombatResolver {
     private static int calculateDistance(Unit a, Unit b) {
         return HexUtils.getDistance(a.getQ(), a.getR(), b.getQ(), b.getR());
     }
+
+    public static int calculateDefenderTerrainBonus(World world, int q, int r, Faction defenderFaction) {
+        int bonus = world.getMap().getTile(q, r).getType().getDefendBonus();
+        if (defenderFaction != null && defenderFaction.getConfig() != null
+                && defenderFaction.getConfig().getForestDefBonus() != 0
+                && world.getMap().getTile(q, r).getType() == com.pocketempire.tiles.TileType.FOREST) {
+            bonus += defenderFaction.getConfig().getForestDefBonus();
+        }
+        return bonus;
+    }
+
+    public static int calculateAttackerTerrainModifier(World world, int q, int r) {
+        return world.getMap().getTile(q, r).getType().getAttackModifier();
+    }
 }
