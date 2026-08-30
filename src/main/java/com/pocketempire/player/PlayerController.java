@@ -1,7 +1,6 @@
 package com.pocketempire.player;
 
 import com.pocketempire.config.TerrainConfigLoader;
-import com.pocketempire.config.UnitConfigLoader;
 import com.pocketempire.config.UnitNamesLoader;
 import com.pocketempire.diplomacy.DiplomaticStatus;
 import com.pocketempire.diplomacy.DiplomacyManager;
@@ -16,6 +15,7 @@ import com.pocketempire.simulation.UnitMover;
 import com.pocketempire.tiles.TileType;
 import com.pocketempire.units.UnitStats;
 import com.pocketempire.units.UnitType;
+import com.pocketempire.config.UnitConfigLoader;
 import com.pocketempire.world.FogMap;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.Tile;

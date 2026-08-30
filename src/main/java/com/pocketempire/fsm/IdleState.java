@@ -10,7 +10,6 @@ import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class IdleState implements State {
 

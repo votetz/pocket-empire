@@ -2,7 +2,6 @@ package com.pocketempire.display;
 
 import com.pocketempire.entities.Unit;
 import com.pocketempire.entities.City;
-import com.pocketempire.units.UnitType;
 import com.pocketempire.world.FogMap;
 import com.pocketempire.world.Map;
 import com.pocketempire.world.Tile;

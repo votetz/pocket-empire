@@ -201,7 +201,7 @@ public class GameSetup {
     private void createInitialUnitsAndCities(Faction faction, String factionId, int preferQ, int preferR) {
         int[] cityPos = findValidCityTile(preferQ, preferR);
 
-        Unit scout = UnitFactory.create(UnitType.SCOUT, "scout_" + factionId, UnitNamesLoader.getRandomName(), cityPos[0], cityPos[1], factionId);
+        Unit scout = UnitFactory.createUnit(UnitType.SCOUT, "scout_" + factionId, UnitNamesLoader.getRandomName(), cityPos[0], cityPos[1], factionId);
         if (faction.getConfig() != null && faction.getConfig().getMovementBonus() != 0) {
             scout.setMovementBonus(faction.getConfig().getMovementBonus());
         }

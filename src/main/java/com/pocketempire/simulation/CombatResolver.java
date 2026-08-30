@@ -1,6 +1,5 @@
 package com.pocketempire.simulation;
 
-import com.pocketempire.config.FactionConfig;
 import com.pocketempire.config.StatusEffectConfig;
 import com.pocketempire.config.StatusEffectConfigLoader;
 import com.pocketempire.entities.Unit;
@@ -8,11 +7,11 @@ import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.tech.TechConfigLoader;
 import com.pocketempire.tech.TechnologyConfig;
-import com.pocketempire.units.AbilityType;
 import com.pocketempire.units.UnitRole;
 import com.pocketempire.units.UnitType;
 import com.pocketempire.events.GameEvent;
 import com.pocketempire.events.GameEventBus;
+import com.pocketempire.units.AbilityType;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
 
