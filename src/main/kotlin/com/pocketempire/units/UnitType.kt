@@ -1,6 +1,6 @@
-package com.pocketempire.units;
+package com.pocketempire.units
 
-public enum UnitType {
+enum class UnitType {
     LIGHT,
     ARCHER,
     HEAVY,
