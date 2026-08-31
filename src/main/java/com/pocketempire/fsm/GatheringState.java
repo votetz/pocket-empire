@@ -6,7 +6,6 @@ import com.pocketempire.events.GameEventBus;
 import com.pocketempire.pathfinding.Pathfinder;
 import com.pocketempire.units.UnitType;
 import com.pocketempire.world.HexUtils;
-import com.pocketempire.world.Tile;
 import com.pocketempire.world.World;
 
 import java.util.Comparator;

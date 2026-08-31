@@ -2,8 +2,8 @@ package com.pocketempire.simulation;
 
 import com.pocketempire.config.BuildingConfig;
 import com.pocketempire.config.BuildingConfigLoader;
-import com.pocketempire.config.UnitConfigLoader;
 import com.pocketempire.config.UnitNamesLoader;
+import com.pocketempire.config.UnitConfigLoader;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
@@ -119,7 +119,7 @@ public class UnitSpawner {
 
             String unitId = city.getCurrentProductionType().name().toLowerCase()
                     + "_" + (++unitCounter);
-            Unit unit = UnitFactory.create(city.getCurrentProductionType(), unitId, UnitNamesLoader.getRandomName(), spawn[0], spawn[1], city.getFactionId());
+            Unit unit = UnitFactory.createUnit(city.getCurrentProductionType(), unitId, UnitNamesLoader.getRandomName(), spawn[0], spawn[1], city.getFactionId());
             if (faction.getConfig() != null && faction.getConfig().getMovementBonus() != 0) {
                 unit.setMovementBonus(faction.getConfig().getMovementBonus());
             }

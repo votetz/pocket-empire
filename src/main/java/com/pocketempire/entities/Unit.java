@@ -1,12 +1,17 @@
 package com.pocketempire.entities;
 
+import com.pocketempire.*;
 import com.pocketempire.config.StatusEffectConfig;
 import com.pocketempire.events.GameEvent;
 import com.pocketempire.events.GameEventBus;
 import com.pocketempire.fsm.IdleState;
 import com.pocketempire.fsm.State;
 import com.pocketempire.fsm.UnitState;
-import com.pocketempire.units.*;
+import com.pocketempire.units.UnitStats;
+import com.pocketempire.units.AbilityType;
+import com.pocketempire.units.MovementType;
+import com.pocketempire.units.UnitRole;
+import com.pocketempire.units.UnitType;
 import com.pocketempire.world.World;
 import lombok.Getter;
 import lombok.Setter;

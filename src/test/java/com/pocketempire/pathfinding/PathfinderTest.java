@@ -37,7 +37,7 @@ public class PathfinderTest {
     }
 
     private Unit createUnit(World world, int q, int r, UnitType type) {
-        Unit unit = UnitFactory.create(type, "u1", "Test", q, r, "1");
+        Unit unit = UnitFactory.createUnit(type, "u1", "Test", q, r, "1");
         world.getFactions().get(0).addUnit(unit);
         return unit;
     }

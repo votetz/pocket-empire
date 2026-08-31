@@ -1,13 +1,12 @@
 package com.pocketempire.simulation;
 
-import com.pocketempire.tech.TechTree;
-import com.pocketempire.tech.TechnologyConfig;
 import com.pocketempire.config.UnitConfigLoader;
+import com.pocketempire.tech.TechTree;
 import com.pocketempire.entities.City;
 import com.pocketempire.entities.Faction;
 import com.pocketempire.entities.Unit;
-import com.pocketempire.units.AbilityType;
 import com.pocketempire.units.UnitType;
+import com.pocketempire.units.AbilityType;
 import com.pocketempire.world.HexUtils;
 import com.pocketempire.world.World;
 
